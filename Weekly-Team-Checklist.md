@@ -24,7 +24,7 @@ Still missing for Part I submission:
 - [ ] final merged Part I report document
 - [ ] final PDF naming and export
 
-## Team Lead Weekly Checklist
+## Wing Kit — Team Lead Weekly Checklist
 
 ### This Week
 
@@ -40,7 +40,7 @@ Still missing for Part I submission:
 - final rubric review
 - final export and file naming
 
-## Member B Weekly Checklist
+## Aziel — Member B Weekly Checklist
 
 ### This Week
 
@@ -61,7 +61,7 @@ Still missing for Part I submission:
 - final class diagram if included
 - final entity-support check against the use cases
 
-## Member C Weekly Checklist
+## Vincent — Member C Weekly Checklist
 
 ### This Week
 
@@ -77,7 +77,7 @@ Still missing for Part I submission:
 - final Gantt chart visual
 - final formatting polish
 
-## Member D Weekly Checklist
+## Jian Rong — Member D Weekly Checklist
 
 ### This Week
 
@@ -96,10 +96,10 @@ Still missing for Part I submission:
 
 ## Minimum Deliverables by Person
 
-- Team Lead: merged Part I document and final approval
-- Member B: clean ERD, plus class diagram if included
-- Member C: clean UML use case diagram, process flows, Gantt chart, formatting
-- Member D: completed audit checklist and proofreading notes
+- Wing Kit: merged Part I document and final approval
+- Aziel: clean ERD, plus class diagram if included
+- Vincent: clean UML use case diagram, process flows, Gantt chart, formatting
+- Jian Rong: completed audit checklist and proofreading notes
 
 ## Final Team Check Before Export
 
