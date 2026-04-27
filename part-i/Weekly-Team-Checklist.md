@@ -59,6 +59,24 @@ For tomorrow's teacher review, the team must deliver a readable draft with: 1) f
 - [ ] references section populated with at least one source and consistent formatting
 - [ ] clear note for the teacher: this is the review version, final QA is still pending
 
+### Who does what now
+
+1. See Wing Kit
+   - Fix the cover page and contents list formatting.
+   - Confirm section numbering for Chapter 2 and Chapter 3.
+   - Add the review note in the intro or cover section.
+2. Aziel Tan Zheng Chuan
+   - Prepare the ERD export or a clear ERD placeholder for insertion.
+   - Check the class/entity section and ensure the major entities are listed.
+3. Vincent Lock Chun Kit
+   - Insert or reserve the use case diagram placeholder.
+   - Replace any remaining Section 3 template placeholders with the formal use cases.
+   - Polish captions, spacing, and table formatting in the SRS.
+4. Soo Kian Rong
+   - Sweep for placeholder text and report unresolved issues with section numbers.
+   - Verify role names and key feature phrases are consistent.
+   - Confirm the references section has at least one properly formatted source.
+
 ## See Wing Kit — Project Leader
 
 ### This Week
