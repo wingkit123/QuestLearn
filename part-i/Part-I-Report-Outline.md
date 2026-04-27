@@ -68,7 +68,7 @@ Main formal use cases already included in the SRS:
 
 Keep these sections:
 
-- `Class Diagrams / ERD`
+- `ERD`
 - `Classes / Entities`
 
 Supporting source:
@@ -90,8 +90,9 @@ Insert these exported visuals into the SRS:
 - 1 UML use case diagram
 - 4 to 6 process-flow diagrams if your final format allows them in the main body or appendix
 - 1 ERD
-- 1 class diagram only if required or clearly useful
 - 1 Gantt chart
+
+For Part I scope control, class diagram is removed from required deliverables.
 
 ## Supporting Files Still Used
 

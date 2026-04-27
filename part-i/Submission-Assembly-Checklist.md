@@ -30,7 +30,6 @@ The final Part I PDF should contain:
 - use case diagram
 - formal use case descriptions
 - ERD
-- class diagram if included
 - Gantt chart
 - non-functional requirements
 - references
@@ -41,7 +40,6 @@ The final Part I PDF should contain:
 - [ ] fill in all `Student #` values
 - [ ] insert final exported UML use case diagram
 - [ ] insert final exported ERD
-- [ ] insert final class diagram if included
 - [ ] insert final Gantt chart
 - [ ] add figure numbering and captions if required by your lecturer
 
@@ -50,7 +48,6 @@ The final Part I PDF should contain:
 - [ ] 1 UML use case diagram
 - [ ] 4 to 6 process-flow diagrams if included in report or appendix
 - [ ] 1 ERD
-- [ ] 1 class diagram only if needed
 - [ ] 1 Gantt chart
 
 ## 5. Consistency Checks

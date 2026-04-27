@@ -27,12 +27,12 @@ This file converts the Gantt planning notes into a chart-ready task schedule. Me
 | Part I | Expand use case list and formal descriptions | C, TL | 2026-04-24 | 2026-04-26 | Updated overview | Updated use case document |
 | Part I | Draft process flows | C | 2026-04-25 | 2026-04-27 | Use case expansion | Flow diagrams |
 | Part I | Audit TT7L coverage | D | 2026-04-25 | 2026-04-27 | Traceability sheet | Coverage checklist |
-| Part I | Finalize class diagram support | B | 2026-04-26 | 2026-04-27 | ERD revision | Expanded class diagram |
+| Part I | Finalize ERD clarity and annotations | B | 2026-04-26 | 2026-04-27 | ERD revision | Self-explanatory ERD draft |
 | Part I | Prepare use case diagram structure | C, TL | 2026-04-26 | 2026-04-27 | Use case expansion | UML use case draft |
 | Part I | Create Gantt chart visual | C | 2026-04-27 | 2026-04-28 | Gantt table | Final chart visual |
 | Part I | Integration review across all files | TL | 2026-04-28 | 2026-04-29 | Overview, use cases, ERD updated | Integrated document set |
 | Part I | Wording, formatting, and caption cleanup | C, D | 2026-04-28 | 2026-04-30 | Integration review | Polished report text |
-| Part I | Gap patching for remaining ERD and logic issues | B, TL | 2026-04-29 | 2026-04-30 | Integration review | Final ERD/class corrections |
+| Part I | Gap patching for remaining ERD and logic issues | B, TL | 2026-04-29 | 2026-04-30 | Integration review | Final ERD corrections |
 | Part I | Red-team rubric review | TL | 2026-04-30 | 2026-04-30 | All Part I artifacts drafted | Final issue list |
 | Part I | PDF preparation and naming check | C, TL | 2026-04-30 | 2026-05-01 | Red-team review | Submission package |
 | Part II | Database design refinement | B, TL | 2026-05-02 | 2026-05-10 | Part I completed | Database design |

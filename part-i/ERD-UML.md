@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document provides the main entities, attributes, and relationships for QuestLearn. It is intended to support ERD and class diagram preparation for the academic project. The content is presented in both diagram-ready text and Mermaid draft form for quick reuse.
+This document provides the main entities, attributes, and relationships for QuestLearn. It is intended to support ERD preparation for the academic project. The content is presented in diagram-ready text and Mermaid draft form for quick reuse.
+
+For Part I scope control, ERD is the required system model diagram and class diagram is out of scope.
 
 ## 1. Core Entities
 
@@ -275,7 +277,7 @@ erDiagram
     STUDENT_PROFILE ||--|| STREAK_RECORD : has
 ```
 
-## 6. Mermaid Draft - Expanded Class Diagram
+## 6. Archived Mermaid Draft - Expanded Class Diagram (Out of Scope for Part I)
 
 ```mermaid
 classDiagram

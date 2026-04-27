@@ -37,7 +37,7 @@ Contents
 3.3 Academic Advisor
 3.4 Admin
 4. System Models
-4.1 Class Diagrams / ERD
+4.1 ERD
 4.2 Classes / Entities
 5. Non-Functional Requirements
 6. References
@@ -61,7 +61,7 @@ The team structure is organized according to project leadership, technical devel
 | Name | Actor / Processes |
 | --- | --- |
 | See Wing Kit | Overall scope control, system integration, requirements alignment, final review |
-| Aziel Tan Zheng Chuan | ERD and class logic support, technical structure, data relationship validation |
+| Aziel Tan Zheng Chuan | ERD logic support, technical structure, data relationship validation |
 | Vincent Lock Chun Kit | System overview writing, use case formatting, process-flow and Gantt chart preparation |
 | Soo Kian Rong | Requirements coverage checking, consistency review, proofreading and quality audit |
 
@@ -316,7 +316,7 @@ This use case enables an admin to manage oversight, moderation, and announcement
 
 This section summarizes the main data structures that support QuestLearn.
 
-## Class Diagrams / ERD
+## ERD
 
 Insert the final exported ERD here.
 
@@ -329,10 +329,6 @@ Core entity groups:
 - Motivation support: `Badge`, `StudentBadge`, `StreakRecord`
 
 `[Figure: Entity Relationship Diagram for QuestLearn]`
-
-If required by the lecturer, insert the final class diagram after the ERD.
-
-`[Figure: Class Diagram for QuestLearn]`
 
 ## Classes / Entities
 

@@ -31,7 +31,7 @@ Still incomplete in the current SRS:
 - [ ] use case diagram still missing
 - [ ] functional requirements section still contains template placeholders
 - [ ] formal use cases still need to replace `3.1 ACTOR`, `3.2 ACTOR`, and `3.3 ACTOR`
-- [ ] ERD or class diagram still missing
+- [ ] ERD still missing
 - [ ] classes / entities table still missing
 - [ ] references section still empty
 - [ ] final PDF export not done
@@ -67,7 +67,8 @@ For tomorrow's teacher review, the team must deliver a readable draft with: 1) f
    - Add the review note in the intro or cover section.
 2. Aziel Tan Zheng Chuan
    - Prepare the ERD export or a clear ERD placeholder for insertion.
-   - Check the class/entity section and ensure the major entities are listed.
+  - Double-confirm the ERD includes all main entities and key relationships.
+  - Make sure the ERD is self-explanatory (clear labels, cardinality, and readable grouping).
 3. Vincent Lock Chun Kit
    - Insert or reserve the use case diagram placeholder.
    - Replace any remaining Section 3 template placeholders with the formal use cases.
@@ -104,7 +105,15 @@ For tomorrow's teacher review, the team must deliver a readable draft with: 1) f
   - `AdvisorStudentAssignment`
   - `ActivityLog`
   - `NotificationTemplate`
-- [ ] prepare class diagram export only if the team decides to include it
+- [ ] double-confirm the ERD also covers core entities:
+  - `User`
+  - `Role`
+  - `Course`
+  - `Module`
+  - `Lesson`
+  - `QuizAttempt`
+  - `ProgressRecord`
+- [ ] ensure the ERD is self-explanatory with clear relationship labels and cardinality
 - [ ] verify that all major use cases have entity support
 
 ## Vincent Lock Chun Kit — Documentation Manager
