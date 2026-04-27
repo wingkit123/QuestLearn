@@ -167,6 +167,10 @@ Screenshots and UI previews can be added here once the first interface prototype
 
 Project setup instructions will be added once the initial codebase is created.
 
+Documentation note:
+
+- Most Part I documentation is now stored under `part-i/`.
+
 Planned setup direction:
 
 - clone the repository
