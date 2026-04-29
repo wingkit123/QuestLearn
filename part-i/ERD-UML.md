@@ -6,6 +6,18 @@ This document provides the main entities, attributes, and relationships for Ques
 
 For Part I scope control, ERD is the required system model diagram and class diagram is out of scope.
 
+## Corrections Applied (summary)
+
+- Marked `StudentProfile.user_id`, `InstructorProfile.user_id`, and `AdvisorProfile.user_id` as `FK + UNIQUE` (one profile row per user).
+- Added missing `course_id` FK to `Enrollment` and added `student_profile_id` FK to `AssignmentSubmission`.
+- Added `student_profile_id` FK to `QuizAttempt` and `question_id` FK to `AttemptAnswer`.
+- Added `lesson_id` FK to `ProgressRecord` (optional context-level progress).
+- Added `advisor_profile_id` FK to `AdvisorAlert` and `created_by_user_id` FK to `Announcement`.
+- Added `user_id`, `announcement_id`, and `notification_template_id` FKs to `Notification`.
+- Added `badge_id` FK to `StudentBadge`.
+
+These corrections are applied to the repository ERD XML (`part-i/ERD-UML.drawio.xml`) so the diagram now includes the missing FK columns and explicitly documents unique profile constraints.
+
 ## 1. Core Entities
 
 ### 1. User
@@ -36,12 +48,12 @@ For Part I scope control, ERD is the required system model diagram and class dia
 
 ### 6. AdvisorStudentAssignment
 
-**Attributes:** `advisor_student_assignment_id`, `advisor_id`, `student_id`, `assigned_at`, `status`  
+**Attributes:** `advisor_student_assignment_id`, `advisor_profile_id` (FK), `student_profile_id` (FK), `assigned_at`, `status`  
 **Purpose:** Maps academic advisors to assigned students for monitoring and follow-up.
 
 ### 7. Course
 
-**Attributes:** `course_id`, `instructor_id`, `title`, `code`, `description`, `department`, `status`  
+**Attributes:** `course_id`, `instructor_profile_id` (FK), `title`, `code`, `description`, `department`, `status`  
 **Purpose:** Represents a course created and managed by an instructor.
 
 ### 8. Module
@@ -61,7 +73,7 @@ For Part I scope control, ERD is the required system model diagram and class dia
 
 ### 11. Enrollment
 
-**Attributes:** `enrollment_id`, `student_id`, `course_id`, `enrolled_at`  
+**Attributes:** `enrollment_id`, `student_profile_id` (FK), `course_id` (FK), `enrolled_at`  
 **Purpose:** Maps students to courses.
 
 ### 12. Quiz
@@ -71,12 +83,12 @@ For Part I scope control, ERD is the required system model diagram and class dia
 
 ### 13. Assignment
 
-**Attributes:** `assignment_id`, `course_id`, `lesson_id`, `title`, `description`, `deadline_at`, `total_marks`, `publish_status`  
+**Attributes:** `assignment_id`, `course_id` (FK), `lesson_id` (FK, optional if assignment is lesson-linked), `title`, `description`, `deadline_at`, `total_marks`, `publish_status`  
 **Purpose:** Represents an assignment that students must submit within a course.
 
 ### 14. AssignmentSubmission
 
-**Attributes:** `assignment_submission_id`, `assignment_id`, `student_id`, `submitted_at`, `submission_url`, `status`, `score`, `feedback_summary`  
+**Attributes:** `assignment_submission_id`, `assignment_id` (FK), `student_profile_id` (FK), `submitted_at`, `submission_url`, `status`, `score`, `feedback_summary`  
 **Purpose:** Stores student assignment submissions, submission status, and evaluation details.
 
 ### 15. QuestionBank
@@ -91,7 +103,7 @@ For Part I scope control, ERD is the required system model diagram and class dia
 
 ### 17. QuizAttempt
 
-**Attributes:** `attempt_id`, `quiz_id`, `student_id`, `score`, `submitted_at`, `feedback_summary`  
+**Attributes:** `attempt_id`, `quiz_id` (FK), `student_profile_id` (FK), `score`, `submitted_at`, `feedback_summary`  
 **Purpose:** Stores a student's submitted quiz attempt.
 
 ### 18. AttemptAnswer
@@ -101,7 +113,7 @@ For Part I scope control, ERD is the required system model diagram and class dia
 
 ### 19. ProgressRecord
 
-**Attributes:** `progress_id`, `student_id`, `lesson_id`, `completion_status`, `completion_percentage`, `updated_at`  
+**Attributes:** `progress_id`, `student_profile_id` (FK), `lesson_id` (FK), `completion_status`, `completion_percentage`, `updated_at`  
 **Purpose:** Tracks lesson-level or module-level progress.
 
 ### 20. ActivityLog
@@ -111,12 +123,12 @@ For Part I scope control, ERD is the required system model diagram and class dia
 
 ### 21. Recommendation
 
-**Attributes:** `recommendation_id`, `student_id`, `topic`, `recommendation_type`, `message`, `generated_at`  
+**Attributes:** `recommendation_id`, `student_profile_id` (FK), `topic`, `recommendation_type`, `message`, `generated_at`  
 **Purpose:** Stores rule-based next-step learning suggestions.
 
 ### 22. AdvisorAlert
 
-**Attributes:** `alert_id`, `student_id`, `advisor_id`, `risk_level`, `trigger_reason`, `status`, `created_at`  
+**Attributes:** `alert_id`, `student_profile_id` (FK), `advisor_profile_id` (FK), `risk_level`, `trigger_reason`, `status`, `created_at`  
 **Purpose:** Stores early warning alerts for students who may need intervention.
 
 ### 23. Announcement
@@ -141,48 +153,56 @@ For Part I scope control, ERD is the required system model diagram and class dia
 
 ### 27. StudentBadge
 
-**Attributes:** `student_badge_id`, `student_id`, `badge_id`, `awarded_at`  
+**Attributes:** `student_badge_id`, `student_profile_id` (FK), `badge_id` (FK), `awarded_at`  
 **Purpose:** Stores badge awards for students.
 
 ### 28. StreakRecord
 
-**Attributes:** `streak_record_id`, `student_id`, `current_streak`, `longest_streak`, `updated_at`  
+**Attributes:** `streak_record_id`, `student_profile_id` (FK, unique), `current_streak`, `longest_streak`, `updated_at`  
 **Purpose:** Tracks consistency-based motivation indicators.
 
 ## 2. Main Relationships
 
 The following relationships are the most important ones to show in the ERD:
 
-- `Role` 1..* `User`
+- `Role` 1..\* `User`
 - `User` 1..1 `StudentProfile`
 - `User` 1..1 `InstructorProfile`
 - `User` 1..1 `AdvisorProfile`
-- `AdvisorProfile` 1..* `AdvisorStudentAssignment`
-- `StudentProfile` 1..* `AdvisorStudentAssignment`
-- `InstructorProfile` 1..* `Course`
-- `Course` 1..* `Module`
-- `Module` 1..* `Lesson`
-- `Lesson` 1..* `ContentItem`
+- `AdvisorProfile` 1..\* `AdvisorStudentAssignment`
+- `StudentProfile` 1..\* `AdvisorStudentAssignment`
+- `InstructorProfile` 1..\* `Course`
+- `Course` 1..\* `Module`
+- `Module` 1..\* `Lesson`
+- `Lesson` 1..\* `ContentItem`
 - `Lesson` 0..1 `Quiz`
-- `Course` 1..* `Assignment`
-- `Assignment` 1..* `AssignmentSubmission`
-- `Course` 1..* `QuestionBank`
-- `QuestionBank` 1..* `Question`
-- `Quiz` *..* `Question` through a quiz-question bridge if needed
-- `StudentProfile` *..* `Course` through `Enrollment`
-- `StudentProfile` 1..* `QuizAttempt`
-- `QuizAttempt` 1..* `AttemptAnswer`
-- `StudentProfile` 1..* `ProgressRecord`
-- `User` 1..* `ActivityLog`
-- `StudentProfile` 1..* `Recommendation`
-- `StudentProfile` 1..* `AdvisorAlert`
-- `User` 1..* `Announcement`
-- `NotificationTemplate` 1..* `Notification`
-- `Announcement` 0..* `Notification`
-- `User` 1..* `Notification`
-- `StudentProfile` 1..* `StudentBadge`
-- `Badge` 1..* `StudentBadge`
+- `Course` 1..\* `Assignment`
+- `Lesson` 0..\* `Assignment`
+- `Assignment` 1..\* `AssignmentSubmission`
+- `Course` 1..\* `QuestionBank`
+- `QuestionBank` 1..\* `Question`
+- `Quiz` _.._ `Question` through a quiz-question bridge if needed
+- `StudentProfile` _.._ `Course` through `Enrollment`
+- `StudentProfile` 1..\* `QuizAttempt`
+- `QuizAttempt` 1..\* `AttemptAnswer`
+- `StudentProfile` 1..\* `ProgressRecord`
+- `User` 1..\* `ActivityLog`
+- `StudentProfile` 1..\* `Recommendation`
+- `StudentProfile` 1..\* `AdvisorAlert`
+- `User` 1..\* `Announcement`
+- `NotificationTemplate` 1..\* `Notification`
+- `Announcement` 0..\* `Notification`
+- `User` 1..\* `Notification`
+- `StudentProfile` 1..\* `StudentBadge`
+- `Badge` 1..\* `StudentBadge`
 - `StudentProfile` 1..1 `StreakRecord`
+
+### 2.1 PK/FK Constraint Notes
+
+- `StudentProfile.user_id`, `InstructorProfile.user_id`, and `AdvisorProfile.user_id` should be `FK + UNIQUE` so each user has at most one profile of each type.
+- `AdvisorStudentAssignment`, `Enrollment`, `StudentBadge`, and similar bridge tables should keep their own PK, but also enforce a unique pair on the linked FK columns to avoid duplicate links.
+- `StreakRecord.student_profile_id` should be `FK + UNIQUE` if you want exactly one streak row per student.
+- If `Assignment.lesson_id` stays in the model, the ERD should also show the `Lesson` to `Assignment` relationship.
 
 ## 3. Diagram-Ready Entity Grouping
 
@@ -251,6 +271,7 @@ erDiagram
     LESSON ||--o{ CONTENT_ITEM : includes
     LESSON ||--o| QUIZ : has
     COURSE ||--o{ ASSIGNMENT : has
+    LESSON ||--o{ ASSIGNMENT : contains
     ASSIGNMENT ||--o{ ASSIGNMENT_SUBMISSION : receives
 
     COURSE ||--o{ QUESTION_BANK : owns

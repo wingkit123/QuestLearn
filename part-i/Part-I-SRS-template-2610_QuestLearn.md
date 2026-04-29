@@ -38,7 +38,178 @@ Contents
 3.4 Admin
 4. System Models
 4.1 ERD
-4.2 Classes / Entities
+4.2 Entities
+
+The following section describes each entity in QuestLearn one by one. For every entity, the key attributes are identified first, followed by the main relationship(s) it has with other entities in the ERD.
+
+### Role
+
+- Attributes: `role_id` (PK), `role_name`
+- Description: stores the system roles used for access control, such as Student, Instructor, Academic Advisor, and Admin.
+- Relationships: one role can be assigned to many users; each user belongs to one role.
+
+### User
+
+- Attributes: `user_id` (PK), `role_id` (FK), `full_name`, `email`, `password_hash`, `account_status`, `email_verified_at`
+- Description: stores the shared login and identity details for all platform users.
+- Relationships: each user belongs to one role, and a user may have one related profile record such as StudentProfile, InstructorProfile, or AdvisorProfile.
+
+### StudentProfile
+
+- Attributes: `student_profile_id` (PK), `user_id` (FK, UNIQUE), `student_no`, `academic_level`, `programme`, `department`, `learning_preference`
+- Description: stores student-specific profile information that is not part of the shared user account.
+- Relationships: each student profile belongs to one user; one student profile can have many enrollments, submissions, quiz attempts, progress records, recommendations, alerts, badges, and streak records.
+
+### InstructorProfile
+
+- Attributes: `instructor_profile_id` (PK), `user_id` (FK, UNIQUE), `staff_no`, `specialization`, `subjects_taught`, `office_hours`
+- Description: stores instructor-specific information for course creation and teaching support.
+- Relationships: each instructor profile belongs to one user; one instructor can create many courses, lessons, quizzes, assignments, and announcements.
+
+### AdvisorProfile
+
+- Attributes: `advisor_profile_id` (PK), `user_id` (FK, UNIQUE), `staff_no`, `department`, `office_hours`
+- Description: stores academic advisor information used for student monitoring and intervention.
+- Relationships: each advisor profile belongs to one user; one advisor can have many advisor-student assignments and many advisor alerts.
+
+### AdvisorStudentAssignment
+
+- Attributes: `assignment_id` (PK), `advisor_profile_id` (FK), `student_profile_id` (FK), `assigned_at`, `status`
+- Description: records which advisor is responsible for which student.
+- Relationships: each record links one advisor to one student; an advisor can monitor many students, and a student can be reassigned over time.
+
+### Course
+
+- Attributes: `course_id` (PK), `instructor_profile_id` (FK), `course_code`, `course_title`, `description`, `department`, `status`
+- Description: stores the main course information created by instructors.
+- Relationships: one course is created by one instructor and can contain many modules, enrollments, assignments, quizzes, question banks, and announcements.
+
+### Module
+
+- Attributes: `module_id` (PK), `course_id` (FK), `module_title`, `sequence_no`, `description`, `publish_status`
+- Description: groups lessons into an ordered learning sequence inside a course.
+- Relationships: one course can have many modules, and each module can have many lessons.
+
+### Lesson
+
+- Attributes: `lesson_id` (PK), `module_id` (FK), `lesson_title`, `lesson_type`, `content_summary`, `publish_status`
+- Description: represents a learning unit inside a module.
+- Relationships: one module can have many lessons; one lesson can have many content items, quizzes, assignments, and progress records.
+
+### ContentItem
+
+- Attributes: `content_item_id` (PK), `lesson_id` (FK), `content_type`, `content_title`, `file_url`, `embed_url`, `display_order`
+- Description: stores the learning assets attached to a lesson, such as video, reading material, or embedded H5P content.
+- Relationships: each content item belongs to one lesson; one lesson can contain many content items.
+
+### Enrollment
+
+- Attributes: `enrollment_id` (PK), `student_profile_id` (FK), `course_id` (FK), `enrolled_at`, `status`
+- Description: acts as the bridge table that records which students are enrolled in which courses.
+- Relationships: one student can enroll in many courses, and one course can have many enrolled students.
+
+### Quiz
+
+- Attributes: `quiz_id` (PK), `lesson_id` (FK), `quiz_title`, `total_marks`, `publish_status`, `time_limit`
+- Description: stores an assessment attached to a lesson.
+- Relationships: one lesson can have many quizzes, and one quiz can have many quiz attempts.
+
+### Assignment
+
+- Attributes: `assignment_id` (PK), `course_id` (FK), `lesson_id` (FK, optional), `assignment_title`, `deadline`, `total_marks`, `publish_status`
+- Description: stores a course-level or lesson-level assignment.
+- Relationships: one course can have many assignments; each assignment can produce many submissions.
+
+### AssignmentSubmission
+
+- Attributes: `submission_id` (PK), `assignment_id` (FK), `student_profile_id` (FK), `submitted_at`, `submission_url`, `score`, `feedback`
+- Description: stores the work submitted by a student for an assignment.
+- Relationships: each submission belongs to one assignment and one student; one assignment can have many submissions.
+
+### QuestionBank
+
+- Attributes: `question_bank_id` (PK), `course_id` (FK), `bank_name`, `description`, `is_active`
+- Description: groups reusable questions for quizzes.
+- Relationships: one course can have many question banks, and one question bank can contain many questions.
+
+### Question
+
+- Attributes: `question_id` (PK), `question_bank_id` (FK), `question_type`, `prompt`, `correct_answer`, `explanation`
+- Description: stores a single question item that can be reused in quizzes.
+- Relationships: each question belongs to one question bank; a bank can contain many questions.
+
+### QuizAttempt
+
+- Attributes: `attempt_id` (PK), `quiz_id` (FK), `student_profile_id` (FK), `score`, `submitted_at`, `feedback_summary`
+- Description: stores one student's attempt for one quiz.
+- Relationships: one quiz can have many attempts, and each attempt can contain many attempt answers.
+
+### AttemptAnswer
+
+- Attributes: `attempt_answer_id` (PK), `attempt_id` (FK), `question_id` (FK), `student_answer`, `is_correct`
+- Description: stores each answer submitted as part of a quiz attempt.
+- Relationships: each answer belongs to one quiz attempt and one question.
+
+### ProgressRecord
+
+- Attributes: `progress_record_id` (PK), `student_profile_id` (FK), `lesson_id` (FK), `completion_status`, `percentage`, `updated_at`
+- Description: tracks a student's learning progress at lesson or module level.
+- Relationships: one student can have many progress records, and one lesson can be tracked by many students.
+
+### ActivityLog
+
+- Attributes: `activity_log_id` (PK), `user_id` (FK), `activity_type`, `activity_time`, `target_type`, `target_id`
+- Description: records user actions and engagement events for analytics.
+- Relationships: each activity log belongs to one user; a user can generate many activity records.
+
+### Recommendation
+
+- Attributes: `recommendation_id` (PK), `student_profile_id` (FK), `topic`, `message`, `generated_at`, `status`
+- Description: stores rule-based learning suggestions for students based on weak-topic detection and progress data.
+- Relationships: one student can have many recommendations.
+
+### AdvisorAlert
+
+- Attributes: `advisor_alert_id` (PK), `advisor_profile_id` (FK), `student_profile_id` (FK), `risk_level`, `trigger_reason`, `created_at`, `status`
+- Description: stores an early-warning alert when a student may need academic intervention.
+- Relationships: each alert is associated with one advisor and one student; an advisor can receive many alerts.
+
+### Announcement
+
+- Attributes: `announcement_id` (PK), `user_id` (FK), `title`, `message`, `scope`, `published_at`
+- Description: stores platform-wide or course-related announcements created by instructors or admins.
+- Relationships: each announcement is created by one user; announcements may be targeted to one course, one role, or the whole system depending on scope.
+
+### NotificationTemplate
+
+- Attributes: `template_id` (PK), `created_by_user_id` (FK), `subject_template`, `body_template`, `template_type`, `is_active`
+- Description: stores reusable notification message templates managed by admins.
+- Relationships: one admin can manage many notification templates; a template can be used to generate many notifications.
+
+### Notification
+
+- Attributes: `notification_id` (PK), `user_id` (FK), `template_id` (FK, optional), `announcement_id` (FK, optional), `message`, `is_read`, `sent_at`
+- Description: stores a notification delivered to a user.
+- Relationships: each notification belongs to one user and may be linked to a template or announcement.
+
+### Badge
+
+- Attributes: `badge_id` (PK), `badge_name`, `description`, `award_rule`, `icon_url`
+- Description: defines a gamification badge that can be earned by students.
+- Relationships: one badge can be awarded many times through StudentBadge.
+
+### StudentBadge
+
+- Attributes: `student_badge_id` (PK), `student_profile_id` (FK), `badge_id` (FK), `awarded_at`, `awarded_reason`
+- Description: records which student has earned which badge.
+- Relationships: each record links one student to one badge; one student can earn many badges, and one badge can be awarded to many students.
+
+### StreakRecord
+
+- Attributes: `streak_record_id` (PK), `student_profile_id` (FK, UNIQUE), `current_streak`, `longest_streak`, `last_activity_date`
+- Description: tracks a student's learning streaks for lightweight motivation support.
+- Relationships: each student has one streak record.
+
 5. Non-Functional Requirements
 6. References
 
@@ -332,38 +503,175 @@ Core entity groups:
 
 ## Classes / Entities
 
-The following classes and entities form the core data model of the system.
+The following section describes the core classes and entities one by one, using the same attribute-and-relationship style as the ERD entity description.
 
-| Class / Entity | Description |
-| --- | --- |
-| `User` | Stores shared identity and login information for all users, including account status and email verification state. |
-| `Role` | Supports role-based access control for Student, Instructor, Academic Advisor, and Admin. |
-| `StudentProfile` | Stores student-specific academic and preference information such as academic level, programme, department, and learning preference. |
-| `InstructorProfile` | Stores instructor-specific information including specialization, subjects taught, and office hours. |
-| `AdvisorProfile` | Stores advisor information used for assigned-student monitoring and follow-up. |
-| `AdvisorStudentAssignment` | Maps academic advisors to the students they are responsible for monitoring. |
-| `Course` | Represents a course created and managed by an instructor. |
-| `Module` | Divides a course into smaller learning units. |
-| `Lesson` | Represents an individual lesson within a module. |
-| `ContentItem` | Stores lesson assets such as videos, reading files, and H5P interactive content. |
-| `Enrollment` | Maps students to courses. |
-| `Quiz` | Represents a lesson-based assessment with configurable settings. |
-| `Assignment` | Represents a course or lesson assignment with deadlines and marks. |
-| `AssignmentSubmission` | Stores student assignment submissions, status, score, and feedback summary. |
-| `QuestionBank` | Groups reusable questions for quiz creation and randomized selection. |
-| `Question` | Stores question content, answer data, and explanation text for feedback support. |
-| `QuizAttempt` | Stores a student's submitted quiz attempt and result summary. |
-| `AttemptAnswer` | Stores each submitted answer within a quiz attempt. |
-| `ProgressRecord` | Tracks lesson or module completion progress for students. |
-| `ActivityLog` | Tracks user actions such as page visits, lesson openings, video viewing, interactive content use, and quiz attempts. |
-| `Recommendation` | Stores rule-based next-step recommendations based on weak-topic detection and progress patterns. |
-| `AdvisorAlert` | Stores early warning alerts for students who may need intervention. |
-| `Announcement` | Stores platform-level or course-level announcements managed by instructors or admins. |
-| `NotificationTemplate` | Stores reusable templates for notification delivery. |
-| `Notification` | Stores reminders, alerts, and announcement delivery records. |
-| `Badge` | Defines gamification rewards available in the platform. |
-| `StudentBadge` | Stores badge awards earned by students. |
-| `StreakRecord` | Tracks lightweight motivation indicators such as current and longest learning streaks. |
+### User
+
+- Attributes: `user_id` (PK), `role_id` (FK), `full_name`, `email`, `password_hash`, `account_status`, `email_verified_at`
+- Description: stores shared identity and login information for all users.
+- Relationships: each user belongs to one role and may have one related profile record.
+
+### Role
+
+- Attributes: `role_id` (PK), `role_name`
+- Description: defines the access control roles used in the system.
+- Relationships: one role can be assigned to many users.
+
+### StudentProfile
+
+- Attributes: `student_profile_id` (PK), `user_id` (FK, UNIQUE), `student_no`, `academic_level`, `programme`, `department`, `learning_preference`
+- Description: stores student-specific academic and preference information.
+- Relationships: each student profile belongs to one user and can be linked to enrollments, submissions, attempts, progress records, recommendations, alerts, badges, and streak records.
+
+### InstructorProfile
+
+- Attributes: `instructor_profile_id` (PK), `user_id` (FK, UNIQUE), `staff_no`, `specialization`, `subjects_taught`, `office_hours`
+- Description: stores instructor-specific teaching and contact information.
+- Relationships: each instructor profile belongs to one user and can create courses, lessons, quizzes, assignments, and announcements.
+
+### AdvisorProfile
+
+- Attributes: `advisor_profile_id` (PK), `user_id` (FK, UNIQUE), `staff_no`, `department`, `office_hours`
+- Description: stores academic advisor details used for monitoring and follow-up.
+- Relationships: each advisor profile belongs to one user and can be linked to student assignments and alerts.
+
+### AdvisorStudentAssignment
+
+- Attributes: `assignment_id` (PK), `advisor_profile_id` (FK), `student_profile_id` (FK), `assigned_at`, `status`
+- Description: maps academic advisors to the students they monitor.
+- Relationships: each record links one advisor to one student.
+
+### Course
+
+- Attributes: `course_id` (PK), `instructor_profile_id` (FK), `course_code`, `course_title`, `description`, `department`, `status`
+- Description: represents a course created and managed by an instructor.
+- Relationships: one course can contain many modules, enrollments, assignments, quizzes, question banks, and announcements.
+
+### Module
+
+- Attributes: `module_id` (PK), `course_id` (FK), `module_title`, `sequence_no`, `description`, `publish_status`
+- Description: divides a course into smaller learning units.
+- Relationships: one course can have many modules, and one module can have many lessons.
+
+### Lesson
+
+- Attributes: `lesson_id` (PK), `module_id` (FK), `lesson_title`, `lesson_type`, `content_summary`, `publish_status`
+- Description: represents an individual lesson within a module.
+- Relationships: one lesson can contain many content items, quizzes, assignments, and progress records.
+
+### ContentItem
+
+- Attributes: `content_item_id` (PK), `lesson_id` (FK), `content_type`, `content_title`, `file_url`, `embed_url`, `display_order`
+- Description: stores lesson assets such as videos, reading files, and H5P interactive content.
+- Relationships: each content item belongs to one lesson.
+
+### Enrollment
+
+- Attributes: `enrollment_id` (PK), `student_profile_id` (FK), `course_id` (FK), `enrolled_at`, `status`
+- Description: maps students to courses.
+- Relationships: one student can enroll in many courses, and one course can have many enrolled students.
+
+### Quiz
+
+- Attributes: `quiz_id` (PK), `lesson_id` (FK), `quiz_title`, `total_marks`, `publish_status`, `time_limit`
+- Description: represents a lesson-based assessment.
+- Relationships: one lesson can have many quizzes, and one quiz can have many quiz attempts.
+
+### Assignment
+
+- Attributes: `assignment_id` (PK), `course_id` (FK), `lesson_id` (FK, optional), `assignment_title`, `deadline`, `total_marks`, `publish_status`
+- Description: represents a course or lesson assignment.
+- Relationships: one assignment can produce many submissions.
+
+### AssignmentSubmission
+
+- Attributes: `submission_id` (PK), `assignment_id` (FK), `student_profile_id` (FK), `submitted_at`, `submission_url`, `score`, `feedback`
+- Description: stores student assignment submissions and result details.
+- Relationships: each submission belongs to one assignment and one student.
+
+### QuestionBank
+
+- Attributes: `question_bank_id` (PK), `course_id` (FK), `bank_name`, `description`, `is_active`
+- Description: groups reusable questions for quiz creation.
+- Relationships: one course can have many question banks, and one question bank can contain many questions.
+
+### Question
+
+- Attributes: `question_id` (PK), `question_bank_id` (FK), `question_type`, `prompt`, `correct_answer`, `explanation`
+- Description: stores question content and answer data.
+- Relationships: each question belongs to one question bank.
+
+### QuizAttempt
+
+- Attributes: `attempt_id` (PK), `quiz_id` (FK), `student_profile_id` (FK), `score`, `submitted_at`, `feedback_summary`
+- Description: stores a student's submitted quiz attempt.
+- Relationships: one quiz can have many attempts, and one attempt can have many attempt answers.
+
+### AttemptAnswer
+
+- Attributes: `attempt_answer_id` (PK), `attempt_id` (FK), `question_id` (FK), `student_answer`, `is_correct`
+- Description: stores each submitted answer within a quiz attempt.
+- Relationships: each answer belongs to one attempt and one question.
+
+### ProgressRecord
+
+- Attributes: `progress_record_id` (PK), `student_profile_id` (FK), `lesson_id` (FK), `completion_status`, `percentage`, `updated_at`
+- Description: tracks lesson or module completion progress.
+- Relationships: one student can have many progress records, and one lesson can be tracked by many students.
+
+### ActivityLog
+
+- Attributes: `activity_log_id` (PK), `user_id` (FK), `activity_type`, `activity_time`, `target_type`, `target_id`
+- Description: tracks user actions and engagement events.
+- Relationships: each activity log belongs to one user.
+
+### Recommendation
+
+- Attributes: `recommendation_id` (PK), `student_profile_id` (FK), `topic`, `message`, `generated_at`, `status`
+- Description: stores rule-based next-step recommendations.
+- Relationships: one student can have many recommendations.
+
+### AdvisorAlert
+
+- Attributes: `advisor_alert_id` (PK), `advisor_profile_id` (FK), `student_profile_id` (FK), `risk_level`, `trigger_reason`, `created_at`, `status`
+- Description: stores early warning alerts for students who may need intervention.
+- Relationships: each alert is linked to one advisor and one student.
+
+### Announcement
+
+- Attributes: `announcement_id` (PK), `user_id` (FK), `title`, `message`, `scope`, `published_at`
+- Description: stores platform-level or course-level announcements.
+- Relationships: each announcement is created by one user.
+
+### NotificationTemplate
+
+- Attributes: `template_id` (PK), `created_by_user_id` (FK), `subject_template`, `body_template`, `template_type`, `is_active`
+- Description: stores reusable notification templates.
+- Relationships: one admin can manage many templates.
+
+### Notification
+
+- Attributes: `notification_id` (PK), `user_id` (FK), `template_id` (FK, optional), `announcement_id` (FK, optional), `message`, `is_read`, `sent_at`
+- Description: stores reminders, alerts, and announcement delivery records.
+- Relationships: each notification belongs to one user.
+
+### Badge
+
+- Attributes: `badge_id` (PK), `badge_name`, `description`, `award_rule`, `icon_url`
+- Description: defines gamification rewards available in the platform.
+- Relationships: one badge can be awarded many times through StudentBadge.
+
+### StudentBadge
+
+- Attributes: `student_badge_id` (PK), `student_profile_id` (FK), `badge_id` (FK), `awarded_at`, `awarded_reason`
+- Description: stores badge awards earned by students.
+- Relationships: each record links one student to one badge.
+
+### StreakRecord
+
+- Attributes: `streak_record_id` (PK), `student_profile_id` (FK, UNIQUE), `current_streak`, `longest_streak`, `last_activity_date`
+- Description: tracks lightweight motivation indicators such as current and longest learning streaks.
+- Relationships: each student has one streak record.
 
 # Non-Functional Requirements
 
