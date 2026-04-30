@@ -664,7 +664,7 @@ The following section describes the core classes and entities one by one, using 
 - Attributes:
 	- `submission_id` (PK): Unique submission record identifier.
 	- `assignment_id` (FK): Identifies the assignment being submitted.
-	- `student_profile_id` (FK): References the submitting student.
+	- `student_profile_id` (FK): Identifies the submitting student.
 	- `submitted_at`: Timestamp of submission.
 	- `submission_url`: Link to the submitted file or resource.
 	- `score`: Numeric grade awarded.
@@ -676,7 +676,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `question_bank_id` (PK): Unique identifier for the question bank.
-	- `course_id` (FK): References the course the bank belongs to.
+	- `course_id` (FK): Identifies the course the bank belongs to.
 	- `bank_name`: Name of the question bank.
 	- `description`: Short description of the bank's purpose.
 	- `is_active`: Boolean indicating availability for use.
@@ -700,7 +700,7 @@ The following section describes the core classes and entities one by one, using 
 - Attributes:
 	- `attempt_id` (PK): Unique identifier for the quiz attempt.
 	- `quiz_id` (FK): Identifies the quiz being attempted.
-	- `student_profile_id` (FK): References the student who attempted the quiz.
+	- `student_profile_id` (FK): Identifies the student who attempted the quiz.
 	- `score`: Total score achieved on the attempt.
 	- `submitted_at`: Timestamp when the attempt was submitted.
 	- `feedback_summary`: Summary feedback for the attempt.
