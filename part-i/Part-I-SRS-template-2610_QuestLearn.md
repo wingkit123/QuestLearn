@@ -507,169 +507,333 @@ The following section describes the core classes and entities one by one, using 
 
 ### User
 
-- Attributes: `user_id` (PK), `role_id` (FK), `full_name`, `email`, `password_hash`, `account_status`, `email_verified_at`
+- Attributes:
+	- `user_id` (PK): Unique identifier for the user.
+	- `role_id` (FK): References `Role.role_id` to assign access permissions.
+	- `full_name`: The user's full name for display and records.
+	- `email`: Contact and login email address (unique).
+	- `password_hash`: Secure hashed password used for authentication.
+	- `account_status`: Account state (e.g., active, suspended, closed).
+	- `email_verified_at`: Timestamp when the user's email was verified.
 - Description: stores shared identity and login information for all users.
 - Relationships: each user belongs to one role and may have one related profile record.
 
 ### Role
 
-- Attributes: `role_id` (PK), `role_name`
+- Attributes:
+	- `role_id` (PK): Unique identifier for the role.
+	- `role_name`: Human-readable role label (e.g., student, instructor, admin).
 - Description: defines the access control roles used in the system.
 - Relationships: one role can be assigned to many users.
 
 ### StudentProfile
 
-- Attributes: `student_profile_id` (PK), `user_id` (FK, UNIQUE), `student_no`, `academic_level`, `programme`, `department`, `learning_preference`
+- Attributes:
+	- `student_profile_id` (PK): Unique identifier for the student profile.
+	- `user_id` (FK, UNIQUE): References `User.user_id` (one-to-one with user account).
+	- `student_no`: Institution-assigned student number.
+	- `academic_level`: Current study level (e.g., Year 1, Level 2).
+	- `programme`: Enrolled programme or course of study.
+	- `department`: Academic department the student belongs to.
+	- `learning_preference`: Student's preferred learning mode (e.g., visual, auditory).
 - Description: stores student-specific academic and preference information.
 - Relationships: each student profile belongs to one user and can be linked to enrollments, submissions, attempts, progress records, recommendations, alerts, badges, and streak records.
 
 ### InstructorProfile
 
-- Attributes: `instructor_profile_id` (PK), `user_id` (FK, UNIQUE), `staff_no`, `specialization`, `subjects_taught`, `office_hours`
+- Attributes:
+	- `instructor_profile_id` (PK): Unique identifier for the instructor profile.
+	- `user_id` (FK, UNIQUE): References `User.user_id` (one-to-one with user account).
+	- `staff_no`: Institution-assigned staff number.
+	- `specialization`: Instructor's area of expertise.
+	- `subjects_taught`: List or summary of subjects the instructor teaches.
+	- `office_hours`: Published contact/availability times.
 - Description: stores instructor-specific teaching and contact information.
 - Relationships: each instructor profile belongs to one user and can create courses, lessons, quizzes, assignments, and announcements.
 
 ### AdvisorProfile
 
-- Attributes: `advisor_profile_id` (PK), `user_id` (FK, UNIQUE), `staff_no`, `department`, `office_hours`
+- Attributes:
+	- `advisor_profile_id` (PK): Unique identifier for the advisor profile.
+	- `user_id` (FK, UNIQUE): References `User.user_id` (one-to-one with user account).
+	- `staff_no`: Advisor's staff number.
+	- `department`: Department the advisor is assigned to.
+	- `office_hours`: Advisor's contact/availability times.
 - Description: stores academic advisor details used for monitoring and follow-up.
 - Relationships: each advisor profile belongs to one user and can be linked to student assignments and alerts.
 
 ### AdvisorStudentAssignment
 
-- Attributes: `assignment_id` (PK), `advisor_profile_id` (FK), `student_profile_id` (FK), `assigned_at`, `status`
+- Attributes:
+	- `assignment_id` (PK): Unique identifier for the advisor-student assignment.
+	- `advisor_profile_id` (FK): References `AdvisorProfile.advisor_profile_id`.
+	- `student_profile_id` (FK): References `StudentProfile.student_profile_id`.
+	- `assigned_at`: Timestamp when the advisor was assigned to the student.
+	- `status`: Assignment state (e.g., active, completed, revoked).
 - Description: maps academic advisors to the students they monitor.
 - Relationships: each record links one advisor to one student.
 
 ### Course
 
-- Attributes: `course_id` (PK), `instructor_profile_id` (FK), `course_code`, `course_title`, `description`, `department`, `status`
+- Attributes:
+	- `course_id` (PK): Unique course identifier.
+	- `instructor_profile_id` (FK): References the course owner/instructor.
+	- `course_code`: Short unique code used to identify the course.
+	- `course_title`: Full title of the course.
+	- `description`: Text summary of the course content.
+	- `department`: Academic department offering the course.
+	- `status`: Publish/state (e.g., draft, published, archived).
 - Description: represents a course created and managed by an instructor.
 - Relationships: one course can contain many modules, enrollments, assignments, quizzes, question banks, and announcements.
 
 ### Module
 
-- Attributes: `module_id` (PK), `course_id` (FK), `module_title`, `sequence_no`, `description`, `publish_status`
+- Attributes:
+	- `module_id` (PK): Unique identifier for the module.
+	- `course_id` (FK): References the parent `Course.course_id`.
+	- `module_title`: Title of the module.
+	- `sequence_no`: Ordering number within the course.
+	- `description`: Short summary of module contents.
+	- `publish_status`: Visibility state (e.g., unpublished, published).
 - Description: divides a course into smaller learning units.
 - Relationships: one course can have many modules, and one module can have many lessons.
 
 ### Lesson
 
-- Attributes: `lesson_id` (PK), `module_id` (FK), `lesson_title`, `lesson_type`, `content_summary`, `publish_status`
+- Attributes:
+	- `lesson_id` (PK): Unique lesson identifier.
+	- `module_id` (FK): References `Module.module_id`.
+	- `lesson_title`: Title of the lesson.
+	- `lesson_type`: Type of lesson (e.g., video, reading, interactive).
+	- `content_summary`: Short description of lesson content.
+	- `publish_status`: Visibility state for the lesson.
 - Description: represents an individual lesson within a module.
 - Relationships: one lesson can contain many content items, quizzes, assignments, and progress records.
 
 ### ContentItem
 
-- Attributes: `content_item_id` (PK), `lesson_id` (FK), `content_type`, `content_title`, `file_url`, `embed_url`, `display_order`
+- Attributes:
+	- `content_item_id` (PK): Unique identifier for the content item.
+	- `lesson_id` (FK): References the parent lesson.
+	- `content_type`: Type of content (video, file, embed, interactive).
+	- `content_title`: Title or caption for the content.
+	- `file_url`: Link to uploaded resource file.
+	- `embed_url`: External embed link (e.g., YouTube, H5P).
+	- `display_order`: Integer controlling ordering within the lesson.
 - Description: stores lesson assets such as videos, reading files, and H5P interactive content.
 - Relationships: each content item belongs to one lesson.
 
 ### Enrollment
 
-- Attributes: `enrollment_id` (PK), `student_profile_id` (FK), `course_id` (FK), `enrolled_at`, `status`
+- Attributes:
+	- `enrollment_id` (PK): Unique enrollment record identifier.
+	- `student_profile_id` (FK): References the enrolled student.
+	- `course_id` (FK): References the course.
+	- `enrolled_at`: Timestamp when enrollment occurred.
+	- `status`: Enrollment state (active, withdrawn, completed).
 - Description: maps students to courses.
 - Relationships: one student can enroll in many courses, and one course can have many enrolled students.
 
 ### Quiz
 
-- Attributes: `quiz_id` (PK), `lesson_id` (FK), `quiz_title`, `total_marks`, `publish_status`, `time_limit`
+- Attributes:
+	- `quiz_id` (PK): Unique quiz identifier.
+	- `lesson_id` (FK): References the lesson the quiz belongs to.
+	- `quiz_title`: Title of the quiz.
+	- `total_marks`: Maximum achievable marks.
+	- `publish_status`: Visibility state for the quiz.
+	- `time_limit`: Time allowed for completion (if any).
 - Description: represents a lesson-based assessment.
 - Relationships: one lesson can have many quizzes, and one quiz can have many quiz attempts.
 
 ### Assignment
 
-- Attributes: `assignment_id` (PK), `course_id` (FK), `lesson_id` (FK, optional), `assignment_title`, `deadline`, `total_marks`, `publish_status`
+- Attributes:
+	- `assignment_id` (PK): Unique assignment identifier.
+	- `course_id` (FK): References the parent course.
+	- `lesson_id` (FK, optional): References the related lesson when applicable.
+	- `assignment_title`: Title of the assignment.
+	- `deadline`: Submission deadline timestamp.
+	- `total_marks`: Maximum marks for the assignment.
+	- `publish_status`: Visibility state for students.
 - Description: represents a course or lesson assignment.
 - Relationships: one assignment can produce many submissions.
 
 ### AssignmentSubmission
 
-- Attributes: `submission_id` (PK), `assignment_id` (FK), `student_profile_id` (FK), `submitted_at`, `submission_url`, `score`, `feedback`
+- Attributes:
+	- `submission_id` (PK): Unique submission record identifier.
+	- `assignment_id` (FK): References the assignment being submitted.
+	- `student_profile_id` (FK): References the submitting student.
+	- `submitted_at`: Timestamp of submission.
+	- `submission_url`: Link to the submitted file or resource.
+	- `score`: Numeric grade awarded.
+	- `feedback`: Instructor feedback text.
 - Description: stores student assignment submissions and result details.
 - Relationships: each submission belongs to one assignment and one student.
 
 ### QuestionBank
 
-- Attributes: `question_bank_id` (PK), `course_id` (FK), `bank_name`, `description`, `is_active`
+- Attributes:
+	- `question_bank_id` (PK): Unique identifier for the question bank.
+	- `course_id` (FK): References the course the bank belongs to.
+	- `bank_name`: Name of the question bank.
+	- `description`: Short description of the bank's purpose.
+	- `is_active`: Boolean indicating availability for use.
 - Description: groups reusable questions for quiz creation.
 - Relationships: one course can have many question banks, and one question bank can contain many questions.
 
 ### Question
 
-- Attributes: `question_id` (PK), `question_bank_id` (FK), `question_type`, `prompt`, `correct_answer`, `explanation`
+- Attributes:
+	- `question_id` (PK): Unique question identifier.
+	- `question_bank_id` (FK): References the containing question bank.
+	- `question_type`: Format/type of the question (MCQ, short answer).
+	- `prompt`: The question text presented to students.
+	- `correct_answer`: Canonical correct answer or marking rule.
+	- `explanation`: Optional explanation or rationale for the answer.
 - Description: stores question content and answer data.
 - Relationships: each question belongs to one question bank.
 
 ### QuizAttempt
 
-- Attributes: `attempt_id` (PK), `quiz_id` (FK), `student_profile_id` (FK), `score`, `submitted_at`, `feedback_summary`
+- Attributes:
+	- `attempt_id` (PK): Unique identifier for the quiz attempt.
+	- `quiz_id` (FK): References the quiz taken.
+	- `student_profile_id` (FK): References the student who attempted the quiz.
+	- `score`: Total score achieved on the attempt.
+	- `submitted_at`: Timestamp when the attempt was submitted.
+	- `feedback_summary`: Summary feedback for the attempt.
 - Description: stores a student's submitted quiz attempt.
 - Relationships: one quiz can have many attempts, and one attempt can have many attempt answers.
 
 ### AttemptAnswer
 
-- Attributes: `attempt_answer_id` (PK), `attempt_id` (FK), `question_id` (FK), `student_answer`, `is_correct`
+- Attributes:
+	- `attempt_answer_id` (PK): Unique identifier for this answer record.
+	- `attempt_id` (FK): References the parent `QuizAttempt`.
+	- `question_id` (FK): References the `Question` being answered.
+	- `student_answer`: The student's submitted response.
+	- `is_correct`: Boolean indicating correctness.
 - Description: stores each submitted answer within a quiz attempt.
 - Relationships: each answer belongs to one attempt and one question.
 
 ### ProgressRecord
 
-- Attributes: `progress_record_id` (PK), `student_profile_id` (FK), `lesson_id` (FK), `completion_status`, `percentage`, `updated_at`
+- Attributes:
+	- `progress_record_id` (PK): Unique progress record identifier.
+	- `student_profile_id` (FK): References the student tracking progress.
+	- `lesson_id` (FK): References the lesson being tracked.
+	- `completion_status`: Status (not started, in progress, completed).
+	- `percentage`: Completion percentage (0-100).
+	- `updated_at`: Timestamp of last update.
 - Description: tracks lesson or module completion progress.
 - Relationships: one student can have many progress records, and one lesson can be tracked by many students.
 
 ### ActivityLog
 
-- Attributes: `activity_log_id` (PK), `user_id` (FK), `activity_type`, `activity_time`, `target_type`, `target_id`
+- Attributes:
+	- `activity_log_id` (PK): Unique activity record identifier.
+	- `user_id` (FK): References the user who performed the action.
+	- `activity_type`: Type of action (login, view, submit, etc.).
+	- `activity_time`: Timestamp of the activity.
+	- `target_type`: The kind of object targeted (lesson, course, quiz).
+	- `target_id`: Identifier of the targeted object.
 - Description: tracks user actions and engagement events.
 - Relationships: each activity log belongs to one user.
 
 ### Recommendation
 
-- Attributes: `recommendation_id` (PK), `student_profile_id` (FK), `topic`, `message`, `generated_at`, `status`
+- Attributes:
+	- `recommendation_id` (PK): Unique identifier for the recommendation.
+	- `student_profile_id` (FK): References the student for whom it was generated.
+	- `topic`: Topic or skill area the recommendation targets.
+	- `message`: Human-readable recommendation text.
+	- `generated_at`: Timestamp when the recommendation was created.
+	- `status`: State (pending, acted-upon, dismissed).
 - Description: stores rule-based next-step recommendations.
 - Relationships: one student can have many recommendations.
 
 ### AdvisorAlert
 
-- Attributes: `advisor_alert_id` (PK), `advisor_profile_id` (FK), `student_profile_id` (FK), `risk_level`, `trigger_reason`, `created_at`, `status`
+- Attributes:
+	- `advisor_alert_id` (PK): Unique alert identifier.
+	- `advisor_profile_id` (FK): References the advisor responsible for follow-up.
+	- `student_profile_id` (FK): References the student flagged by the alert.
+	- `risk_level`: Severity indicator (low, medium, high).
+	- `trigger_reason`: Reason or metric that triggered the alert.
+	- `created_at`: Timestamp when the alert was generated.
+	- `status`: Alert state (open, acknowledged, resolved).
 - Description: stores early warning alerts for students who may need intervention.
 - Relationships: each alert is linked to one advisor and one student.
 
 ### Announcement
 
-- Attributes: `announcement_id` (PK), `user_id` (FK), `title`, `message`, `scope`, `published_at`
+- Attributes:
+	- `announcement_id` (PK): Unique announcement identifier.
+	- `user_id` (FK): References the author/creator.
+	- `title`: Short headline for the announcement.
+	- `message`: Full announcement content.
+	- `scope`: Audience scope (platform, course-level, cohort).
+	- `published_at`: Timestamp when published.
 - Description: stores platform-level or course-level announcements.
 - Relationships: each announcement is created by one user.
 
 ### NotificationTemplate
 
-- Attributes: `template_id` (PK), `created_by_user_id` (FK), `subject_template`, `body_template`, `template_type`, `is_active`
+- Attributes:
+	- `template_id` (PK): Unique template identifier.
+	- `created_by_user_id` (FK): References the template creator.
+	- `subject_template`: Template for the notification subject.
+	- `body_template`: Template for the notification body.
+	- `template_type`: Type/category of template (email, in-app).
+	- `is_active`: Boolean indicating whether the template is active.
 - Description: stores reusable notification templates.
 - Relationships: one admin can manage many templates.
 
 ### Notification
 
-- Attributes: `notification_id` (PK), `user_id` (FK), `template_id` (FK, optional), `announcement_id` (FK, optional), `message`, `is_read`, `sent_at`
+- Attributes:
+	- `notification_id` (PK): Unique notification identifier.
+	- `user_id` (FK): Recipient user reference.
+	- `template_id` (FK, optional): Optional template used for the notification.
+	- `announcement_id` (FK, optional): If linked to an announcement.
+	- `message`: Delivered message text.
+	- `is_read`: Boolean indicating if the user has read it.
+	- `sent_at`: Timestamp when the notification was sent.
 - Description: stores reminders, alerts, and announcement delivery records.
 - Relationships: each notification belongs to one user.
 
 ### Badge
 
-- Attributes: `badge_id` (PK), `badge_name`, `description`, `award_rule`, `icon_url`
+- Attributes:
+	- `badge_id` (PK): Unique badge identifier.
+	- `badge_name`: Display name of the badge.
+	- `description`: Short description of the badge and criteria.
+	- `award_rule`: Rule or condition used to award the badge.
+	- `icon_url`: URL to the badge icon image.
 - Description: defines gamification rewards available in the platform.
 - Relationships: one badge can be awarded many times through StudentBadge.
 
 ### StudentBadge
 
-- Attributes: `student_badge_id` (PK), `student_profile_id` (FK), `badge_id` (FK), `awarded_at`, `awarded_reason`
+- Attributes:
+	- `student_badge_id` (PK): Unique award record identifier.
+	- `student_profile_id` (FK): References the student who earned the badge.
+	- `badge_id` (FK): References the awarded badge.
+	- `awarded_at`: Timestamp when awarded.
+	- `awarded_reason`: Optional note explaining why the badge was awarded.
 - Description: stores badge awards earned by students.
 - Relationships: each record links one student to one badge.
 
 ### StreakRecord
 
-- Attributes: `streak_record_id` (PK), `student_profile_id` (FK, UNIQUE), `current_streak`, `longest_streak`, `last_activity_date`
+- Attributes:
+	- `streak_record_id` (PK): Unique streak record identifier.
+	- `student_profile_id` (FK, UNIQUE): References the student (one streak record per student).
+	- `current_streak`: Current consecutive days/sessions count.
+	- `longest_streak`: Best historical consecutive count.
+	- `last_activity_date`: Date of the last recorded activity.
 - Description: tracks lightweight motivation indicators such as current and longest learning streaks.
 - Relationships: each student has one streak record.
 
