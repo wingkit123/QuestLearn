@@ -56,19 +56,19 @@ The following section describes each entity in QuestLearn one by one. For every 
 
 ### StudentProfile
 
-- Attributes: `student_profile_id` (PK), `user_id` (FK, UNIQUE), `student_no`, `academic_level`, `programme`, `department`, `learning_preference`
+- Attributes: `student_profile_id` (PK), `user_id` (FK), `student_no`, `academic_level`, `programme`, `department`, `learning_preference`
 - Description: stores student-specific profile information that is not part of the shared user account.
 - Relationships: each student profile belongs to one user; one student profile can have many enrollments, submissions, quiz attempts, progress records, recommendations, alerts, badges, and streak records.
 
 ### InstructorProfile
 
-- Attributes: `instructor_profile_id` (PK), `user_id` (FK, UNIQUE), `staff_no`, `specialization`, `subjects_taught`, `office_hours`
+- Attributes: `instructor_profile_id` (PK), `user_id` (FK), `staff_no`, `specialization`, `subjects_taught`, `office_hours`
 - Description: stores instructor-specific information for course creation and teaching support.
 - Relationships: each instructor profile belongs to one user; one instructor can create many courses, lessons, quizzes, assignments, and announcements.
 
 ### AdvisorProfile
 
-- Attributes: `advisor_profile_id` (PK), `user_id` (FK, UNIQUE), `staff_no`, `department`, `office_hours`
+- Attributes: `advisor_profile_id` (PK), `user_id` (FK), `staff_no`, `department`, `office_hours`
 - Description: stores academic advisor information used for student monitoring and intervention.
 - Relationships: each advisor profile belongs to one user; one advisor can have many advisor-student assignments and many advisor alerts.
 
@@ -206,7 +206,7 @@ The following section describes each entity in QuestLearn one by one. For every 
 
 ### StreakRecord
 
-- Attributes: `streak_record_id` (PK), `student_profile_id` (FK, UNIQUE), `current_streak`, `longest_streak`, `last_activity_date`
+- Attributes: `streak_record_id` (PK), `student_profile_id` (FK), `current_streak`, `longest_streak`, `last_activity_date`
 - Description: tracks a student's learning streaks for lightweight motivation support.
 - Relationships: each student has one streak record.
 
@@ -509,7 +509,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `user_id` (PK): Unique identifier for the user.
-	- `role_id` (FK): References `Role.role_id` to assign access permissions.
+	- `role_id` (FK): Determines the user's access permissions and role.
 	- `full_name`: The user's full name for display and records.
 	- `email`: Contact and login email address (unique).
 	- `password_hash`: Secure hashed password used for authentication.
@@ -530,7 +530,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `student_profile_id` (PK): Unique identifier for the student profile.
-	- `user_id` (FK, UNIQUE): References `User.user_id` (one-to-one with user account).
+	- `user_id` (FK): Associates the profile with a user account.
 	- `student_no`: Institution-assigned student number.
 	- `academic_level`: Current study level (e.g., Year 1, Level 2).
 	- `programme`: Enrolled programme or course of study.
@@ -543,7 +543,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `instructor_profile_id` (PK): Unique identifier for the instructor profile.
-	- `user_id` (FK, UNIQUE): References `User.user_id` (one-to-one with user account).
+	- `user_id` (FK): Associates the profile with a user account.
 	- `staff_no`: Institution-assigned staff number.
 	- `specialization`: Instructor's area of expertise.
 	- `subjects_taught`: List or summary of subjects the instructor teaches.
@@ -555,7 +555,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `advisor_profile_id` (PK): Unique identifier for the advisor profile.
-	- `user_id` (FK, UNIQUE): References `User.user_id` (one-to-one with user account).
+	- `user_id` (FK): Associates the profile with a user account.
 	- `staff_no`: Advisor's staff number.
 	- `department`: Department the advisor is assigned to.
 	- `office_hours`: Advisor's contact/availability times.
@@ -566,8 +566,8 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `assignment_id` (PK): Unique identifier for the advisor-student assignment.
-	- `advisor_profile_id` (FK): References `AdvisorProfile.advisor_profile_id`.
-	- `student_profile_id` (FK): References `StudentProfile.student_profile_id`.
+	- `advisor_profile_id` (FK): Identifies the assigned academic advisor.
+	- `student_profile_id` (FK): Identifies the student being monitored.
 	- `assigned_at`: Timestamp when the advisor was assigned to the student.
 	- `status`: Assignment state (e.g., active, completed, revoked).
 - Description: maps academic advisors to the students they monitor.
@@ -577,7 +577,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `course_id` (PK): Unique course identifier.
-	- `instructor_profile_id` (FK): References the course owner/instructor.
+	- `instructor_profile_id` (FK): Identifies the instructor who created the course.
 	- `course_code`: Short unique code used to identify the course.
 	- `course_title`: Full title of the course.
 	- `description`: Text summary of the course content.
@@ -590,7 +590,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `module_id` (PK): Unique identifier for the module.
-	- `course_id` (FK): References the parent `Course.course_id`.
+	- `course_id` (FK): Identifies the parent course.
 	- `module_title`: Title of the module.
 	- `sequence_no`: Ordering number within the course.
 	- `description`: Short summary of module contents.
@@ -602,7 +602,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `lesson_id` (PK): Unique lesson identifier.
-	- `module_id` (FK): References `Module.module_id`.
+	- `module_id` (FK): Identifies the parent module.
 	- `lesson_title`: Title of the lesson.
 	- `lesson_type`: Type of lesson (e.g., video, reading, interactive).
 	- `content_summary`: Short description of lesson content.
@@ -614,7 +614,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `content_item_id` (PK): Unique identifier for the content item.
-	- `lesson_id` (FK): References the parent lesson.
+	- `lesson_id` (FK): Identifies the parent lesson.
 	- `content_type`: Type of content (video, file, embed, interactive).
 	- `content_title`: Title or caption for the content.
 	- `file_url`: Link to uploaded resource file.
@@ -627,8 +627,8 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `enrollment_id` (PK): Unique enrollment record identifier.
-	- `student_profile_id` (FK): References the enrolled student.
-	- `course_id` (FK): References the course.
+	- `student_profile_id` (FK): Identifies the enrolled student.
+	- `course_id` (FK): Identifies the course.
 	- `enrolled_at`: Timestamp when enrollment occurred.
 	- `status`: Enrollment state (active, withdrawn, completed).
 - Description: maps students to courses.
@@ -638,7 +638,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `quiz_id` (PK): Unique quiz identifier.
-	- `lesson_id` (FK): References the lesson the quiz belongs to.
+	- `lesson_id` (FK): Identifies the lesson this quiz belongs to.
 	- `quiz_title`: Title of the quiz.
 	- `total_marks`: Maximum achievable marks.
 	- `publish_status`: Visibility state for the quiz.
@@ -650,8 +650,8 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `assignment_id` (PK): Unique assignment identifier.
-	- `course_id` (FK): References the parent course.
-	- `lesson_id` (FK, optional): References the related lesson when applicable.
+	- `course_id` (FK): Identifies the parent course.
+	- `lesson_id` (FK, optional): Identifies the related lesson when applicable.
 	- `assignment_title`: Title of the assignment.
 	- `deadline`: Submission deadline timestamp.
 	- `total_marks`: Maximum marks for the assignment.
@@ -663,7 +663,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `submission_id` (PK): Unique submission record identifier.
-	- `assignment_id` (FK): References the assignment being submitted.
+	- `assignment_id` (FK): Identifies the assignment being submitted.
 	- `student_profile_id` (FK): References the submitting student.
 	- `submitted_at`: Timestamp of submission.
 	- `submission_url`: Link to the submitted file or resource.
@@ -687,7 +687,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `question_id` (PK): Unique question identifier.
-	- `question_bank_id` (FK): References the containing question bank.
+	- `question_bank_id` (FK): Identifies the question bank.
 	- `question_type`: Format/type of the question (MCQ, short answer).
 	- `prompt`: The question text presented to students.
 	- `correct_answer`: Canonical correct answer or marking rule.
@@ -699,7 +699,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `attempt_id` (PK): Unique identifier for the quiz attempt.
-	- `quiz_id` (FK): References the quiz taken.
+	- `quiz_id` (FK): Identifies the quiz being attempted.
 	- `student_profile_id` (FK): References the student who attempted the quiz.
 	- `score`: Total score achieved on the attempt.
 	- `submitted_at`: Timestamp when the attempt was submitted.
@@ -711,8 +711,8 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `attempt_answer_id` (PK): Unique identifier for this answer record.
-	- `attempt_id` (FK): References the parent `QuizAttempt`.
-	- `question_id` (FK): References the `Question` being answered.
+	- `attempt_id` (FK): Identifies the parent quiz attempt.
+	- `question_id` (FK): Identifies the question being answered.
 	- `student_answer`: The student's submitted response.
 	- `is_correct`: Boolean indicating correctness.
 - Description: stores each submitted answer within a quiz attempt.
@@ -722,8 +722,8 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `progress_record_id` (PK): Unique progress record identifier.
-	- `student_profile_id` (FK): References the student tracking progress.
-	- `lesson_id` (FK): References the lesson being tracked.
+	- `student_profile_id` (FK): Identifies the student tracking progress.
+	- `lesson_id` (FK): Identifies the lesson being tracked.
 	- `completion_status`: Status (not started, in progress, completed).
 	- `percentage`: Completion percentage (0-100).
 	- `updated_at`: Timestamp of last update.
@@ -734,7 +734,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `activity_log_id` (PK): Unique activity record identifier.
-	- `user_id` (FK): References the user who performed the action.
+	- `user_id` (FK): Identifies the user who performed the action.
 	- `activity_type`: Type of action (login, view, submit, etc.).
 	- `activity_time`: Timestamp of the activity.
 	- `target_type`: The kind of object targeted (lesson, course, quiz).
@@ -746,7 +746,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `recommendation_id` (PK): Unique identifier for the recommendation.
-	- `student_profile_id` (FK): References the student for whom it was generated.
+	- `student_profile_id` (FK): Identifies the student receiving the recommendation.
 	- `topic`: Topic or skill area the recommendation targets.
 	- `message`: Human-readable recommendation text.
 	- `generated_at`: Timestamp when the recommendation was created.
@@ -758,8 +758,8 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `advisor_alert_id` (PK): Unique alert identifier.
-	- `advisor_profile_id` (FK): References the advisor responsible for follow-up.
-	- `student_profile_id` (FK): References the student flagged by the alert.
+	- `advisor_profile_id` (FK): Identifies the advisor responsible for follow-up.
+	- `student_profile_id` (FK): Identifies the student flagged by the alert.
 	- `risk_level`: Severity indicator (low, medium, high).
 	- `trigger_reason`: Reason or metric that triggered the alert.
 	- `created_at`: Timestamp when the alert was generated.
@@ -771,7 +771,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `announcement_id` (PK): Unique announcement identifier.
-	- `user_id` (FK): References the author/creator.
+	- `user_id` (FK): Identifies the author/creator.
 	- `title`: Short headline for the announcement.
 	- `message`: Full announcement content.
 	- `scope`: Audience scope (platform, course-level, cohort).
@@ -783,7 +783,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `template_id` (PK): Unique template identifier.
-	- `created_by_user_id` (FK): References the template creator.
+	- `created_by_user_id` (FK): Identifies the template creator.
 	- `subject_template`: Template for the notification subject.
 	- `body_template`: Template for the notification body.
 	- `template_type`: Type/category of template (email, in-app).
@@ -795,9 +795,9 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `notification_id` (PK): Unique notification identifier.
-	- `user_id` (FK): Recipient user reference.
-	- `template_id` (FK, optional): Optional template used for the notification.
-	- `announcement_id` (FK, optional): If linked to an announcement.
+	- `user_id` (FK): Identifies the notification recipient.
+	- `template_id` (FK, optional): Template used to generate the notification if applicable.
+	- `announcement_id` (FK, optional): Announcement associated with the notification if applicable.
 	- `message`: Delivered message text.
 	- `is_read`: Boolean indicating if the user has read it.
 	- `sent_at`: Timestamp when the notification was sent.
@@ -819,8 +819,8 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `student_badge_id` (PK): Unique award record identifier.
-	- `student_profile_id` (FK): References the student who earned the badge.
-	- `badge_id` (FK): References the awarded badge.
+	- `student_profile_id` (FK): Identifies the student who earned the badge.
+	- `badge_id` (FK): Identifies the awarded badge.
 	- `awarded_at`: Timestamp when awarded.
 	- `awarded_reason`: Optional note explaining why the badge was awarded.
 - Description: stores badge awards earned by students.
@@ -830,7 +830,7 @@ The following section describes the core classes and entities one by one, using 
 
 - Attributes:
 	- `streak_record_id` (PK): Unique streak record identifier.
-	- `student_profile_id` (FK, UNIQUE): References the student (one streak record per student).
+	- `student_profile_id` (FK): Identifies the student (one streak record per student).
 	- `current_streak`: Current consecutive days/sessions count.
 	- `longest_streak`: Best historical consecutive count.
 	- `last_activity_date`: Date of the last recorded activity.
