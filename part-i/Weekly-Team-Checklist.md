@@ -102,9 +102,8 @@ For tomorrow's teacher review, the team must deliver a readable draft with: 1) f
   - `Assignment`
   - `AssignmentSubmission`
   - `Announcement`
-  - `AdvisorStudentAssignment`
+  - `Notification`
   - `ActivityLog`
-  - `NotificationTemplate`
 - [ ] double-confirm the ERD also covers core entities:
   - `User`
   - `Role`
@@ -137,7 +136,7 @@ For tomorrow's teacher review, the team must deliver a readable draft with: 1) f
   - `ACTOR`
   - `Use Case 1`
 - [ ] verify `Student`, `Instructor`, `Academic Advisor`, and `Admin` are named consistently across headings, tables, and use cases
-- [ ] verify `email verification`, `assignment management`, and `activity tracking` appear in the correct sections with no missing flow steps
+- [ ] verify `assignment management` and `activity tracking` appear in the correct sections with no missing flow steps
 - [ ] complete a quick TT7L alignment check and flag any missing requirement coverage before final export
 - [ ] proofread grammar, labels, table alignment, figure references, and cross-references (`Section x.x`, `Figure x`, `Table x`)
 - [ ] check that the references section is filled before export and that citation formatting is consistent

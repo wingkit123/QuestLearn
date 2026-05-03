@@ -53,11 +53,9 @@ The final Part I PDF should contain:
 ## 5. Consistency Checks
 
 - [ ] `Student`, `Instructor`, `Academic Advisor`, and `Admin` are named consistently
-- [ ] `email verification` appears in overview, use cases, and process flow
 - [ ] `assignment management` appears in overview, use cases, and ERD
 - [ ] `activity tracking` appears in overview, use cases, and ERD
 - [ ] `announcement` and `notification` are used correctly
-- [ ] `AdvisorStudentAssignment` appears in ERD support
 - [ ] use case names match the SRS wording
 
 ## 6. Red-Team Rubric Check

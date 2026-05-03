@@ -31,17 +31,17 @@ The system supports four user roles:
 - `Academic Advisor`
 - `Admin`
 
-QuestLearn uses a Duolingo-inspired microlearning structure, where lessons are organized into manageable modules and progress paths. Interactive learning materials are supported through H5P content authored with Lumi, enabling instructors to integrate engaging activities into lessons without requiring the system to include its own custom content-authoring engine. The platform also includes automated feedback after quizzes, rule-based next-step recommendations, assignment support, advisor risk alerts based on weak engagement or performance patterns, and notifications that connect key academic events to the right users.
+QuestLearn uses a Duolingo-inspired microlearning structure, where lessons are organized into manageable modules and progress paths. Lesson content includes embedded video and reading material, enabling instructors to build engaging learning sequences without requiring complex third-party authoring tools. The platform also includes automated feedback after quizzes, assignment support, advisor monitoring dashboards for reviewing student progress and engagement, and in-app notifications that connect key academic events to the right users.
 
 ## 1.4 Objectives
 
 The objectives of QuestLearn are as follows:
 
-1. To provide an engaging and interactive learning environment for university students through microlearning-based lessons, embedded media, interactive content, quizzes, and assignment support.
-2. To enable instructors to create and manage courses, modules, lessons, assignments, and assessments efficiently using reusable digital content and H5P/Lumi interactive activities.
+1. To provide an engaging and interactive learning environment for university students through microlearning-based lessons, embedded video and reading content, quizzes, and assignment support.
+2. To enable instructors to create and manage courses, modules, lessons, assignments, and assessments efficiently using reusable digital content.
 3. To track learning progress, lesson completion, assessment performance, and student activity in a way that supports meaningful student and instructor dashboards.
-4. To support academic advisors through early alert mechanisms that identify at-risk students based on low engagement, incomplete modules, and weak assessment performance.
-5. To introduce practical innovation through guided recommendations, advisor intervention support, and lightweight motivation features without expanding beyond realistic prototype scope.
+4. To support academic advisors through monitoring dashboards that surface student progress, quiz performance, and overdue work for timely follow-up.
+5. To introduce practical innovation through guided feedback, advisor monitoring support, and structured analytics without expanding beyond realistic prototype scope.
 
 ## 1.5 Scope of the System
 
@@ -50,7 +50,6 @@ QuestLearn includes the following major modules and capabilities.
 ### User Management
 
 - account registration and login
-- email verification for account activation
 - role-based access control
 - profile management for students, instructors, academic advisors, and admins
 - student profile storage including academic level, programme or department, and learning preferences
@@ -62,7 +61,7 @@ QuestLearn includes the following major modules and capabilities.
 - course creation and editing
 - module and lesson management
 - lesson sequencing into guided microlearning paths
-- integration of videos, reading materials, and H5P/Lumi interactive content
+- embedded video and reading content within lessons
 - content publishing workflow for lessons and modules
 - learning content moderation and platform oversight by admins
 
@@ -75,15 +74,15 @@ QuestLearn includes the following major modules and capabilities.
 - attempt history, score storage, submission tracking, and assessment history
 - module completion status, learning progress, and detailed performance analytics
 - automated feedback for quiz attempts with tips for improvement based on mistakes
-- weak-topic identification and recommended next steps
+- weak-topic identification and recommended next steps displayed at quiz completion
 
 ### Reporting & Notifications
 
 - student dashboard with progress, grades, assessment history, and recommended next steps
 - instructor dashboard with class performance and course engagement analytics
-- academic advisor dashboard with assigned students, progress summaries, and risk indicators
+- academic advisor dashboard with department students, progress summaries, and performance indicators
 - admin dashboard for user management, moderation, announcements, and platform-wide oversight
-- notifications for assignment deadlines, new course content uploads, quiz score announcements, and advisor support alerts
+- in-app notifications for assignment deadlines, new course content, and quiz score announcements
 
 ## 1.6 Main User Scenarios
 
@@ -91,7 +90,7 @@ QuestLearn is intended to support several integrated academic scenarios.
 
 ### Student Scenario
 
-A student registers an account, completes email verification, logs in, and accesses enrolled courses. The student opens modules and lessons, watches embedded videos, reads materials, interacts with H5P content, attempts quizzes, submits assignments, and reviews automated feedback, progress, grades, and recommended next steps.
+A student registers an account, logs in, and accesses enrolled courses. The student opens modules and lessons, watches embedded videos, reads materials, attempts quizzes, submits assignments, and reviews automated feedback, progress, grades, and recommended next steps.
 
 ### Instructor Scenario
 
@@ -99,32 +98,28 @@ An instructor logs in, manages profile information such as specialization and of
 
 ### Academic Advisor Scenario
 
-An academic advisor logs in, reviews assigned students, monitors low-engagement or poor-performance alerts, checks advisee progress summaries, and follows up on students who may need academic support.
+An academic advisor logs in, reviews students in their department, monitors progress summaries and performance indicators, and follows up on students who may need academic support.
 
 ### Admin Scenario
 
-An admin manages users and roles, approves instructor accounts, moderates learning content, manages announcements and notification templates, and monitors platform-wide activity and oversight functions.
+An admin manages users and roles, approves instructor accounts, moderates learning content, manages announcements, and monitors platform-wide activity and oversight functions.
 
 ## 1.7 Proposed Innovation
 
 QuestLearn introduces several practical innovation points that strengthen the overall concept while remaining realistic for a prototype.
 
-### 1. Adaptive Remedial Recommendation
+### 1. Integrated Quiz Feedback and Weak-Topic Detection
 
-When a student performs poorly in a topic, the system uses stored quiz results and weak-topic detection to recommend a related lesson, activity, or practice path. For the initial scope, these recommendations are rule-based rather than fully AI-generated.
+When a student completes a quiz, the system auto-grades objective questions, identifies weak topics based on incorrect answers, and displays recommended next steps. This provides immediate, actionable feedback without requiring instructor intervention.
 
-### 2. Advisor Early Alert Workflow
+### 2. Advisor Monitoring Dashboard
 
-The system identifies students who show signs of academic risk, such as repeated low scores, overdue assignments, incomplete modules, or low activity levels. Academic advisors can review these alerts, inspect student history, and follow up using a structured support workflow.
+Academic advisors can view students in their department, review progress summaries, quiz performance, and overdue assignments, and send follow-up messages. This supports early academic intervention through a structured monitoring workflow.
 
-### 3. Gamified Learning Journey
+### 3. Activity-Based Progress Analytics
 
-QuestLearn uses lightweight gamification elements such as streaks, XP, badges, and visible progress markers to encourage consistency and motivation. These elements are included carefully so they support learning rather than overshadow academic goals.
-
-### 4. H5P + Lumi Content Authoring Pipeline
-
-Interactive learning materials are supported through H5P content authored with Lumi. This provides a practical and reusable way for instructors to create rich activities for a prototype without requiring the development of a fully custom authoring environment.
+The system tracks user actions such as lesson views, quiz attempts, and assignment submissions, then surfaces this data through role-appropriate dashboards for students, instructors, and advisors. This gives each user type meaningful insight into learning outcomes.
 
 ## 1.8 Conclusion
 
-In summary, QuestLearn is proposed as a higher-education learning platform that emphasizes guided microlearning, interactive content, meaningful feedback, progress visibility, advisor follow-up support, and structured academic oversight. Its combination of student engagement features, instructor tools, advisor alerts, assignment support, and admin governance makes it a more complete and better integrated response to the TT7L project brief.
+In summary, QuestLearn is proposed as a higher-education learning platform that emphasizes guided microlearning, embedded video and reading content, meaningful feedback, progress visibility, advisor monitoring support, and structured academic oversight. Its combination of student engagement features, instructor tools, advisor dashboards, assignment support, and admin governance makes it a more complete and better integrated response to the TT7L project brief.

@@ -54,14 +54,14 @@ Use case source:
 
 Main formal use cases already included in the SRS:
 
-- `UC-01 Register Account and Verify Email`
+- `UC-01 Register Account and Login`
 - `UC-02 Start Lesson`
 - `UC-03 Attempt Quiz and Receive Automated Feedback`
 - `UC-04 Submit Assignment`
 - `UC-05 Create Course and Learning Structure`
-- `UC-06 Publish Lesson Content and Interactive Material`
+- `UC-06 Publish Lesson Content`
 - `UC-07 Create Assessment and Configure Feedback`
-- `UC-08 View Advisor Alert Dashboard and Follow Up`
+- `UC-08 View Advisor Dashboard and Follow Up`
 - `UC-09 Moderate Content and Manage Announcements`
 
 ### 4. System Models

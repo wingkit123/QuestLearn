@@ -1,0 +1,264 @@
+<mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <!-- Role -->
+    <mxCell id="role" parent="1" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;" value="Role" vertex="1">
+      <mxGeometry x="40" y="20" width="200" height="90" as="geometry" />
+    </mxCell>
+    <mxCell id="role_h" parent="role" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="200" y="30" as="geometry"/></mxCell>
+    <mxCell id="role_pk" parent="role_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="role_id" parent="role_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;fontStyle=5;html=1;" value="role_id" vertex="1"><mxGeometry x="30" height="30" width="170" as="geometry"/></mxCell>
+    <mxCell id="role_name_row" parent="role" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="200" y="60" as="geometry"/></mxCell>
+    <mxCell id="role_name" parent="role_name_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="role_name" vertex="1"><mxGeometry x="30" height="30" width="170" as="geometry"/></mxCell>
+
+    <!-- User -->
+    <mxCell id="user" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="User" vertex="1">
+      <mxGeometry x="260" y="20" width="260" height="180" as="geometry" />
+    </mxCell>
+    <mxCell id="user_h" parent="user" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="30" as="geometry"/></mxCell>
+    <mxCell id="user_pk" parent="user_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="user_id" parent="user_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;fontStyle=5;html=1;" value="user_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+    <mxCell id="user_role_row" parent="user" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="60" as="geometry"/></mxCell>
+    <mxCell id="user_fk" parent="user_role_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="user_role_id" parent="user_role_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="role_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+    <mxCell id="user_full_name_row" parent="user" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="90" as="geometry"/></mxCell>
+    <mxCell id="user_full_name" parent="user_full_name_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="full_name" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+    <mxCell id="user_email_row" parent="user" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="120" as="geometry"/></mxCell>
+    <mxCell id="user_email" parent="user_email_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="email" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+
+    <!-- StudentProfile -->
+    <mxCell id="student" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="StudentProfile" vertex="1">
+      <mxGeometry x="540" y="20" width="260" height="150" as="geometry" />
+    </mxCell>
+    <mxCell id="student_h" parent="student" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="30" as="geometry"/></mxCell>
+    <mxCell id="student_pk" parent="student_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="student_id" parent="student_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;fontStyle=5;html=1;" value="student_profile_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+    <mxCell id="student_user_row" parent="student" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="60" as="geometry"/></mxCell>
+    <mxCell id="student_fk" parent="student_user_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="student_user_id" parent="student_user_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="user_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+    <mxCell id="student_level_row" parent="student" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="90" as="geometry"/></mxCell>
+    <mxCell id="student_level" parent="student_level_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="academic_level" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+
+    <!-- InstructorProfile -->
+    <mxCell id="instructor" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="InstructorProfile" vertex="1">
+      <mxGeometry x="820" y="20" width="260" height="150" as="geometry" />
+    </mxCell>
+    <mxCell id="instructor_h" parent="instructor" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="30" as="geometry"/></mxCell>
+    <mxCell id="instructor_pk" parent="instructor_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="instructor_id" parent="instructor_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;fontStyle=5;html=1;" value="instructor_profile_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+    <mxCell id="instructor_user_row" parent="instructor" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="60" as="geometry"/></mxCell>
+    <mxCell id="instructor_fk" parent="instructor_user_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="instructor_user_id" parent="instructor_user_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="user_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+    <mxCell id="instructor_spec_row" parent="instructor" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="90" as="geometry"/></mxCell>
+    <mxCell id="instructor_spec" parent="instructor_spec_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="specialization" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+
+    <!-- AdvisorProfile -->
+    <mxCell id="advisor" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="AdvisorProfile" vertex="1">
+      <mxGeometry x="40" y="220" width="220" height="120" as="geometry" />
+    </mxCell>
+    <mxCell id="advisor_h" parent="advisor" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="220" y="30" as="geometry"/></mxCell>
+    <mxCell id="advisor_pk" parent="advisor_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="advisor_id" parent="advisor_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;fontStyle=5;html=1;" value="advisor_profile_id" vertex="1"><mxGeometry x="30" height="30" width="190" as="geometry"/></mxCell>
+    <mxCell id="advisor_user_row" parent="advisor" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="220" y="60" as="geometry"/></mxCell>
+    <mxCell id="advisor_fk" parent="advisor_user_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="advisor_user_id" parent="advisor_user_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="user_id" vertex="1"><mxGeometry x="30" height="30" width="190" as="geometry"/></mxCell>
+
+
+    <!-- Course -->
+    <mxCell id="course" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="Course" vertex="1">
+      <mxGeometry x="260" y="220" width="320" height="150" as="geometry" />
+    </mxCell>
+    <mxCell id="course_h" parent="course" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="320" y="30" as="geometry"/></mxCell>
+    <mxCell id="course_pk" parent="course_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="course_id" parent="course_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;fontStyle=5;html=1;" value="course_id" vertex="1"><mxGeometry x="30" height="30" width="290" as="geometry"/></mxCell>
+    <mxCell id="course_fk_row" parent="course" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="320" y="60" as="geometry"/></mxCell>
+    <mxCell id="course_fk" parent="course_fk_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="course_instructor_id" parent="course_fk_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="instructor_profile_id" vertex="1"><mxGeometry x="30" height="30" width="290" as="geometry"/></mxCell>
+
+    <!-- Module -->
+    <mxCell id="module" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="Module" vertex="1">
+      <mxGeometry x="260" y="400" width="260" height="120" as="geometry" />
+    </mxCell>
+    <mxCell id="module_h" parent="module" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="30" as="geometry"/></mxCell>
+    <mxCell id="module_pk" parent="module_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="module_id" parent="module_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;fontStyle=5;html=1;" value="module_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+    <mxCell id="module_course_row" parent="module" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="60" as="geometry"/></mxCell>
+    <mxCell id="module_course_fk" parent="module_course_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="module_course_id" parent="module_course_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="course_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+
+    <!-- Lesson -->
+    <mxCell id="lesson" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="Lesson" vertex="1">
+      <mxGeometry x="540" y="200" width="260" height="150" as="geometry" />
+    </mxCell>
+    <mxCell id="lesson_h" parent="lesson" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="30" as="geometry"/></mxCell>
+    <mxCell id="lesson_pk" parent="lesson_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="lesson_id" parent="lesson_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;fontStyle=5;html=1;" value="lesson_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+    <mxCell id="lesson_module_row" parent="lesson" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="60" as="geometry"/></mxCell>
+    <mxCell id="lesson_module_fk" parent="lesson_module_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="lesson_module_id" parent="lesson_module_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="module_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+
+
+    <!-- Enrollment -->
+    <mxCell id="enrollment" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="Enrollment" vertex="1">
+      <mxGeometry x="540" y="360" width="260" height="120" as="geometry" />
+    </mxCell>
+    <mxCell id="enrollment_h" parent="enrollment" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="30" as="geometry"/></mxCell>
+    <mxCell id="enrollment_pk" parent="enrollment_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="enrollment_id" parent="enrollment_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;fontStyle=5;html=1;" value="enrollment_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+    <mxCell id="enrollment_student_row" parent="enrollment" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="60" as="geometry"/></mxCell>
+    <mxCell id="enrollment_student_fk" parent="enrollment_student_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="enrollment_student_id" parent="enrollment_student_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="student_profile_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+
+    <!-- Quiz -->
+    <mxCell id="quiz" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="Quiz" vertex="1">
+      <mxGeometry x="820" y="360" width="240" height="120" as="geometry" />
+    </mxCell>
+    <mxCell id="quiz_h" parent="quiz" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="240" y="30" as="geometry"/></mxCell>
+    <mxCell id="quiz_pk" parent="quiz_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="quiz_id" parent="quiz_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="quiz_id" vertex="1"><mxGeometry x="30" height="30" width="210" as="geometry"/></mxCell>
+    <mxCell id="quiz_lesson_row" parent="quiz" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="240" y="60" as="geometry"/></mxCell>
+    <mxCell id="quiz_lesson_fk" parent="quiz_lesson_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="quiz_lesson_id" parent="quiz_lesson_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="lesson_id" vertex="1"><mxGeometry x="30" height="30" width="210" as="geometry"/></mxCell>
+
+    <!-- Assignment -->
+    <mxCell id="assignment" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="Assignment" vertex="1">
+      <mxGeometry x="260" y="520" width="300" height="120" as="geometry" />
+    </mxCell>
+    <mxCell id="assignment_h" parent="assignment" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="300" y="30" as="geometry"/></mxCell>
+    <mxCell id="assignment_pk" parent="assignment_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="assignment_id" parent="assignment_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="assignment_id" vertex="1"><mxGeometry x="30" height="30" width="260" as="geometry"/></mxCell>
+    <mxCell id="assignment_course_row" parent="assignment" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="300" y="60" as="geometry"/></mxCell>
+    <mxCell id="assignment_course_fk" parent="assignment_course_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="assignment_course_id" parent="assignment_course_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="course_id" vertex="1"><mxGeometry x="30" height="30" width="260" as="geometry"/></mxCell>
+    <mxCell id="assignment_lesson_row" parent="assignment" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="300" y="90" as="geometry"/></mxCell>
+    <mxCell id="assignment_lesson_fk" parent="assignment_lesson_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="assignment_lesson_id" parent="assignment_lesson_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="lesson_id (optional)" vertex="1"><mxGeometry x="30" height="30" width="260" as="geometry"/></mxCell>
+
+    <!-- AssignmentSubmission -->
+    <mxCell id="assignment_submission" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="AssignmentSubmission" vertex="1">
+      <mxGeometry x="260" y="660" width="300" height="120" as="geometry" />
+    </mxCell>
+    <mxCell id="assignment_submission_h" parent="assignment_submission" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="300" y="30" as="geometry"/></mxCell>
+    <mxCell id="assignment_submission_pk" parent="assignment_submission_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="assignment_submission_id" parent="assignment_submission_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="assignment_submission_id" vertex="1"><mxGeometry x="30" height="30" width="260" as="geometry"/></mxCell>
+    <mxCell id="assignment_submission_assignment_row" parent="assignment_submission" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="300" y="60" as="geometry"/></mxCell>
+    <mxCell id="assignment_submission_assignment_fk" parent="assignment_submission_assignment_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="assignment_submission_assignment_id" parent="assignment_submission_assignment_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="assignment_id" vertex="1"><mxGeometry x="30" height="30" width="260" as="geometry"/></mxCell>
+
+    <!-- QuestionBank -->
+    <mxCell id="question_bank" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="QuestionBank" vertex="1">
+      <mxGeometry x="820" y="520" width="260" height="120" as="geometry" />
+    </mxCell>
+    <mxCell id="question_bank_h" parent="question_bank" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="30" as="geometry"/></mxCell>
+    <mxCell id="question_bank_pk" parent="question_bank_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="question_bank_id" parent="question_bank_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="bank_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+    <mxCell id="question_bank_course_row" parent="question_bank" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="60" as="geometry"/></mxCell>
+    <mxCell id="question_bank_course_fk" parent="question_bank_course_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="question_bank_course_id" parent="question_bank_course_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="course_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+
+    <!-- Question -->
+    <mxCell id="question" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="Question" vertex="1">
+      <mxGeometry x="1120" y="520" width="240" height="120" as="geometry" />
+    </mxCell>
+    <mxCell id="question_h" parent="question" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="240" y="30" as="geometry"/></mxCell>
+    <mxCell id="question_pk" parent="question_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="question_id" parent="question_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="question_id" vertex="1"><mxGeometry x="30" height="30" width="210" as="geometry"/></mxCell>
+    <mxCell id="question_bank_row" parent="question" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="240" y="60" as="geometry"/></mxCell>
+    <mxCell id="question_bank_fk" parent="question_bank_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="question_bank_id_fk" parent="question_bank_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="bank_id" vertex="1"><mxGeometry x="30" height="30" width="210" as="geometry"/></mxCell>
+
+    <!-- QuizAttempt -->
+    <mxCell id="quiz_attempt" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="QuizAttempt" vertex="1">
+      <mxGeometry x="820" y="660" width="260" height="120" as="geometry" />
+    </mxCell>
+    <mxCell id="quiz_attempt_h" parent="quiz_attempt" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="30" as="geometry"/></mxCell>
+    <mxCell id="quiz_attempt_pk" parent="quiz_attempt_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="quiz_attempt_id" parent="quiz_attempt_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="attempt_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+    <mxCell id="quiz_attempt_quiz_row" parent="quiz_attempt" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="60" as="geometry"/></mxCell>
+    <mxCell id="quiz_attempt_quiz_fk" parent="quiz_attempt_quiz_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="quiz_attempt_quiz_id" parent="quiz_attempt_quiz_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="quiz_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+
+    <!-- AttemptAnswer -->
+    <mxCell id="attempt_answer" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="AttemptAnswer" vertex="1">
+      <mxGeometry x="1120" y="660" width="240" height="120" as="geometry" />
+    </mxCell>
+    <mxCell id="attempt_answer_h" parent="attempt_answer" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="240" y="30" as="geometry"/></mxCell>
+    <mxCell id="attempt_answer_pk" parent="attempt_answer_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="attempt_answer_id" parent="attempt_answer_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="answer_id" vertex="1"><mxGeometry x="30" height="30" width="210" as="geometry"/></mxCell>
+    <mxCell id="attempt_answer_attempt_row" parent="attempt_answer" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="240" y="60" as="geometry"/></mxCell>
+    <mxCell id="attempt_answer_attempt_fk" parent="attempt_answer_attempt_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="attempt_answer_attempt_id" parent="attempt_answer_attempt_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="attempt_id" vertex="1"><mxGeometry x="30" height="30" width="210" as="geometry"/></mxCell>
+
+    <!-- ProgressRecord -->
+    <mxCell id="progress_record" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="ProgressRecord" vertex="1">
+      <mxGeometry x="540" y="520" width="260" height="120" as="geometry" />
+    </mxCell>
+    <mxCell id="progress_record_h" parent="progress_record" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="30" as="geometry"/></mxCell>
+    <mxCell id="progress_record_pk" parent="progress_record_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="progress_record_id" parent="progress_record_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="progress_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+    <mxCell id="progress_record_student_row" parent="progress_record" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="60" as="geometry"/></mxCell>
+    <mxCell id="progress_record_student_fk" parent="progress_record_student_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="progress_record_student_id" parent="progress_record_student_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="student_profile_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+
+    <!-- ActivityLog -->
+    <mxCell id="activity_log" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="ActivityLog" vertex="1">
+      <mxGeometry x="40" y="540" width="260" height="120" as="geometry" />
+    </mxCell>
+    <mxCell id="activity_log_h" parent="activity_log" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="30" as="geometry"/></mxCell>
+    <mxCell id="activity_log_pk" parent="activity_log_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="activity_log_id" parent="activity_log_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="activity_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+    <mxCell id="activity_log_user_row" parent="activity_log" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="60" as="geometry"/></mxCell>
+    <mxCell id="activity_log_user_fk" parent="activity_log_user_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="activity_log_user_id" parent="activity_log_user_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="user_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+
+
+    <!-- Announcement -->
+    <mxCell id="announcement" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="Announcement" vertex="1">
+      <mxGeometry x="820" y="820" width="260" height="120" as="geometry" />
+    </mxCell>
+    <mxCell id="announcement_h" parent="announcement" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="30" as="geometry"/></mxCell>
+    <mxCell id="announcement_pk" parent="announcement_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="announcement_id" parent="announcement_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="announcement_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+
+
+    <!-- Notification -->
+    <mxCell id="notification" parent="1" style="shape=table;startSize=30;container=1;childLayout=tableLayout;fixedRows=1;fontStyle=1;align=center;resizeLast=1;html=1;" value="Notification" vertex="1">
+      <mxGeometry x="820" y="820" width="260" height="120" as="geometry" />
+    </mxCell>
+    <mxCell id="notification_h" parent="notification" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="30" as="geometry"/></mxCell>
+    <mxCell id="notification_pk" parent="notification_h" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="PK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="notification_id" parent="notification_h" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;fontStyle=5;html=1;" value="notification_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+    <mxCell id="notification_user_row" parent="notification" style="shape=tableRow;html=1;" value="" vertex="1"><mxGeometry height="30" width="260" y="60" as="geometry"/></mxCell>
+    <mxCell id="notification_user_fk" parent="notification_user_row" style="shape=partialRectangle;connectable=0;fillColor=none;fontStyle=1;html=1;" value="FK" vertex="1"><mxGeometry height="30" width="30" as="geometry"/></mxCell>
+    <mxCell id="notification_user_id" parent="notification_user_row" style="shape=partialRectangle;connectable=0;fillColor=none;align=left;spacingLeft=6;html=1;" value="user_id" vertex="1"><mxGeometry x="30" height="30" width="230" as="geometry"/></mxCell>
+
+    <!-- Edges: main relationships -->
+    <mxCell id="e_role_user" edge="1" parent="1" source="role" target="user" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="assigns"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_user_student" edge="1" parent="1" source="user" target="student" style="fontSize=12;html=1;endArrow=ERzeroToOne;startArrow=ERmandOne;" value="has"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_user_instructor" edge="1" parent="1" source="user" target="instructor" style="fontSize=12;html=1;endArrow=ERzeroToOne;startArrow=ERmandOne;" value="has"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_user_advisor" edge="1" parent="1" source="user" target="advisor" style="fontSize=12;html=1;endArrow=ERzeroToOne;startArrow=ERmandOne;" value="has"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_instructor_course" edge="1" parent="1" source="instructor" target="course" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="creates"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_course_module" edge="1" parent="1" source="course" target="module" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="contains"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_module_lesson" edge="1" parent="1" source="module" target="lesson" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="contains"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_lesson_quiz" edge="1" parent="1" source="lesson" target="quiz" style="fontSize=12;html=1;endArrow=ERzeroToOne;startArrow=ERmandOne;" value="has"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_course_assignment" edge="1" parent="1" source="course" target="assignment" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="has"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_lesson_assignment" edge="1" parent="1" source="lesson" target="assignment" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="contains"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_assignment_submission" edge="1" parent="1" source="assignment" target="assignment_submission" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="receives"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_course_question_bank" edge="1" parent="1" source="course" target="question_bank" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="owns"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_question_bank_question" edge="1" parent="1" source="question_bank" target="question" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="stores"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_student_enrollment" edge="1" parent="1" source="student" target="enrollment" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="has"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_course_enrollment" edge="1" parent="1" source="course" target="enrollment" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="receives"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_quiz_quiz_attempt" edge="1" parent="1" source="quiz" target="quiz_attempt" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="generates"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_student_quiz_attempt" edge="1" parent="1" source="student" target="quiz_attempt" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="makes"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_quiz_attempt_answer" edge="1" parent="1" source="quiz_attempt" target="attempt_answer" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="contains"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_question_attempt_answer" edge="1" parent="1" source="question" target="attempt_answer" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="answered_in"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_student_progress" edge="1" parent="1" source="student" target="progress_record" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="tracks"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_user_activity" edge="1" parent="1" source="user" target="activity_log" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="creates"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_user_announcement" edge="1" parent="1" source="user" target="announcement" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="creates"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_announcement_notification" edge="1" parent="1" source="announcement" target="notification" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="triggers"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e_user_notification" edge="1" parent="1" source="user" target="notification" style="fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;" value="receives"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+  </root>
+</mxGraphModel>

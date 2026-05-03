@@ -20,12 +20,10 @@ System name inside boundary:
 ### Student-facing
 
 - `Register Account`
-- `Verify Email`
 - `Log In`
 - `Manage Profile`
 - `View Enrolled Courses`
 - `Start Lesson`
-- `Access Interactive Content`
 - `Attempt Quiz`
 - `Submit Assignment`
 - `View Progress`
@@ -49,10 +47,9 @@ System name inside boundary:
 
 ### Academic Advisor-facing
 
-- `View Assigned Students`
-- `View Risk Alerts`
+- `View Department Students`
 - `Review Student Progress Summary`
-- `Review Intervention Suggestions`
+- `Review Overdue Assignments`
 - `Send Advisory Follow-Up`
 
 ### Admin-facing
@@ -62,17 +59,13 @@ System name inside boundary:
 - `Approve Instructor Accounts`
 - `Moderate Learning Content`
 - `Manage Announcements`
-- `Manage Notification Templates`
 - `View Platform Analytics`
 
 ## Suggested Include Relationships
 
 Use `<<include>>` where the sub-process is always required:
 
-- `Register Account` -> `Verify Email`
-- `Start Lesson` -> `Access Interactive Content`
 - `Attempt Quiz` -> `Configure Automated Feedback` should not be used because that is instructor-side setup, not student execution
-- `View Risk Alerts` -> `Review Student Progress Summary`
 - `Send Course Announcement` -> `Receive Notifications`
 - `Manage Announcements` -> `Receive Notifications`
 
@@ -81,7 +74,7 @@ Use `<<include>>` where the sub-process is always required:
 Use `<<extend>>` only where optional behavior is triggered:
 
 - `View Recommended Next Steps` extends `Attempt Quiz`
-- `Send Advisory Follow-Up` extends `View Risk Alerts`
+- `Send Advisory Follow-Up` extends `Review Student Progress Summary`
 - `Receive Notifications` may extend multiple core events in narrative explanation, but do not overload the diagram with too many extend lines if readability suffers
 
 ## Actor Associations
@@ -89,7 +82,6 @@ Use `<<extend>>` only where optional behavior is triggered:
 ### Student
 
 - `Register Account`
-- `Verify Email`
 - `Log In`
 - `Manage Profile`
 - `View Enrolled Courses`
@@ -103,7 +95,6 @@ Use `<<extend>>` only where optional behavior is triggered:
 ### Instructor
 
 - `Register Account`
-- `Verify Email`
 - `Log In`
 - `Manage Instructor Profile`
 - `Create Course`
@@ -121,10 +112,9 @@ Use `<<extend>>` only where optional behavior is triggered:
 ### Academic Advisor
 
 - `Log In`
-- `View Assigned Students`
-- `View Risk Alerts`
+- `View Department Students`
 - `Review Student Progress Summary`
-- `Review Intervention Suggestions`
+- `Review Overdue Assignments`
 - `Send Advisory Follow-Up`
 
 ### Admin
@@ -135,7 +125,6 @@ Use `<<extend>>` only where optional behavior is triggered:
 - `Approve Instructor Accounts`
 - `Moderate Learning Content`
 - `Manage Announcements`
-- `Manage Notification Templates`
 - `View Platform Analytics`
 
 ## Drawing Rules

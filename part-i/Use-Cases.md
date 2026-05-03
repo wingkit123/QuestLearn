@@ -9,68 +9,60 @@ This document provides the use case reference for QuestLearn. It is written to s
 ### 1.1 Student Use Cases
 
 1. Register account
-2. Verify email
-3. Log in
-4. Log out
-5. Manage profile
-6. View enrolled courses
-7. View course modules
-8. View lessons
-9. Start lesson
-10. Watch embedded video
-11. Open H5P interactive activity
-12. Attempt quiz
-13. Submit assignment
-14. Receive automated feedback
-15. View quiz history
-16. View assignment status
-17. View module completion progress
-18. View recommended next steps
-19. Review weak topics
-20. View grades and assessment history
-21. View badges, streak, and XP progress
-22. Receive notifications
+2. Log in
+3. Log out
+4. Manage profile
+5. View enrolled courses
+6. View course modules
+7. View lessons
+8. Start lesson
+9. Watch embedded video
+10. Attempt quiz
+11. Submit assignment
+12. Receive automated feedback
+13. View quiz history
+14. View assignment status
+15. View module completion progress
+16. View recommended next steps
+17. Review weak topics
+18. View grades and assessment history
+19. Receive notifications
 
 ### 1.2 Instructor Use Cases
 
 1. Register account
-2. Verify email
-3. Log in
-4. Manage instructor profile
-5. Create course
-6. Edit course details
-7. Create module
-8. Create lesson
-9. Upload video content
-10. Upload or embed H5P/Lumi content
-11. Create quiz
-12. Create assignment
-13. Build question bank
-14. Randomize assessment questions
-15. Configure automated feedback
-16. Publish lesson
-17. Publish module
-18. Update course content
-19. Review assignment submissions
-20. View student attempts
-21. View class performance analytics
-22. View course engagement analytics
-23. Send course announcements
+2. Log in
+3. Manage instructor profile
+4. Create course
+5. Edit course details
+6. Create module
+7. Create lesson
+8. Upload video content
+9. Add reading content
+10. Create quiz
+11. Create assignment
+12. Build question bank
+13. Randomize assessment questions
+14. Configure automated feedback
+15. Publish lesson
+16. Publish module
+17. Update course content
+18. Review assignment submissions
+19. View student attempts
+20. View class performance analytics
+21. View course engagement analytics
+22. Send course announcements
 
 ### 1.3 Academic Advisor Use Cases
 
 1. Log in
-2. View assigned students
-3. View advisee progress summary
-4. View risk alerts
-5. View low-engagement students
-6. View incomplete modules
-7. View student quiz performance trends
-8. View overdue assignments
-9. Review recommended intervention suggestions
-10. Send advisory message
-11. Monitor follow-up status
-12. View student learning history summary
+2. View department students
+3. View student progress summary
+4. View quiz performance trends
+5. View overdue assignments
+6. View student learning history summary
+7. Send advisory message
+8. Monitor follow-up status
 
 ### 1.4 Admin Use Cases
 
@@ -81,17 +73,15 @@ This document provides the use case reference for QuestLearn. It is written to s
 5. Manage departments or programmes
 6. Moderate learning content
 7. Manage announcements
-8. Manage notification templates
-9. View platform-wide analytics
-10. Deactivate account
-11. Reactivate account
+8. View platform-wide analytics
+9. Deactivate account
+10. Reactivate account
 
 ## 2. Core Use Cases for the Main Diagram
 
 These are the main use cases to prioritize in the final UML use case diagram:
 
 - Register account
-- Verify email
 - Log in
 - Manage profile
 - Start lesson
@@ -100,9 +90,9 @@ These are the main use cases to prioritize in the final UML use case diagram:
 - View progress
 - Create course
 - Create lesson
-- Upload interactive content
+- Upload learning content
 - Create assignment
-- View risk alerts
+- View department students
 - Manage users
 - Manage announcements
 
@@ -111,7 +101,6 @@ These are the main use cases to prioritize in the final UML use case diagram:
 ### Student
 
 - Register account
-- Verify email
 - Log in
 - Manage profile
 - Start lesson
@@ -125,12 +114,11 @@ These are the main use cases to prioritize in the final UML use case diagram:
 ### Instructor
 
 - Register account
-- Verify email
 - Log in
 - Manage instructor profile
 - Create course
 - Create lesson
-- Upload interactive content
+- Upload learning content
 - Create quiz
 - Create assignment
 - Configure automated feedback
@@ -140,10 +128,9 @@ These are the main use cases to prioritize in the final UML use case diagram:
 ### Academic Advisor
 
 - Log in
-- View assigned students
-- View risk alerts
+- View department students
 - View progress summary
-- Review intervention suggestions
+- Review overdue assignments
 - Send advisory message
 
 ### Admin
@@ -154,11 +141,10 @@ These are the main use cases to prioritize in the final UML use case diagram:
 - Approve instructor accounts
 - Moderate learning content
 - Manage announcements
-- Manage notification templates
 
 ## 4. Formal Use Case Descriptions
 
-### UC-01 Register Account and Verify Email
+### UC-01 Register Account and Login
 
 **Primary Actor:** Student or Instructor  
 **Trigger:** The user selects the registration function.  
@@ -166,19 +152,18 @@ These are the main use cases to prioritize in the final UML use case diagram:
 **Main Flow:**
 
 1. The user opens the registration page.
-2. The user enters required account information.
-3. The system validates the submitted data.
-4. The system creates a pending account.
-5. The system sends an email verification link or code.
-6. The user completes email verification.
-7. The system activates the account and allows login.
+2. The user enters required account information (name, email, student/staff ID, password, programme).
+3. The system checks whether the email is already registered.
+4. If the email is not registered, the system creates the account and assigns the appropriate role.
+5. The user enters credentials on the login page.
+6. The system validates the credentials and opens the user dashboard.
 
 **Alternate Flow:**
 
-1. If required fields are invalid, the system rejects the submission and requests correction.
-2. If the verification link or code is invalid or expired, the system asks the user to request a new verification email.
+1. If the email is already registered, the system shows an error and directs the user to log in.
+2. If the credentials are invalid after 3 attempts, the system locks the account for 15 minutes.
 
-**Postcondition:** The account is activated and ready for authenticated use.
+**Postcondition:** The account is created and the user is logged in to their role-appropriate dashboard.
 
 ### UC-02 Start Lesson
 
@@ -190,7 +175,7 @@ These are the main use cases to prioritize in the final UML use case diagram:
 1. The student opens a course.
 2. The student selects a module.
 3. The student selects a lesson.
-4. The system displays lesson content, which may include reading material, embedded video, and H5P activity.
+4. The system displays lesson content, which may include reading material and embedded video.
 5. The system records page visits, video interactions, and lesson access in the activity tracking log.
 6. The system updates lesson progress status.
 
@@ -262,7 +247,7 @@ These are the main use cases to prioritize in the final UML use case diagram:
 
 **Postcondition:** The course structure is available for content, quiz, and assignment setup.
 
-### UC-06 Publish Lesson Content and Interactive Material
+### UC-06 Publish Lesson Content
 
 **Primary Actor:** Instructor  
 **Trigger:** The instructor opens the lesson editor.  
@@ -270,7 +255,7 @@ These are the main use cases to prioritize in the final UML use case diagram:
 **Main Flow:**
 
 1. The instructor selects a lesson.
-2. The instructor uploads or links reading material, video content, and H5P/Lumi activities.
+2. The instructor uploads or links reading material and video content.
 3. The instructor saves lesson content.
 4. The instructor publishes the lesson.
 5. The system makes the lesson available to enrolled students.
@@ -302,26 +287,26 @@ These are the main use cases to prioritize in the final UML use case diagram:
 
 **Postcondition:** The assessment is available for student completion and later analytics.
 
-### UC-08 View Advisor Alert Dashboard and Follow Up
+### UC-08 View Advisor Dashboard and Follow Up
 
 **Primary Actor:** Academic Advisor  
 **Trigger:** The advisor opens the dashboard.  
-**Precondition:** The advisor is logged in and has assigned students.  
+**Precondition:** The advisor is logged in and has students in their department.  
 **Main Flow:**
 
 1. The advisor opens the advisor dashboard.
-2. The system displays assigned students, risk levels, overdue work, and low-engagement indicators.
+2. The system displays students in the advisor's department with progress summaries, quiz scores, overdue work, and engagement indicators.
 3. The advisor selects a student.
-4. The system displays progress history, quiz performance, overdue assignments, and alert reasons.
-5. The advisor reviews recommended intervention suggestions.
+4. The system displays the student's progress history, quiz performance, and overdue assignments.
+5. The advisor reviews the student's performance data.
 6. The advisor sends a follow-up advisory message.
 7. The system records the follow-up status.
 
 **Alternate Flow:**
 
-1. If no current alerts exist, the system still allows the advisor to review assigned student summaries.
+1. If no students require attention, the advisor can still review student progress summaries.
 
-**Postcondition:** The advisor has current information for intervention and the follow-up action is recorded.
+**Postcondition:** The advisor has current information for follow-up and the follow-up action is recorded.
 
 ### UC-09 Moderate Content and Manage Announcements
 
@@ -332,7 +317,7 @@ These are the main use cases to prioritize in the final UML use case diagram:
 
 1. The admin reviews flagged or managed platform content.
 2. The admin approves, updates, or removes content where necessary.
-3. The admin creates or updates a system or course-related announcement template.
+3. The admin creates or updates a system or course-related announcement.
 4. The system distributes announcements or stores them for notification delivery.
 5. The system records the moderation or announcement action for oversight purposes.
 
@@ -344,17 +329,15 @@ These are the main use cases to prioritize in the final UML use case diagram:
 
 ## 5. Process-Flow Drafts
 
-### 5.1 Registration, Login, and Email Verification Flow
+### 5.1 Registration and Login Flow
 
 ```mermaid
 flowchart TD
     A[Open Registration Page] --> B[Submit Account Details]
-    B --> C[System Validates Input]
-    C --> D[Create Pending Account]
-    D --> E[Send Verification Email]
-    E --> F[User Verifies Email]
-    F --> G[Activate Account]
-    G --> H[Login]
+    B --> C[System Checks Email]
+    C --> D[Create Account]
+    D --> E[Login]
+    E --> F[Open Dashboard]
 ```
 
 ### 5.2 Student Lesson and Quiz Flow
@@ -364,7 +347,7 @@ flowchart TD
     A[Login] --> B[View Enrolled Course]
     B --> C[Open Module]
     C --> D[Start Lesson]
-    D --> E[Watch Video or Use H5P Activity]
+    D --> E[Watch Video or Read Material]
     E --> F[Activity Tracking Updated]
     F --> G[Attempt Quiz]
     G --> H[Auto-Grading and Feedback]
@@ -388,23 +371,22 @@ flowchart TD
 ```mermaid
 flowchart TD
     A[Create Course] --> B[Create Modules and Lessons]
-    B --> C[Upload Video or H5P Content]
+    B --> C[Upload Video or Reading Content]
     C --> D[Create Quiz or Assignment]
     D --> E[Configure Feedback and Settings]
     E --> F[Publish Lesson or Assessment]
     F --> G[Notify Students and Enable Tracking]
 ```
 
-### 5.5 Advisor Alert Review and Follow-Up Flow
+### 5.5 Advisor Review and Follow-Up Flow
 
 ```mermaid
 flowchart TD
-    A[Advisor Login] --> B[View Assigned Students]
-    B --> C[Open Risk Alerts]
-    C --> D[Review Progress and Overdue Work]
-    D --> E[Select Student]
-    E --> F[Send Advisory Follow-Up]
-    F --> G[Record Follow-Up Status]
+    A[Advisor Login] --> B[View Department Students]
+    B --> C[Review Progress and Overdue Work]
+    C --> D[Select Student]
+    D --> E[Send Advisory Follow-Up]
+    E --> F[Record Follow-Up Status]
 ```
 
 ### 5.6 Admin Moderation and Announcement Flow
@@ -416,4 +398,159 @@ flowchart TD
     C --> D[Create or Update Announcement]
     D --> E[Trigger Notification Delivery]
     E --> F[Store Admin Action Log]
+```
+
+## 6. Activity Diagrams for Formal Use Cases
+
+### UC-01 Register Account and Login
+
+```mermaid
+flowchart TD
+    A((Start)) --> B["Student goes to homepage and clicks 'Sign Up'"]
+    B --> C["Student enters name, email, student ID, password, programme"]
+    C --> D{"Email already registered?"}
+    D -- Yes --> E["System shows error: 'Account exists, please log in'"]
+    D -- No --> F["System creates account and assigns Student role"]
+    E --> G["Student enters credentials on login page"]
+    F --> G
+    G --> H{"Credentials valid?"}
+    H -- No --> I["3 failed attempts: lock account for 15 min"]
+    I --> N1((End))
+    H -- Yes --> J["System opens Student Dashboard"]
+    J --> N2((End))
+```
+
+### UC-02 Start Lesson
+
+```mermaid
+flowchart TD
+    A((Start)) --> B[Open course]
+    B --> C[Select module]
+    C --> D[Select lesson]
+    D --> E{Lesson available?}
+    E -- No --> F[Inform student lesson is unavailable]
+    F --> Z((End))
+    E -- Yes --> G[Display lesson content]
+    G --> H[Track page visits and interactions]
+    H --> I[Update lesson progress]
+    I --> Z((End))
+```
+
+### UC-03 Attempt Quiz and Receive Automated Feedback
+
+```mermaid
+flowchart TD
+    A((Start)) --> B[Open available quiz]
+    B --> C[Display quiz questions]
+    C --> D[Student answers questions]
+    D --> E{Submission complete?}
+    E -- No --> F[Warn student before final submission]
+    F --> D
+    E -- Yes --> G[Submit quiz]
+    G --> H[Auto-grade objective questions]
+    H --> I[Store score and attempt details]
+    I --> J[Generate feedback and weak topics]
+    J --> K[Show recommended next steps]
+    K --> L((End))
+```
+
+### UC-04 Submit Assignment
+
+```mermaid
+flowchart TD
+    A((Start)) --> B[Open assignment details]
+    B --> C[Read instructions and deadline]
+    C --> D[Upload or enter submission]
+    D --> E{Submission valid?}
+    E -- No --> F[Reject submission and request correction]
+    F --> D
+    E -- Yes --> G{Deadline passed?}
+    G -- Yes --> H{Late submission allowed?}
+    H -- No --> F
+    H -- Yes --> I[Mark submission as late]
+    G -- No --> J[Store submission time and status]
+    I --> J
+    J --> K[Confirm successful submission]
+    K --> L((End))
+```
+
+### UC-05 Create Course and Learning Structure
+
+```mermaid
+flowchart TD
+    A((Start)) --> B[Open create course page]
+    B --> C[Enter course details]
+    C --> D{Required details complete?}
+    D -- No --> C
+    D -- Yes --> E[Create course record]
+    E --> F[Add modules]
+    F --> G[Add lessons to modules]
+    G --> H[Store learning structure]
+    H --> I((End))
+```
+
+### UC-06 Publish Lesson Content
+
+```mermaid
+flowchart TD
+    A((Start)) --> B[Open lesson editor]
+    B --> C[Select existing lesson]
+    C --> D[Upload or link content]
+    D --> E{Content valid?}
+    E -- No --> F[Reject content and request correction]
+    F --> D
+    E -- Yes --> G[Save lesson content]
+    G --> H[Publish lesson]
+    H --> I[Make lesson available to enrolled students]
+    I --> J[Record publication for tracking]
+    J --> K((End))
+```
+
+### UC-07 Create Assessment and Configure Feedback
+
+```mermaid
+flowchart TD
+    A((Start)) --> B[Open assessment management]
+    B --> C[Create quiz or assignment]
+    C --> D[Define assessment rules]
+    D --> E[Select or create question bank items]
+    E --> F[Configure automated feedback]
+    F --> G{Settings complete?}
+    G -- No --> D
+    G -- Yes --> H[Publish assessment]
+    H --> I[Store assessment and availability rules]
+    I --> J((End))
+```
+
+### UC-08 View Advisor Dashboard and Follow Up
+
+```mermaid
+flowchart TD
+    A((Start)) --> B[Open advisor dashboard]
+    B --> C[View students with progress and performance data]
+    C --> D{Students need attention?}
+    D -- No --> E[Review student progress summaries]
+    E --> Z((End))
+    D -- Yes --> F[Select student]
+    F --> G[View progress history and quiz performance]
+    G --> H[Review overdue assignments]
+    H --> I[Send follow-up message]
+    I --> J[Record follow-up status]
+    J --> Z((End))
+```
+
+### UC-09 Moderate Content and Manage Announcements
+
+```mermaid
+flowchart TD
+    A((Start)) --> B[Open moderation or announcement function]
+    B --> C[Review flagged or managed content]
+    C --> D{Action needed?}
+    D -- No --> E[Close review without modification]
+    E --> Z((End))
+    D -- Yes --> F[Approve, update, or remove content]
+    F --> G[Create or update announcement]
+    G --> H[Store or distribute announcement]
+    H --> I[Record moderation or announcement action]
+    I --> Z((End))
 ```
