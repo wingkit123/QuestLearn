@@ -50,6 +50,7 @@ QuestLearn includes the following major modules and capabilities.
 ### User Management
 
 - account registration and login
+- admin-mediated password reset
 - role-based access control
 - profile management for students, instructors, academic advisors, and admins
 - student profile storage including academic level, programme or department, and learning preferences
@@ -102,7 +103,7 @@ An academic advisor logs in, reviews students in their department, monitors prog
 
 ### Admin Scenario
 
-An admin manages users and roles, approves instructor accounts, moderates learning content, manages announcements, and monitors platform-wide activity and oversight functions.
+An admin manages users and roles, approves instructor accounts, resets user passwords when requested, moderates learning content, manages announcements, and monitors platform-wide activity and oversight functions.
 
 ## 1.7 Proposed Innovation
 

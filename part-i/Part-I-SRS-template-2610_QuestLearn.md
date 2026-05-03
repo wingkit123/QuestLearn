@@ -221,6 +221,7 @@ The system includes the following major functions:
 ### 1. User Management
 
 - account registration and login with email and password
+- admin-mediated password reset for users who forget their credentials
 - role-based access control
 - profile management for students, instructors, academic advisors, and admins
 - student profile storage including academic level, programme or department, and learning preferences
@@ -266,7 +267,7 @@ The following actors interact with QuestLearn.
 | Student          | Register account, log in, manage profile, view enrolled courses, start lesson, attempt quiz, submit assignment, view progress, view recommended next steps, receive notifications                                                                          |
 | Instructor       | Register account, log in, manage instructor profile, create course, create module, create lesson, upload learning content, create quiz, create assignment, configure automated feedback, publish learning content, view analytics, send course announcements |
 | Academic Advisor | Log in, view department students, review student progress and performance, send advisory follow-up                                                                                                                                   |
-| Admin            | Log in, manage users, assign roles, approve instructor accounts, moderate learning content, manage announcements, view platform analytics                                                                                                                  |
+| Admin            | Log in, manage users, assign roles, approve instructor accounts, reset user password, moderate learning content, manage announcements, view platform analytics                                                                                                                  |
 
 ## Assumptions and Dependencies
 
@@ -275,10 +276,11 @@ The following assumptions and dependencies are used as the basis for the current
 1. The system is intended for university-level teaching and learning rather than general public self-learning.
 2. Users will access the platform through a stable web connection on standard desktop or mobile browsers.
 3. User registration uses email and password without external email verification services. Account activation is immediate upon successful registration.
-4. Video content is embedded within lessons using external URLs such as YouTube. No custom video hosting or interactive authoring engine is included in the initial scope.
-5. Academic advisor monitoring is based on visible quiz, assignment, and progress data rather than automated predictive risk models.
-6. In-app notifications for deadlines, uploaded content, and quiz score announcements depend on correct event triggering and user account data.
-7. The first version of the system will focus on core academic workflows only. Advanced gamification, social features, mobile-native apps, and enterprise integration are outside initial scope.
+4. If a user forgets their password, the Admin can reset it to a temporary default value. No self-service password recovery is included in the initial scope.
+5. Video content is embedded within lessons using external URLs such as YouTube. No custom video hosting or interactive authoring engine is included in the initial scope.
+6. Academic advisor monitoring is based on visible quiz, assignment, and progress data rather than automated predictive risk models.
+7. In-app notifications for deadlines, uploaded content, and quiz score announcements depend on correct event triggering and user account data.
+8. The first version of the system will focus on core academic workflows only. Advanced gamification, social features, mobile-native apps, and enterprise integration are outside initial scope.
 
 ## Use Case Diagram
 
@@ -314,7 +316,7 @@ This use case enables a new student to create an account and log in to access th
 | Preconditions                    | The student does not already have an active account.                                                                                                                                                                                                                                                                                                  |
 | Normal Flow                      | 1. The student opens the registration page. 2. The student enters required account information including name, email, student ID, password, and programme. 3. The system validates the submitted data. 4. The system creates the account and assigns the Student role. 5. The student is redirected to the login page. 6. The student enters credentials and logs in. 7. The system opens the student dashboard. |
 | Postconditions                   | The student account is created and the student is logged in with access to the dashboard.                                                                                                                                                                                                                                                            |
-| Alternative Flows and Exceptions | If the email is already registered, the system shows an error and directs the student to log in. If login credentials are invalid, the system allows retry. After 3 failed login attempts, the account is locked for 15 minutes.                                                                                                                    |
+| Alternative Flows and Exceptions | If the email is already registered, the system shows an error and directs the student to log in. If login credentials are invalid, the system allows retry. After 3 failed login attempts, the account is locked for 15 minutes. If a user forgets their password, they contact the Admin who resets it to a temporary default value. The user must change their password upon next login. |
 | Non-Functional Requirements      | Account creation should be simple, secure, and complete within a short response time. Login events must be recorded reliably.                                                                                                                                                                                                                        |
 
 ### UC-02 Start Lesson

@@ -57,6 +57,7 @@ System name inside boundary:
 - `Manage Users`
 - `Assign Roles`
 - `Approve Instructor Accounts`
+- `Reset User Password`
 - `Moderate Learning Content`
 - `Manage Announcements`
 - `View Platform Analytics`
@@ -123,6 +124,7 @@ Use `<<extend>>` only where optional behavior is triggered:
 - `Manage Users`
 - `Assign Roles`
 - `Approve Instructor Accounts`
+- `Reset User Password`
 - `Moderate Learning Content`
 - `Manage Announcements`
 - `View Platform Analytics`

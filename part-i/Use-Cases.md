@@ -76,6 +76,7 @@ This document provides the use case reference for QuestLearn. It is written to s
 8. View platform-wide analytics
 9. Deactivate account
 10. Reactivate account
+11. Reset user password
 
 ## 2. Core Use Cases for the Main Diagram
 
@@ -141,6 +142,7 @@ These are the main use cases to prioritize in the final UML use case diagram:
 - Approve instructor accounts
 - Moderate learning content
 - Manage announcements
+- Reset user password
 
 ## 4. Formal Use Case Descriptions
 
@@ -324,8 +326,9 @@ These are the main use cases to prioritize in the final UML use case diagram:
 **Alternate Flow:**
 
 1. If content does not require moderation changes, the admin closes the review without modification.
+2. If a user requests a password reset, the admin selects the user, resets the password to a temporary default value, and the user must change their password upon next login.
 
-**Postcondition:** Moderation and announcement actions are stored and can affect user notifications or content availability.
+**Postcondition:** Moderation, announcement, and password reset actions are stored and can affect user notifications, content availability, or account access.
 
 ## 5. Process-Flow Drafts
 
@@ -552,5 +555,11 @@ flowchart TD
     F --> G[Create or update announcement]
     G --> H[Store or distribute announcement]
     H --> I[Record moderation or announcement action]
-    I --> Z((End))
+    I --> Z
+    B --> J{Password reset requested?}
+    J -- No --> C
+    J -- Yes --> K[Select user account]
+    K --> L[Reset password to temporary default]
+    L --> M[Record password reset action]
+    M --> Z
 ```

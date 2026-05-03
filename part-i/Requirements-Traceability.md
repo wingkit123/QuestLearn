@@ -40,6 +40,7 @@ Reference terms:
 | User Management | Store academic level, programme or department, learning preferences | `2.1 Description`, `4.2 Classes / Entities` | student profile management context | `StudentProfile` | Covered |
 | User Management | Instructor profile: specialization, subjects taught, office hours | `2.1 Description`, `4.2 Classes / Entities` | instructor profile management context | `InstructorProfile` | Covered |
 | User Management | User activity tracking: quizzes taken, videos watched, pages visited | `2.1 Description`, `3.1 Student` | `UC-02`, `UC-03`, process flow 5.2 | `ActivityLog` | Covered |
+| User Management | Admin-mediated password reset | `2.1 Description`, `2.3 Assumptions` | `UC-09` alt flow | `User` | Covered |
 | Course & Content | Instructors create courses with modules, lessons, assessments | `2.1 Description`, `3.2 Instructor` | `UC-05`, `UC-07` | `Course`, `Module`, `Lesson`, `Quiz`, `Assignment` | Covered |
 | Course & Content | Embedded videos | `2.1 Description` | `UC-02`, `UC-06` | `Lesson` | Covered |
 | Course & Content | Interactive quizzes | `2.1 Description` | `UC-03`, `UC-07` | `Quiz`, `QuestionBank`, `Question` | Covered |
