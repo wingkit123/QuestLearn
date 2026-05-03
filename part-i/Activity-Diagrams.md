@@ -1,23 +1,23 @@
-﻿# QuestLearn Activity Diagrams (Diagram-Only)
+# QuestLearn Activity Diagrams (Diagram-Only)
 
 This document contains only the activity diagrams for formal use cases UC-01 to UC-09.
 
-## UC-01 Register Account and Verify Email
+## UC-01 Register Account and Login
 
 ```mermaid
 flowchart TD
-    A((Start)) --> B[Open registration page]
-    B --> C[Enter account details]
-    C --> D{Input valid?}
-    D -- No --> C
-    D -- Yes --> E[Create pending account]
-    E --> F[Send verification email]
-    F --> G[User opens verification link or code]
-    G --> H{Verification valid?}
-    H -- No --> I[Request new verification email]
-    I --> F
-    H -- Yes --> J[Activate account]
-    J --> K((End))
+    A((Start)) --> B["Student goes to homepage and clicks 'Sign Up'"]
+    B --> C["Student enters name, email, student ID, password, programme"]
+    C --> D{"Email already registered?"}
+    D -- Yes --> E["System shows error: 'Account exists, please log in'"]
+    D -- No --> F["System creates account and assigns Student role"]
+    E --> G["Student enters credentials on login page"]
+    F --> G
+    G --> H{"Credentials valid?"}
+    H -- No --> I["3 failed attempts: lock account for 15 min"]
+    I --> N1((End))
+    H -- Yes --> J["System opens Student Dashboard"]
+    J --> N2((End))
 ```
 
 ## UC-02 Start Lesson
@@ -89,7 +89,7 @@ flowchart TD
     H --> I((End))
 ```
 
-## UC-06 Publish Lesson Content and Interactive Material
+## UC-06 Publish Lesson Content
 
 ```mermaid
 flowchart TD
@@ -122,18 +122,18 @@ flowchart TD
     I --> J((End))
 ```
 
-## UC-08 View Advisor Alert Dashboard and Follow Up
+## UC-08 View Advisor Dashboard and Follow Up
 
 ```mermaid
 flowchart TD
     A((Start)) --> B[Open advisor dashboard]
-    B --> C[View assigned students and risk indicators]
-    C --> D{Alerts exist?}
-    D -- No --> E[Review student summaries]
+    B --> C[View students with progress and performance data]
+    C --> D{Students need attention?}
+    D -- No --> E[Review student progress summaries]
     E --> Z((End))
     D -- Yes --> F[Select student]
-    F --> G[View progress history and alert reasons]
-    G --> H[Review intervention suggestions]
+    F --> G[View progress history and quiz performance]
+    G --> H[Review overdue assignments]
     H --> I[Send follow-up message]
     I --> J[Record follow-up status]
     J --> Z((End))
@@ -149,7 +149,7 @@ flowchart TD
     D -- No --> E[Close review without modification]
     E --> Z((End))
     D -- Yes --> F[Approve, update, or remove content]
-    F --> G[Create or update announcement template]
+    F --> G[Create or update announcement]
     G --> H[Store or distribute announcement]
     H --> I[Record moderation or announcement action]
     I --> Z((End))

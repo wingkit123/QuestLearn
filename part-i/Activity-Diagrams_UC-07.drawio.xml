@@ -1,0 +1,70 @@
+<mxfile host="app.diagrams.net" modified="2026-05-02T00:00:00.000Z" agent="GitHub Copilot" version="26.0.11" type="device">
+	<diagram name="UC-07 Create Assessment">
+		<mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1400">
+			<root>
+				<mxCell id="0" />
+				<mxCell id="1" parent="0" />
+				<mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" source="s1" target="p1" parent="1" value="">
+					<mxGeometry relative="1" as="geometry" />
+				</mxCell>
+				<mxCell id="s1" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=2;fillColor=#000000;" vertex="1" parent="1">
+					<mxGeometry x="270" y="30" width="40" height="40" as="geometry" />
+				</mxCell>
+				<mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" source="p1" target="p2" parent="1" value="">
+					<mxGeometry relative="1" as="geometry" />
+				</mxCell>
+				<mxCell id="p1" value="Educator opens&#xa;assessment management" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=1;fillColor=#dbeafe;fontColor=#000000;arcSize=18;" vertex="1" parent="1">
+					<mxGeometry x="190" y="100" width="200" height="50" as="geometry" />
+				</mxCell>
+				<mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" source="p2" target="p3" parent="1" value="">
+					<mxGeometry relative="1" as="geometry" />
+				</mxCell>
+				<mxCell id="p2" value="Educator creates&#xa;quiz or assignment" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=1;fillColor=#dbeafe;fontColor=#000000;arcSize=18;" vertex="1" parent="1">
+					<mxGeometry x="200" y="180" width="180" height="50" as="geometry" />
+				</mxCell>
+				<mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" source="p3" target="p4" parent="1" value="">
+					<mxGeometry relative="1" as="geometry" />
+				</mxCell>
+				<mxCell id="p3" value="Educator defines&#xa;assessment rules" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=1;fillColor=#dbeafe;fontColor=#000000;arcSize=18;" vertex="1" parent="1">
+					<mxGeometry x="200" y="260" width="180" height="50" as="geometry" />
+				</mxCell>
+				<mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" source="p4" target="p5" parent="1" value="">
+					<mxGeometry relative="1" as="geometry" />
+				</mxCell>
+				<mxCell id="p4" value="Educator selects or creates&#xa;question bank items" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=1;fillColor=#dbeafe;fontColor=#000000;arcSize=18;" vertex="1" parent="1">
+					<mxGeometry x="180" y="340" width="220" height="50" as="geometry" />
+				</mxCell>
+				<mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" source="p5" target="d1" parent="1" value="">
+					<mxGeometry relative="1" as="geometry" />
+				</mxCell>
+				<mxCell id="p5" value="Educator configures&#xa;automated feedback" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=1;fillColor=#dbeafe;fontColor=#000000;arcSize=18;" vertex="1" parent="1">
+					<mxGeometry x="190" y="420" width="200" height="50" as="geometry" />
+				</mxCell>
+				<mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="d1" target="p3" parent="1" value="No">
+					<mxGeometry relative="1" as="geometry" />
+				</mxCell>
+				<mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="d1" target="p6" parent="1" value="Yes">
+					<mxGeometry relative="1" as="geometry" />
+				</mxCell>
+				<mxCell id="d1" value="Settings&#xa;complete?" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=1;fillColor=#fff2cc;fontColor=#000000;" vertex="1" parent="1">
+					<mxGeometry x="215" y="500" width="150" height="90" as="geometry" />
+				</mxCell>
+				<mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" source="p6" target="p7" parent="1" value="">
+					<mxGeometry relative="1" as="geometry" />
+				</mxCell>
+				<mxCell id="p6" value="Educator publishes&#xa;the assessment" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=1;fillColor=#dbeafe;fontColor=#000000;arcSize=18;" vertex="1" parent="1">
+					<mxGeometry x="200" y="630" width="180" height="50" as="geometry" />
+				</mxCell>
+				<mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" source="p7" target="end1" parent="1" value="">
+					<mxGeometry relative="1" as="geometry" />
+				</mxCell>
+				<mxCell id="p7" value="System stores assessment&#xa;and availability rules" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=1;fillColor=#dbeafe;fontColor=#000000;arcSize=18;" vertex="1" parent="1">
+					<mxGeometry x="180" y="710" width="220" height="50" as="geometry" />
+				</mxCell>
+				<mxCell id="end1" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=2;fillColor=#000000;" vertex="1" parent="1">
+					<mxGeometry x="270" y="790" width="40" height="40" as="geometry" />
+				</mxCell>
+			</root>
+		</mxGraphModel>
+	</diagram>
+</mxfile>
