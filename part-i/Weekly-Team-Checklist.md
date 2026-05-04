@@ -1,14 +1,14 @@
 # QuestLearn Weekly Team Checklist
 
-This checklist is updated for Week 5 based on the current merged SRS progress.
+This checklist is updated for Week 6 (5/4/2026). Part I has been submitted. Focus now shifts to Part II and Part III preparation.
 
 Main working file:
 
-- [Part I SRS-template-2610_QuestLearn.md](./Part%20I%20SRS-template-2610_QuestLearn.md)
+- [Part-I-SRS-template-2610_QuestLearn.md](./Part-I-SRS-template-2610_QuestLearn.md)
 
 ## Current Status
 
-Already done:
+### Part I — Submitted
 
 - [x] project title set to `QuestLearn`
 - [x] group number updated to `Group 5`
@@ -20,138 +20,130 @@ Already done:
 - [x] actor table drafted
 - [x] assumptions and dependencies drafted
 - [x] non-functional requirements drafted
+- [x] 9 formal use cases (UC-01 to UC-09)
+- [x] 20 entities in ERD with relationships
+- [x] activity diagrams for all 9 use cases
+- [x] requirements traceability table
+- [x] Gantt chart data table
+- [x] process flow drafts (Mermaid)
 
-Still incomplete in the current SRS:
+### Part I — To Adjust (alongside Part II work)
 
-- [ ] contents page formatting is still broken
-- [ ] revision table formatting is still broken
-- [ ] date formatting needs cleanup
-- [ ] section numbering around `2.2` and `2.3` is inconsistent
-- [ ] `2.2 Actors` heading needs to be restored properly
-- [ ] use case diagram still missing
-- [ ] functional requirements section still contains template placeholders
-- [ ] formal use cases still need to replace `3.1 ACTOR`, `3.2 ACTOR`, and `3.3 ACTOR`
-- [ ] ERD still missing
-- [ ] classes / entities table still missing
-- [ ] references section still empty
-- [ ] final PDF export not done
+- [x] fill in actual student ID numbers (Group 5, updated in Part II and III)
+- [ ] fix and insert exported UML use case diagram image
+- [ ] fix and insert exported ERD image
+- [ ] insert exported Gantt chart visual
+- [ ] add figure numbering and captions
+- [ ] add concrete user scenarios (persona examples)
+- [ ] add integration flow matrix for innovations
+- [ ] formalize academic writing style
 
-## Week 5 Priority
+### Part II — Not Started Yet
 
-This is submission week. The goal is no longer drafting from scratch. The goal is to remove placeholders, insert diagrams, and make the report submission-ready.
+- [ ] create `part-ii/` directory structure
+- [ ] database design document
+- [ ] database schema SQL file
+- [ ] architecture design document
+- [ ] sequence diagrams (5+)
+- [ ] state transition diagrams (5+)
+- [ ] interface design / wireframes (10+)
+- [ ] technology stack justification
+- [ ] Part II master design report (10-15 pages)
 
-## Urgent: Teacher Review Version
+### Part III — Planning Phase
 
-For tomorrow's teacher review, the team must deliver a readable draft with: 1) fixed cover/page numbering, 2) correct section headings, 3) inserted diagram placeholders, and 4) a filled references section. This is the version the teacher should see, even if final polishing continues afterward.
+- [ ] decide final tech stack for prototype
+- [ ] set up project scaffolding
+- [ ] plan testing strategy
+- [ ] plan team contribution documentation
 
-### Must have before teacher review
+## Week 6 Priority (5/4/2026 – 5/10/2026)
 
-- [ ] cover page cleaned and formatted for printing
-- [ ] table of contents corrected, with no broken `ERROR! BOOKMARK NOT DEFINED.` entries
-- [ ] section numbers restored and headings fixed for Chapters 2 and 3
-- [ ] formal use case headings updated to:
-  - `3.1 Student`
-  - `3.2 Instructor`
-  - `3.3 Academic Advisor`
-  - `3.4 Admin`
-- [ ] ERD or a clear ERD placeholder inserted
-- [ ] use case diagram or placeholder inserted
-- [ ] references section populated with at least one source and consistent formatting
-- [ ] clear note for the teacher: this is the review version, final QA is still pending
+This week begins Part II work. The goal is to establish the Part II directory, start database design refinement, and begin architecture documentation.
 
-### Who does what now
+### Who does what this week
 
 1. See Wing Kit
-   - Fix the cover page and contents list formatting.
-   - Confirm section numbering for Chapter 2 and Chapter 3.
-   - Add the review note in the intro or cover section.
+   - Set up `part-ii/` directory and file templates.
+   - Begin architecture design document.
+   - Start database schema refinement from ERD.
+   - Review and approve Part II document structure.
+
 2. Aziel Tan Zheng Chuan
-   - Prepare the ERD export or a clear ERD placeholder for insertion.
-  - Double-confirm the ERD includes all main entities and key relationships.
-  - Make sure the ERD is self-explanatory (clear labels, cardinality, and readable grouping).
+   - Convert ERD entities into a full PostgreSQL DDL schema (`Database-Schema.sql`).
+   - Add constraints, indexes, and comments to the schema.
+   - Write sample SQL queries (20-30 examples).
+
 3. Vincent Lock Chun Kit
-   - Insert or reserve the use case diagram placeholder.
-   - Replace any remaining Section 3 template placeholders with the formal use cases.
-   - Polish captions, spacing, and table formatting in the SRS.
+   - Begin sequence diagram drafts for 5 critical flows.
+   - Start interface design wireframe descriptions (10+ screens).
+   - Prepare Part II report template with proper academic formatting.
+
 4. Soo Kian Rong
-   - Sweep for placeholder text and report unresolved issues with section numbers.
-   - Verify role names and key feature phrases are consistent.
-   - Confirm the references section has at least one properly formatted source.
+   - Begin state transition diagram drafts for 5 key entities.
+   - Research testing frameworks for Part III (Jest, Playwright).
+   - Cross-check Part II deliverable list against rubric requirements.
 
 ## See Wing Kit — Project Leader
 
-### This Week
+### Week 6
 
-- [ ] clean the cover page formatting
-- [ ] fix the contents list and broken heading numbering
-- [ ] replace all remaining template placeholders in Section 3 and Section 4
-- [ ] make sure the final actor headings are:
-  - `3.1 Student`
-  - `3.2 Instructor`
-  - `3.3 Academic Advisor`
-  - `3.4 Admin`
-- [ ] run a final TT7L coverage check against the lecturer brief
-- [ ] approve the final export version
+- [x] submitted Part I package
+- [x] completed Part I final review
+- [/] starting Part II architecture design
+- [ ] set up `part-ii/` directory structure
+- [ ] create architecture design document outline
+- [ ] start database schema refinement
+- [ ] decide final tech stack for prototype
+- [ ] insert exported finalized diagram PNGs into Part I and Part II docs
 
 ## Aziel Tan Zheng Chuan — Programming Leader
 
-### This Week
+### Week 6
 
-- [ ] finalize the clean ERD export
-- [ ] ensure the ERD clearly includes:
-  - `Assignment`
-  - `AssignmentSubmission`
-  - `Announcement`
-  - `Notification`
-  - `ActivityLog`
-- [ ] double-confirm the ERD also covers core entities:
-  - `User`
-  - `Role`
-  - `Course`
-  - `Module`
-  - `Lesson`
-  - `QuizAttempt`
-  - `ProgressRecord`
-- [ ] ensure the ERD is self-explanatory with clear relationship labels and cardinality
-- [ ] verify that all major use cases have entity support
+- [x] finalized ERD with 20 entities
+- [x] completed ERD draw.io XML files
+- [x] validated data relationships
+- [/] starting database design for Part II
+- [ ] create `Database-Schema.sql` with full PostgreSQL DDL
+- [ ] add constraints, indexes, and table comments
+- [ ] write 20-30 sample SQL queries
+- [ ] fix ERD draw.io mismatches to align with 21-table Part II schema
 
 ## Vincent Lock Chun Kit — Documentation Manager
 
-### This Week
+### Week 6
 
-- [ ] finalize the UML use case diagram export
-- [ ] finalize the process-flow diagram exports
-- [ ] finalize the Gantt chart export
-- [ ] replace the template use case placeholders in Section 3 with the formal QuestLearn use cases
-- [ ] polish captions, spacing, headings, and table formatting in the SRS
+- [x] completed use case formatting for UC-01 to UC-09
+- [x] prepared activity diagram exports
+- [x] finalized Gantt chart data
+- [/] starting Part II document templates
+- [ ] draft sequence diagrams for 5 critical flows
+- [ ] start interface design wireframes (10+ screens)
+- [ ] prepare Part II report template
+- [ ] fix UC-01 Use Case and Activity Diagram draw.io mismatches
 
 ## Soo Kian Rong — Quality Manager
 
-### This Week
+### Week 6
 
-- [ ] run a full placeholder sweep and list all remaining issues (with section numbers) in the team chat
-- [ ] check that no placeholder text remains, including:
-  - `< List and describe... >`
-  - `<TO DO: ...>`
-  - `ACTOR`
-  - `Use Case 1`
-- [ ] verify `Student`, `Instructor`, `Academic Advisor`, and `Admin` are named consistently across headings, tables, and use cases
-- [ ] verify `assignment management` and `activity tracking` appear in the correct sections with no missing flow steps
-- [ ] complete a quick TT7L alignment check and flag any missing requirement coverage before final export
-- [ ] proofread grammar, labels, table alignment, figure references, and cross-references (`Section x.x`, `Figure x`, `Table x`)
-- [ ] check that the references section is filled before export and that citation formatting is consistent
-- [ ] perform one final QA pass against the `Final Team Check Before Export` list and report pass/fail per item
+- [x] completed requirements coverage checking
+- [x] verified terminology consistency
+- [x] performed final proofreading for Part I
+- [/] planning testing strategy for Part III
+- [ ] draft state transition diagrams for 5 key entities
+- [ ] research testing frameworks (Jest, Playwright)
+- [ ] cross-check Part II deliverables against rubric
 
-## Final Team Check Before Export
+## Upcoming Milestones
 
-- [ ] the cover page looks clean and readable
-- [ ] the revision table shows the correct version and date
-- [ ] the contents page no longer has broken entries such as `ERROR! BOOKMARK NOT DEFINED.`
-- [ ] all section headings are correct and in order
-- [ ] the use case diagram is inserted
-- [ ] the formal use case descriptions replace the template placeholders
-- [ ] the ERD is inserted
-- [ ] the Gantt chart is inserted
-- [ ] the references section is filled
-- [ ] the report reads like one complete academic document
-- [ ] the final file name follows lecturer format
+| Milestone | Date | Status |
+| --- | --- | --- |
+| Part I submitted | 2026-05-01 | ✅ Done |
+| Part II database + architecture drafts | 2026-05-18 | ⏳ Not started |
+| Part II review and cleanup | 2026-05-25 to 2026-06-04 | ⏳ Not started |
+| Part II submission | 2026-06-05 | ⏳ Not started |
+| Part III prototype first working version | 2026-06-15 | ⏳ Not started |
+| Part III testing and reports | 2026-06-20 | ⏳ Not started |
+| Part III submission | 2026-06-26 | ⏳ Not started |
+| Presentation window | 2026-06-29 to 2026-07-03 | ⏳ Not started |

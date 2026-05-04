@@ -1,3 +1,55 @@
 team member.md
 .agents/
 reference/
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Dependencies
+node_modules/
+.npm/
+package-lock.json
+yarn.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+env/
+.venv
+
+# Build & Dist
+dist/
+build/
+*.o
+*.so
+*.dylib
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Temporary
+*.tmp
+*.bak
+.cache/
+
+# IDE temp files
+.classpath
+.project
+.settings/
+*.iml

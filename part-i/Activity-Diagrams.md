@@ -6,17 +6,17 @@ This document contains only the activity diagrams for formal use cases UC-01 to 
 
 ```mermaid
 flowchart TD
-    A((Start)) --> B["Student goes to homepage and clicks 'Sign Up'"]
-    B --> C["Student enters name, email, student ID, password, programme"]
+    A((Start)) --> B["User goes to homepage and clicks 'Sign Up'"]
+    B --> C["User enters name, email, ID (Student/Staff), password, Dept/Prog"]
     C --> D{"Email already registered?"}
     D -- Yes --> E["System shows error: 'Account exists, please log in'"]
-    D -- No --> F["System creates account and assigns Student role"]
-    E --> G["Student enters credentials on login page"]
+    D -- No --> F["System creates account and assigns appropriate role"]
+    E --> G["User enters credentials on login page"]
     F --> G
     G --> H{"Credentials valid?"}
     H -- No --> I["3 failed attempts: lock account for 15 min"]
     I --> N1((End))
-    H -- Yes --> J["System opens Student Dashboard"]
+    H -- Yes --> J["System opens User Dashboard"]
     J --> N2((End))
 ```
 
