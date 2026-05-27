@@ -8,14 +8,14 @@ Main current Part I source:
 
 Main Part II working files:
 
-- [Database-Design.md](../part-ii/Database-Design.md)
-- [Database-Schema.sql](../part-ii/Database-Schema.sql)
-- [Architecture-Design.md](../part-ii/Architecture-Design.md)
-- [Sequence-Diagrams.md](../part-ii/Sequence-Diagrams.md)
-- [State-Diagrams.md](../part-ii/State-Diagrams.md)
-- [Interface-Design.md](../part-ii/Interface-Design.md)
-- [Technology-Stack.md](../part-ii/Technology-Stack.md)
-- [Part-II-Design-Report.md](../part-ii/Part-II-Design-Report.md)
+- [Database-Design.md](part-ii/Database-Design.md)
+- [Database-Schema.sql](part-ii/Database-Schema.sql)
+- [Architecture-Design.md](part-ii/Architecture-Design.md)
+- [Sequence-Diagrams.md](part-ii/Sequence-Diagrams.md)
+- [State-Diagrams.md](part-ii/State-Diagrams.md)
+- [Interface-Design.md](part-ii/Interface-Design.md)
+- [Technology-Stack.md](part-ii/Technology-Stack.md)
+- [Part-II-Design-Report.md](part-ii/Part-II-Design-Report.md)
 
 ## Current Status
 
@@ -47,7 +47,7 @@ Main Part II working files:
 - [x] interface design / wireframes drafted
 - [x] technology stack justification drafted
 - [/] Part II master design report drafted but incomplete
-- [ ] align Part II stack with README stack
+- [/] align Part II stack with README stack
 - [ ] complete all `TO DO` and `Insert exported` placeholders in `Part-II-Design-Report.md`
 - [ ] add H5P/Lumi database support
 - [ ] add advisor follow-up and advisor alert modeling
@@ -113,12 +113,12 @@ This week continues Part II. The goal is to revise the existing Part II draft so
 
 ### Week 9
 
-- [ ] review `README.md` stack and lock it as the official Part II stack
-- [ ] revise `Architecture-Design.md` direction to Next.js + Supabase
-- [ ] revise `Technology-Stack.md` to remove old selected-stack wording
+- [x] review `README.md` stack and lock it as the official Part II stack
+- [x] revise `Architecture-Design.md` direction to Next.js + Supabase
+- [x] revise `Technology-Stack.md` to remove old selected-stack wording
 - [ ] review `Part-II-Design-Report.md` for consistency after all member updates
 - [ ] approve final Part II scope before submission cleanup
-- [ ] produce architecture/stack review notes as evidence
+- [x] produce architecture/stack review notes as evidence
 
 ## Aziel Tan Zheng Chuan - Programming Leader
 
@@ -203,4 +203,3 @@ Expected final state:
 | `[ ]` | Not started |
 | `[/]` | In progress |
 | `[x]` | Completed |
-

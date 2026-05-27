@@ -241,7 +241,7 @@ The following sequence diagrams describe the interaction flow between actors, fr
 
 ### 4.1.1 UC-01 Register Account and Login
 
-This sequence shows the registration and authentication flow. The user submits account details, the AuthenticationService validates and stores the account, and a JWT token is issued upon successful login.
+This sequence shows the registration and authentication flow. The user submits account details, Supabase Auth validates the credentials, the matching QuestLearn profile is loaded, and an authenticated session is established for role-based access.
 
 > TO DO: Insert exported sequence diagram for SD-01.
 
@@ -309,7 +309,7 @@ States: Enrolled → Active → Completed / Withdrawn
 
 ## 5.1 Software Architecture
 
-QuestLearn adopts a four-layer architecture: Presentation, Business Logic, Data Access, and External Integration. This architecture enforces separation of concerns and supports independent development and testing of each layer.
+QuestLearn adopts a four-layer architecture: Presentation, Application Logic, Data and Security, and External Integration. The selected stack is Next.js with Supabase and Vercel, matching the README direction for the prototype. This architecture keeps the application realistic for Part III because the team can use one framework for the user interface and controlled server-side workflows, while Supabase provides authentication, PostgreSQL storage, row-level authorization, and file storage.
 
 > TO DO: Insert exported architecture layer diagram.
 
@@ -317,14 +317,14 @@ The system is divided into subsystems assigned to team members as follows:
 
 | Subsystem | Team Member |
 | --- | --- |
-| Authentication and User Management (AuthenticationService, UserService) | See Wing Kit |
-| Course and Content Management (CourseService, AssessmentService) | Aziel Tan Zheng Chuan |
-| Grading, Progress, and Analytics (GradingService, ProgressService, AnalyticsService) | Vincent Lock Chun Kit |
-| Notifications, Advisor Support, and Admin (NotificationService, AdvisorService) | Soo Kian Rong |
+| Authentication and User Management (Supabase Auth, profile management, role access) | See Wing Kit |
+| Course and Content Management (course, lesson, content item, assessment workflows) | Aziel Tan Zheng Chuan |
+| Grading, Progress, and Analytics (quiz feedback, progress, dashboard analytics) | Vincent Lock Chun Kit |
+| Notifications, Advisor Support, and Admin (alerts, follow-up, moderation, audit) | Soo Kian Rong |
 
 ### 5.1.1 Subsystem 1 — Authentication and User Management
 
-This subsystem handles user registration, login with JWT token generation, password hashing with bcrypt, profile management for all roles, and role-based access control middleware. It manages the `user`, `role`, `student_profile`, `instructor_profile`, and `advisor_profile` entities.
+This subsystem handles registration and login through Supabase Auth, profile management for all roles, and role-based access through profile tables and Row Level Security policies. It manages the `user`, `role`, `student_profile`, `instructor_profile`, and `advisor_profile` entities.
 
 ### 5.1.2 Subsystem 2 — Course and Content Management
 
@@ -336,7 +336,7 @@ This subsystem handles quiz auto-grading, score calculation, feedback generation
 
 ### 5.1.4 Subsystem 4 — Notifications, Advisor Support, and Admin
 
-This subsystem handles notification creation and delivery, advisor dashboard data aggregation, follow-up workflow, admin user management, content moderation, and announcement broadcasting. It manages the `announcement` and `notification` entities and aggregates data from other subsystems.
+This subsystem handles notification creation and delivery, advisor dashboard data aggregation, advisor alerts, follow-up workflow, admin user management, content moderation, announcement broadcasting, and audit logging. It manages `advisor_alert`, `advisor_follow_up`, `announcement`, `notification`, `moderation_action`, and `audit_log` entities and aggregates data from other subsystems.
 
 Full architecture details are documented in [Architecture-Design.md](./Architecture-Design.md). Technology stack justifications are in [Technology-Stack.md](./Technology-Stack.md).
 
@@ -395,16 +395,16 @@ The following table maps the main software components to their respective subsys
 
 | Component | Subsystem | Technology | Description |
 | --- | --- | --- | --- |
-| AuthController | Subsystem 1 | Express.js | Handles registration and login API routes |
-| AuthMiddleware | Subsystem 1 | Express.js | JWT verification and role-based access control |
-| UserController | Subsystem 1 | Express.js | Profile CRUD API routes |
-| CourseController | Subsystem 2 | Express.js | Course, module, and lesson API routes |
-| AssessmentController | Subsystem 2 | Express.js | Quiz, assignment, and question bank API routes |
-| GradingService | Subsystem 3 | Node.js | Auto-grading engine with weak-topic detection |
-| ProgressService | Subsystem 3 | Node.js | Lesson completion tracking and dashboard data |
-| AnalyticsService | Subsystem 3 | Node.js | Activity logging and engagement metrics |
-| NotificationService | Subsystem 4 | Node.js | Notification creation and delivery |
-| AdvisorController | Subsystem 4 | Express.js | Advisor dashboard and follow-up API routes |
+| Auth Routes / Actions | Subsystem 1 | Next.js + Supabase Auth | Handles registration, login, and session-aware profile loading |
+| Role Access Helpers | Subsystem 1 | Next.js + Supabase RLS | Checks user role and profile permissions |
+| Course Actions | Subsystem 2 | Next.js + Supabase PostgreSQL | Course, module, lesson, and content item operations |
+| Assessment Actions | Subsystem 2 | Next.js + Supabase PostgreSQL | Quiz, assignment, and question bank operations |
+| Grading Service | Subsystem 3 | Next.js server-side logic | Auto-grading engine with weak-topic detection |
+| Progress Service | Subsystem 3 | Next.js + Supabase PostgreSQL | Lesson completion tracking and dashboard data |
+| Analytics Service | Subsystem 3 | Supabase PostgreSQL | Activity logging and engagement metrics |
+| Notification Service | Subsystem 4 | Supabase PostgreSQL | Notification creation and delivery |
+| Advisor Actions | Subsystem 4 | Next.js + Supabase PostgreSQL | Advisor alerts, dashboard summaries, and follow-up records |
+| Admin Audit Actions | Subsystem 4 | Next.js + Supabase PostgreSQL | Moderation actions, announcements, and audit logs |
 
 ### 7.1.1 GradingService — Auto-Grading Algorithm
 
@@ -455,24 +455,25 @@ END FUNCTION
 
 ## 8.1 Deployment Diagram
 
-The QuestLearn prototype is deployed using Docker Compose with four containerised services.
+The QuestLearn prototype is deployed using Vercel for the Next.js application and Supabase for managed backend services.
 
 > TO DO: Insert exported deployment diagram.
 
-| Container | Service | Port | Technology |
-| --- | --- | --- | --- |
-| questlearn-frontend | React SPA | 3000 | Node.js + nginx |
-| questlearn-api | REST API | 5000 | Node.js + Express |
-| questlearn-db | Database | 5432 | PostgreSQL 16 |
-| questlearn-cache | Caching | 6379 | Redis 7 |
+| Component | Platform | Responsibility |
+| --- | --- | --- |
+| Next.js App | Vercel | Pages, route handlers, server actions, and UI rendering |
+| Supabase Auth | Supabase | Registration, login, sessions, and authenticated identity |
+| Supabase PostgreSQL | Supabase | Relational database for all project entities |
+| Supabase Storage | Supabase | Lesson files, assignment submissions, and media assets |
+| Supabase RLS Policies | Supabase/PostgreSQL | Role-based row access rules |
 
-The CI/CD pipeline uses GitHub Actions to run linting, unit tests, and integration tests on every push. On merge to the main branch, Docker images are built and deployed to the staging environment.
+The deployment workflow uses GitHub for source control and Vercel for preview and production deployments. Pull requests can generate preview builds, while merges to the main branch can deploy the production build connected to the configured Supabase project.
 
 ---
 
 # 9 Summary
 
-This Software Design Specification translates the QuestLearn requirements from Part I into a complete, implementable technical design. The database schema provides normalised storage for all 21 entities with appropriate constraints and indexes. The four-layer architecture with nine business logic services supports all functional requirements and three innovations (weak-topic detection, advisor early alerts, and activity-based analytics). Five sequence diagrams and five state transition diagrams verify the correctness of critical user flows and entity lifecycles. The interface design covers 14 screens across all four actor roles. The component design includes pseudocode for the auto-grading algorithm. The deployment architecture uses Docker containerisation for consistent development and deployment environments.
+This Software Design Specification translates the QuestLearn requirements from Part I into a complete, implementable technical design. The database schema provides normalised storage for the main academic entities with appropriate constraints and indexes. The four-layer Next.js and Supabase architecture supports all functional requirements and three innovations: weak-topic detection, advisor early alerts, and activity-based analytics. Five sequence diagrams and five state transition diagrams verify the correctness of critical user flows and entity lifecycles. The interface design covers 14 screens across all four actor roles. The component design includes pseudocode for the auto-grading algorithm. The deployment architecture uses Vercel and Supabase for a realistic prototype path.
 
 The design is ready for prototype implementation in Part III.
 
@@ -482,12 +483,11 @@ The design is ready for prototype implementation in Part III.
 
 1. QuestLearn Part I SRS (Part I_Group5_QuestLearn.md), Version 1.0
 2. PostgreSQL 16 Documentation. https://www.postgresql.org/docs/16/
-3. React.js Documentation. https://react.dev/
-4. Express.js Documentation. https://expressjs.com/
-5. Sequelize ORM Documentation. https://sequelize.org/
-6. Material UI Documentation. https://mui.com/
-7. JSON Web Tokens (RFC 7519). https://jwt.io/
-8. bcrypt Password Hashing. https://www.npmjs.com/package/bcrypt
-9. Docker Documentation. https://docs.docker.com/
-10. UML Sequence Diagram Reference. https://www.uml-diagrams.org/sequence-diagrams.html
-11. UML State Machine Diagram Reference. https://www.uml-diagrams.org/state-machine-diagrams.html
+3. Next.js Documentation. https://nextjs.org/docs
+4. Supabase Documentation. https://supabase.com/docs
+5. Supabase Auth Documentation. https://supabase.com/docs/guides/auth
+6. Supabase Row Level Security Documentation. https://supabase.com/docs/guides/database/postgres/row-level-security
+7. Supabase Storage Documentation. https://supabase.com/docs/guides/storage
+8. React Documentation. https://react.dev/
+9. UML Sequence Diagram Reference. https://www.uml-diagrams.org/sequence-diagrams.html
+10. UML State Machine Diagram Reference. https://www.uml-diagrams.org/state-machine-diagrams.html
