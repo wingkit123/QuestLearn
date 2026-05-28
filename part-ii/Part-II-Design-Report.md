@@ -482,9 +482,35 @@ The admin moderation process covers content review, announcement management, and
 
 ## 7.1 Deployment Diagram
 
-The QuestLearn prototype is deployed using Vercel for the Next.js application and Supabase for managed backend services.
+The QuestLearn prototype is deployed using Vercel for the Next.js application and Supabase for managed backend services. The UML deployment diagram below shows the physical deployment topology, including all nodes, execution environments, artifacts, and communication paths.
 
-> TO DO: Insert exported deployment diagram.
+**Figure 7.1: QuestLearn UML Deployment Diagram**
+
+![QuestLearn Deployment Diagram](./diagrams/Deployment-Diagram.png)
+
+### Deployment Nodes and Artifacts
+
+| Node | Stereotype | Artifacts Deployed |
+| --- | --- | --- |
+| **User Device** | `<<device>>` | Web Browser (execution environment) |
+| Web Browser | `<<execution environment>>` | Next.js Client Bundle (React), Static Assets (CSS, JS, Images) |
+| **Vercel Platform** | `<<cloud>>` | Node.js Runtime (execution environment) |
+| Node.js Runtime | `<<execution environment>>` | Next.js Pages & Layouts, Route Handlers (API), Server Actions, Middleware (Auth Guard) |
+| **Supabase Platform** | `<<cloud>>` | PostgreSQL 15, Supabase Auth, Supabase Storage |
+| PostgreSQL 15 | `<<database server>>` | QuestLearn Schema (21 tables), Row Level Security Policies |
+| Supabase Auth | `<<server>>` | JWT Session Manager, User Identity Store |
+| Supabase Storage | `<<server>>` | Lesson Files Bucket, Submission Files Bucket |
+| **GitHub** | `<<infrastructure>>` | Source Repository, CI/CD Pipeline |
+
+### Communication Paths
+
+| From | To | Protocol | Purpose |
+| --- | --- | --- | --- |
+| User Device | Vercel Platform | `<<HTTPS>>` TLS 1.3 | Browser requests pages and API endpoints |
+| Vercel (Node.js) | Supabase PostgreSQL | `<<HTTPS>>` Supabase Client SDK | Database queries via server-side Supabase client |
+| Vercel (Node.js) | Supabase Auth | `<<HTTPS>>` Auth API | User registration, login, and session verification |
+| Vercel (Node.js) | Supabase Storage | `<<HTTPS>>` Storage API | File uploads and downloads for lessons and submissions |
+| GitHub | Vercel Platform | `<<webhook>>` Git Push Deploy | Automated deployment on push to main branch |
 
 | Component | Platform | Responsibility |
 | --- | --- | --- |
