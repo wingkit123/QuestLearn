@@ -27,31 +27,49 @@
   - [1.2 Actors](#12-actors)
   - [1.3 Assumptions and Dependencies](#13-assumptions-and-dependencies)
   - [1.4 Use Case Diagram](#14-use-case-diagram)
-- [2 Activity Diagrams](#2-activity-diagrams)
-  - [2.1.1 UC-01 Register Account and Login](#211-uc-01-register-account-and-login)
-  - [2.1.2 UC-02 Start Lesson](#212-uc-02-start-lesson)
-  - [2.1.3 UC-03 Attempt Quiz and Receive Feedback](#213-uc-03-attempt-quiz-and-receive-automated-feedback)
-  - [2.1.4 UC-04 Submit Assignment](#214-uc-04-submit-assignment)
-  - [2.1.5 UC-05 Create Course](#215-uc-05-create-course-and-learning-structure)
-  - [2.1.6 UC-06 Publish Lesson Content](#216-uc-06-publish-lesson-content)
-  - [2.1.7 UC-07 Create Assessment](#217-uc-07-create-assessment-and-configure-feedback)
-  - [2.1.8 UC-08 View Advisor Dashboard](#218-uc-08-view-advisor-dashboard-and-follow-up)
-  - [2.1.9 UC-09 Moderate Content](#219-uc-09-moderate-content-and-manage-announcements)
+- [2 Use Cases](#2-use-cases)
+  - [2.1 Use Case Diagram](#21-use-case-diagram)
+  - [2.2 Student Use Cases](#22-student-use-cases)
+    - [2.2.1 UC-01 Register Account and Login](#221-uc-01-register-account-and-login)
+    - [2.2.2 UC-02 Start Lesson](#222-uc-02-start-lesson)
+    - [2.2.3 UC-03 Attempt Quiz and Receive Automated Feedback](#223-uc-03-attempt-quiz-and-receive-automated-feedback)
+    - [2.2.4 UC-04 Submit Assignment](#224-uc-04-submit-assignment)
+  - [2.3 Instructor Use Cases](#23-instructor-use-cases)
+    - [2.3.1 UC-05 Create Course and Learning Structure](#231-uc-05-create-course-and-learning-structure)
+    - [2.3.2 UC-06 Publish Lesson Content](#232-uc-06-publish-lesson-content)
+    - [2.3.3 UC-07 Create Assessment and Configure Feedback](#233-uc-07-create-assessment-and-configure-feedback)
+  - [2.4 Advisor Use Cases](#24-advisor-use-cases)
+    - [2.4.1 UC-08 View Advisor Dashboard and Follow Up](#241-uc-08-view-advisor-dashboard-and-follow-up)
+  - [2.5 Admin Use Cases](#25-admin-use-cases)
+    - [2.5.1 UC-09 Moderate Content and Manage Announcements](#251-uc-09-moderate-content-and-manage-announcements)
 - [3 Data Design](#3-data-design)
   - [3.1 Design Class Diagram / ERD](#31-design-class-diagram--erd)
   - [3.2 Data Dictionary](#32-data-dictionary)
   - [3.3 Data Structures](#33-data-structures)
-- [4 Behavioral Modeling](#4-behavioral-modeling)
-  - [4.1 Sequence Diagrams](#41-sequence-diagrams)
-  - [4.2 State Diagrams](#42-state-diagrams)
-- [5 Architecture Design](#5-architecture-design)
-  - [5.1 Software Architecture](#51-software-architecture)
-- [6 Interface Design](#6-interface-design)
-  - [6.1 Main Screens](#61-main-screens)
-- [7 Component Design](#7-component-design)
-  - [7.1 Main Components](#71-main-components)
-- [8 Deployment Design](#8-deployment-design)
-- [9 Summary](#9-summary)
+    - [3.3.1 Identity and Access Group](#331-identity-and-access-group)
+    - [3.3.2 Learning Structure Group](#332-learning-structure-group)
+    - [3.3.3 Assessment and Performance Group](#333-assessment-and-performance-group)
+    - [3.3.4 Support and Analytics Group](#334-support-and-analytics-group)
+  - [3.4 Entity Lifecycle States](#34-entity-lifecycle-states)
+- [4 Architecture Design](#4-architecture-design)
+  - [4.1 Software Architecture](#41-software-architecture)
+    - [4.1.1 Subsystem 1 — Authentication and User Management](#411-subsystem-1--authentication-and-user-management)
+    - [4.1.2 Subsystem 2 — Course and Content Management](#412-subsystem-2--course-and-content-management)
+    - [4.1.3 Subsystem 3 — Grading, Progress, and Analytics](#413-subsystem-3--grading-progress-and-analytics)
+    - [4.1.4 Subsystem 4 — Notifications, Advisor Support, and Admin](#414-subsystem-4--notifications-advisor-support-and-admin)
+- [5 Interface Design](#5-interface-design)
+  - [5.1 Main Screens](#51-main-screens)
+  - [5.2 Subsystem 1 Screens — Authentication and User Management](#52-subsystem-1-screens--authentication-and-user-management)
+  - [5.3 Subsystem 2 Screens — Course and Content Management](#53-subsystem-2-screens--course-and-content-management)
+  - [5.4 Subsystem 3 Screens — Grading, Progress, and Analytics](#54-subsystem-3-screens--grading-progress-and-analytics)
+  - [5.5 Subsystem 4 Screens — Notifications, Advisor, and Admin](#55-subsystem-4-screens--notifications-advisor-and-admin)
+- [6 Component Design](#6-component-design)
+  - [6.1 Main Components](#61-main-components)
+    - [6.1.1 Component 1 — GradingService (Auto-Grading Algorithm)](#611-component-1--gradingservice-auto-grading-algorithm)
+  - [6.2 Component Processing Workflows (Activity Diagrams)](#62-component-processing-workflows-activity-diagrams)
+- [7 Deployment Design](#7-deployment-design)
+  - [7.1 Deployment Diagram](#71-deployment-diagram)
+- [Summary](#summary)
 - [References](#references)
 
 ---
@@ -105,63 +123,71 @@ The assumptions and dependencies established in Part I remain valid for Part II.
 
 ---
 
-# 2 Activity Diagrams
+# 2 Use Cases
 
-The following activity diagrams describe the processing flow for each of the nine formal use cases established in Part I. Each diagram shows the sequence of activities, decision points, and alternate flows.
+## 2.1 Use Case Diagram
 
-## 2.1.1 UC-01 Register Account and Login
+> TO DO: Insert the exported UML use case diagram here (same diagram as Section 1.4, referenced or re-inserted).
 
+## 2.2 Student Use Cases
+
+### 2.2.1 UC-01 Register Account and Login
 The registration and login process allows a new user to create an account and authenticate with the system.
 
-> TO DO: Insert exported activity diagram for UC-01 from Activity-Diagrams_UC-01.drawio.xml.
+**Sequence Diagram (SD-01):**
+This sequence shows the registration and authentication flow. The user submits account details, Supabase Auth validates the credentials, the matching QuestLearn profile is loaded, and an authenticated session is established for role-based access. Full alternate flows are documented in [Sequence-Diagrams.md](./Sequence-Diagrams.md).
 
-## 2.1.2 UC-02 Start Lesson
+> TO DO: Insert exported sequence diagram for SD-01.
 
+### 2.2.2 UC-02 Start Lesson
 The lesson access process allows an enrolled student to navigate to a lesson, view content, and have their engagement tracked.
 
-> TO DO: Insert exported activity diagram for UC-02 from Activity-Diagrams_UC-02.drawio.xml.
-
-## 2.1.3 UC-03 Attempt Quiz and Receive Automated Feedback
-
+### 2.2.3 UC-03 Attempt Quiz and Receive Automated Feedback
 The quiz attempt process includes question display, answer submission, auto-grading, weak-topic detection, and feedback presentation.
 
-> TO DO: Insert exported activity diagram for UC-03 from Activity-Diagrams_UC-03.drawio.xml.
+**Sequence Diagram (SD-02):**
+This sequence shows the quiz attempt flow including question display, answer submission, auto-grading, weak-topic detection, feedback generation, and notification delivery. Full details are documented in [Sequence-Diagrams.md](./Sequence-Diagrams.md).
 
-## 2.1.4 UC-04 Submit Assignment
+> TO DO: Insert exported sequence diagram for SD-02.
 
+### 2.2.4 UC-04 Submit Assignment
 The assignment submission process includes validation, deadline checking, late submission handling, and confirmation.
 
-> TO DO: Insert exported activity diagram for UC-04 from Activity-Diagrams_UC-04.drawio.xml.
+## 2.3 Instructor Use Cases
 
-## 2.1.5 UC-05 Create Course and Learning Structure
-
+### 2.3.1 UC-05 Create Course and Learning Structure
 The course creation process allows an instructor to build a hierarchical course structure with modules and lessons.
 
-> TO DO: Insert exported activity diagram for UC-05 from Activity-Diagrams_UC-05.drawio.xml.
+**Sequence Diagram (SD-03):**
+This sequence shows the instructor flow for creating a course structure (course → module → lesson) and publishing content with student notification. Full details are documented in [Sequence-Diagrams.md](./Sequence-Diagrams.md).
 
-## 2.1.6 UC-06 Publish Lesson Content
+> TO DO: Insert exported sequence diagram for SD-03.
 
+### 2.3.2 UC-06 Publish Lesson Content
 The content publishing process allows an instructor to upload materials and make a lesson available to enrolled students.
 
-> TO DO: Insert exported activity diagram for UC-06 from Activity-Diagrams_UC-06.drawio.xml.
-
-## 2.1.7 UC-07 Create Assessment and Configure Feedback
-
+### 2.3.3 UC-07 Create Assessment and Configure Feedback
 The assessment configuration process covers quiz and assignment creation with question bank integration and feedback setup.
 
-> TO DO: Insert exported activity diagram for UC-07 from Activity-Diagrams_UC-07.drawio.xml.
+## 2.4 Advisor Use Cases
 
-## 2.1.8 UC-08 View Advisor Dashboard and Follow Up
-
+### 2.4.1 UC-08 View Advisor Dashboard and Follow Up
 The advisor monitoring process allows an academic advisor to review student progress and send follow-up messages.
 
-> TO DO: Insert exported activity diagram for UC-08 from Activity-Diagrams_UC-08.drawio.xml.
+**Sequence Diagram (SD-04):**
+This sequence shows the advisor monitoring flow including department student listing, progress summary review, and follow-up message delivery. Full details are documented in [Sequence-Diagrams.md](./Sequence-Diagrams.md).
 
-## 2.1.9 UC-09 Moderate Content and Manage Announcements
+> TO DO: Insert exported sequence diagram for SD-04.
 
+## 2.5 Admin Use Cases
+
+### 2.5.1 UC-09 Moderate Content and Manage Announcements
 The admin moderation process covers content review, announcement management, and password reset operations.
 
-> TO DO: Insert exported activity diagram for UC-09 from Activity-Diagrams_UC-09.drawio.xml.
+**Sequence Diagram (SD-05):**
+This sequence shows the admin workflow for user account approval, content moderation, and announcement creation with notification broadcasting. Full details are documented in [Sequence-Diagrams.md](./Sequence-Diagrams.md).
+
+> TO DO: Insert exported sequence diagram for SD-05.
 
 ---
 
@@ -231,83 +257,35 @@ This group manages activity logging, announcements, and notifications. The `acti
 
 **Key relationships:** `user` 1→∗ `activity_log`, `user` 1→∗ `announcement`, `announcement` 1→∗ `notification`, `user` 1→∗ `notification`.
 
----
-
-# 4 Behavioral Modeling
-
-## 4.1 Sequence Diagrams
-
-The following sequence diagrams describe the interaction flow between actors, frontend components, backend services, and the database for five critical use cases. Full diagrams with alternate flows are documented in [Sequence-Diagrams.md](./Sequence-Diagrams.md).
-
-### 4.1.1 UC-01 Register Account and Login
-
-This sequence shows the registration and authentication flow. The user submits account details, Supabase Auth validates the credentials, the matching QuestLearn profile is loaded, and an authenticated session is established for role-based access.
-
-> TO DO: Insert exported sequence diagram for SD-01.
-
-### 4.1.2 UC-03 Attempt Quiz and Receive Automated Feedback
-
-This sequence shows the quiz attempt flow including question display, answer submission, auto-grading, weak-topic detection, feedback generation, and notification delivery.
-
-> TO DO: Insert exported sequence diagram for SD-02.
-
-### 4.1.3 UC-05 Create Course Content
-
-This sequence shows the instructor flow for creating a course structure (course → module → lesson) and publishing content with student notification.
-
-> TO DO: Insert exported sequence diagram for SD-03.
-
-### 4.1.4 UC-08 Advisor Reviews Student Progress
-
-This sequence shows the advisor monitoring flow including department student listing, progress summary review, and follow-up message delivery.
-
-> TO DO: Insert exported sequence diagram for SD-04.
-
-### 4.1.5 UC-09 Admin Moderates Content
-
-This sequence shows the admin workflow for user account approval, content moderation, and announcement creation with notification broadcasting.
-
-> TO DO: Insert exported sequence diagram for SD-05.
-
-## 4.2 State Diagrams
+## 3.4 Entity Lifecycle States
 
 The following state transition diagrams define the valid lifecycles for key system entities. Full state descriptions are documented in [State-Diagrams.md](./State-Diagrams.md).
 
-### 4.2.1 User Account States
-
+### 3.4.1 User Account States
 States: Pending → Active → Suspended → Deactivated
-
 > TO DO: Insert exported state diagram for ST-01.
 
-### 4.2.2 Course States
-
+### 3.4.2 Course States
 States: Draft → Published → Active → Completed → Archived
-
 > TO DO: Insert exported state diagram for ST-02.
 
-### 4.2.3 Quiz States
-
+### 3.4.3 Quiz States
 States: Draft → Published → Active → Closed → Archived
-
 > TO DO: Insert exported state diagram for ST-03.
 
-### 4.2.4 Assignment Submission States
-
+### 3.4.4 Assignment Submission States
 States: Not Started → In Progress → Submitted → Under Review → Graded → Returned
-
 > TO DO: Insert exported state diagram for ST-04.
 
-### 4.2.5 Enrollment States
-
+### 3.4.5 Enrollment States
 States: Enrolled → Active → Completed / Withdrawn
-
 > TO DO: Insert exported state diagram for ST-05.
 
 ---
 
-# 5 Architecture Design
+# 4 Architecture Design
 
-## 5.1 Software Architecture
+## 4.1 Software Architecture
 
 QuestLearn adopts a four-layer architecture: Presentation, Application Logic, Data and Security, and External Integration. The selected stack is Next.js with Supabase and Vercel, matching the README direction for the prototype. This architecture keeps the application realistic for Part III because the team can use one framework for the user interface and controlled server-side workflows, while Supabase provides authentication, PostgreSQL storage, row-level authorization, and file storage.
 
@@ -322,19 +300,19 @@ The system is divided into subsystems assigned to team members as follows:
 | Grading, Progress, and Analytics (quiz feedback, progress, dashboard analytics) | Vincent Lock Chun Kit |
 | Notifications, Advisor Support, and Admin (alerts, follow-up, moderation, audit) | Soo Kian Rong |
 
-### 5.1.1 Subsystem 1 — Authentication and User Management
+### 4.1.1 Subsystem 1 — Authentication and User Management
 
 This subsystem handles registration and login through Supabase Auth, profile management for all roles, and role-based access through profile tables and Row Level Security policies. It manages the `user`, `role`, `student_profile`, `instructor_profile`, and `advisor_profile` entities.
 
-### 5.1.2 Subsystem 2 — Course and Content Management
+### 4.1.2 Subsystem 2 — Course and Content Management
 
 This subsystem handles course creation, module and lesson management, content publishing workflows, enrollment, quiz and assignment creation, and question bank management. It manages the `course`, `module`, `lesson`, `enrollment`, `quiz`, `assignment`, `question_bank`, `question`, and `quiz_question` entities.
 
-### 5.1.3 Subsystem 3 — Grading, Progress, and Analytics
+### 4.1.3 Subsystem 3 — Grading, Progress, and Analytics
 
 This subsystem handles quiz auto-grading, score calculation, feedback generation, weak-topic detection, lesson progress tracking, and engagement analytics. It manages the `quiz_attempt`, `attempt_answer`, `assignment_submission`, `progress_record`, and `activity_log` entities.
 
-### 5.1.4 Subsystem 4 — Notifications, Advisor Support, and Admin
+### 4.1.4 Subsystem 4 — Notifications, Advisor Support, and Admin
 
 This subsystem handles notification creation and delivery, advisor dashboard data aggregation, advisor alerts, follow-up workflow, admin user management, content moderation, announcement broadcasting, and audit logging. It manages `advisor_alert`, `advisor_follow_up`, `announcement`, `notification`, `moderation_action`, and `audit_log` entities and aggregates data from other subsystems.
 
@@ -342,9 +320,9 @@ Full architecture details are documented in [Architecture-Design.md](./Architect
 
 ---
 
-# 6 Interface Design
+# 5 Interface Design
 
-## 6.1 Main Screens
+## 5.1 Main Screens
 
 The system includes 14 key screens covering all actor workflows. Each screen uses a consistent layout with role-based navigation sidebar, responsive design for desktop and mobile viewports, and the Material UI component library.
 
@@ -369,27 +347,27 @@ The system includes 14 key screens covering all actor workflows. Each screen use
 
 Detailed screen descriptions are documented in [Interface-Design.md](./Interface-Design.md).
 
-## 6.2 Subsystem 1 Screens — Authentication and User Management
+## 5.2 Subsystem 1 Screens — Authentication and User Management
 
 Screens: Login/Registration Page (Screen 1), Profile Settings (Screen 14), Admin User Management (Screen 12 — Users tab).
 
-## 6.3 Subsystem 2 Screens — Course and Content Management
+## 5.3 Subsystem 2 Screens — Course and Content Management
 
 Screens: Course Page (Screen 3), Lesson Viewer (Screen 4), Instructor Course Management (Screen 9), Assessment Creation (Screen 10).
 
-## 6.4 Subsystem 3 Screens — Grading, Progress, and Analytics
+## 5.4 Subsystem 3 Screens — Grading, Progress, and Analytics
 
 Screens: Quiz Interface (Screen 5), Quiz Results and Feedback (Screen 6), Grades and Progress (Screen 7), Student Dashboard progress section (Screen 2), Instructor Dashboard analytics section (Screen 8).
 
-## 6.5 Subsystem 4 Screens — Notifications, Advisor, and Admin
+## 5.5 Subsystem 4 Screens — Notifications, Advisor, and Admin
 
 Screens: Notification Inbox (Screen 13), Advisor Dashboard (Screen 11), Admin Panel (Screen 12 — Content and Announcements tabs).
 
 ---
 
-# 7 Component Design
+# 6 Component Design
 
-## 7.1 Main Components
+## 6.1 Main Components
 
 The following table maps the main software components to their respective subsystems.
 
@@ -406,7 +384,7 @@ The following table maps the main software components to their respective subsys
 | Advisor Actions | Subsystem 4 | Next.js + Supabase PostgreSQL | Advisor alerts, dashboard summaries, and follow-up records |
 | Admin Audit Actions | Subsystem 4 | Next.js + Supabase PostgreSQL | Moderation actions, announcements, and audit logs |
 
-### 7.1.1 GradingService — Auto-Grading Algorithm
+### 6.1.1 Component 1 — GradingService (Auto-Grading Algorithm)
 
 The auto-grading component processes a submitted quiz attempt using the following algorithm:
 
@@ -449,11 +427,60 @@ FUNCTION autoGradeQuizAttempt(studentId, quizId, answers[])
 END FUNCTION
 ```
 
+## 6.2 Component Processing Workflows (Activity Diagrams)
+
+The following activity diagrams describe the processing flow for the underlying use cases that drive component actions, illustrating detailed execution flows, decision points, and alternate branches.
+
+### 6.2.1 UC-01 Register Account and Login
+The registration and login process allows a new user to create an account and authenticate with the system.
+
+> TO DO: Insert exported activity diagram for UC-01 from Activity-Diagrams_UC-01.drawio.xml.
+
+### 6.2.2 UC-02 Start Lesson
+The lesson access process allows an enrolled student to navigate to a lesson, view content, and have their engagement tracked.
+
+> TO DO: Insert exported activity diagram for UC-02 from Activity-Diagrams_UC-02.drawio.xml.
+
+### 6.2.3 UC-03 Attempt Quiz and Receive Automated Feedback
+The quiz attempt process includes question display, answer submission, auto-grading, weak-topic detection, and feedback presentation.
+
+> TO DO: Insert exported activity diagram for UC-03 from Activity-Diagrams_UC-03.drawio.xml.
+
+### 6.2.4 UC-04 Submit Assignment
+The assignment submission process includes validation, deadline checking, late submission handling, and confirmation.
+
+> TO DO: Insert exported activity diagram for UC-04 from Activity-Diagrams_UC-04.drawio.xml.
+
+### 6.2.5 UC-05 Create Course and Learning Structure
+The course creation process allows an instructor to build a hierarchical course structure with modules and lessons.
+
+> TO DO: Insert exported activity diagram for UC-05 from Activity-Diagrams_UC-05.drawio.xml.
+
+### 6.2.6 UC-06 Publish Lesson Content
+The content publishing process allows an instructor to upload materials and make a lesson available to enrolled students.
+
+> TO DO: Insert exported activity diagram for UC-06 from Activity-Diagrams_UC-06.drawio.xml.
+
+### 6.2.7 UC-07 Create Assessment and Configure Feedback
+The assessment configuration process covers quiz and assignment creation with question bank integration and feedback setup.
+
+> TO DO: Insert exported activity diagram for UC-07 from Activity-Diagrams_UC-07.drawio.xml.
+
+### 6.2.8 UC-08 View Advisor Dashboard and Follow Up
+The advisor monitoring process allows an academic advisor to review student progress and send follow-up messages.
+
+> TO DO: Insert exported activity diagram for UC-08 from Activity-Diagrams_UC-08.drawio.xml.
+
+### 6.2.9 UC-09 Moderate Content and Manage Announcements
+The admin moderation process covers content review, announcement management, and password reset operations.
+
+> TO DO: Insert exported activity diagram for UC-09 from Activity-Diagrams_UC-09.drawio.xml.
+
 ---
 
-# 8 Deployment Design
+# 7 Deployment Design
 
-## 8.1 Deployment Diagram
+## 7.1 Deployment Diagram
 
 The QuestLearn prototype is deployed using Vercel for the Next.js application and Supabase for managed backend services.
 
@@ -471,7 +498,7 @@ The deployment workflow uses GitHub for source control and Vercel for preview an
 
 ---
 
-# 9 Summary
+# Summary
 
 This Software Design Specification translates the QuestLearn requirements from Part I into a complete, implementable technical design. The database schema provides normalised storage for the main academic entities with appropriate constraints and indexes. The four-layer Next.js and Supabase architecture supports all functional requirements and three innovations: weak-topic detection, advisor early alerts, and activity-based analytics. Five sequence diagrams and five state transition diagrams verify the correctness of critical user flows and entity lifecycles. The interface design covers 14 screens across all four actor roles. The component design includes pseudocode for the auto-grading algorithm. The deployment architecture uses Vercel and Supabase for a realistic prototype path.
 
