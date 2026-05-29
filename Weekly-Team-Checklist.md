@@ -1,6 +1,6 @@
 # QuestLearn Weekly Team Checklist
 
-This checklist is updated for Week 9 (27/5/2026). Part I has been submitted and diagram work is treated as complete. The team now focuses on continuing Part II by aligning the design with the README stack and completing the Part II report.
+This checklist is updated for Week 10 (1/6/2026) and Week 9 (27/5/2026). Part I has been submitted. The team is finalizing Part II design files for submission by 5 June 2026 and initializing the Part III prototype setup.
 
 Main current Part I source:
 
@@ -67,6 +67,36 @@ Use the README stack as the official direction:
 - Charts and analytics: `Recharts` or `Chart.js`
 - Interactive content: H5P/Lumi embed pipeline
 
+## Week 10 Priority (1/6/2026 - 7/6/2026)
+
+This week focuses on submitting the final Part II Design Report by the 5 June 2026 deadline and beginning the prototype setup for Part III.
+
+### Week 10 Part II Submission & Part III Setup Targets
+
+- [ ] Complete final review, formatting, and audit of `Part-II-Design-Report.md`
+- [ ] Run final search audits (ensure zero placeholder text, correct stack terminology)
+- [ ] Package and submit the Part II Design Report
+- [ ] Create Next.js and Supabase prototype project structures (repository and setup configuration)
+- [ ] Draft the initial Part III Testing Strategy (unit, integration, functional, security, and acceptance)
+
+### Who Does What This Week
+
+1. See Wing Kit
+   - Perform final review of all Part II report sections and submit the report.
+   - Lead the initialization of the Part III Next.js and Supabase environments.
+
+2. Aziel Tan Zheng Chuan
+   - Assist in setting up the initial backend and database schema definitions in Supabase for Part III.
+   - Prepare database seeding scripts or initial sample data setup.
+
+3. Vincent Lock Chun Kit
+   - Handle formatting, style check, and consistency check for the final Part II report.
+   - Begin drafting template structures for the Part III System Documentation.
+
+4. Soo Kian Rong
+   - Manage the submission completeness checklist and verify all diagram references/links.
+   - Draft the 5-section Testing Strategy for the Part III documentation.
+
 ## Week 9 Priority (27/5/2026 - 31/5/2026)
 
 This week continues Part II. The goal is to revise the existing Part II draft so it is consistent, complete, and ready for final cleanup before the 5 June 2026 submission.
@@ -111,6 +141,16 @@ This week continues Part II. The goal is to revise the existing Part II draft so
 
 ## See Wing Kit - Project Leader
 
+### Week 10
+
+- [ ] conduct final review of Part II Design Report for completeness, coherence, and consistency
+- [ ] audit and verify all final Part II files (Database, Architecture, Sequence/State diagrams, Interface, Tech Stack)
+- [ ] oversee and sign off on all team members' Week 10 evidence submissions
+- [ ] package and submit Part II Design Report by the 5 June 2026 deadline
+- [ ] initialize Part III Next.js codebase and connect to Supabase project
+- [ ] create and share prototype setup notes and configurations
+- [ ] produce final review checklist and prototype setup notes as evidence
+
 ### Week 9
 
 - [x] review `README.md` stack and lock it as the official Part II stack
@@ -121,6 +161,14 @@ This week continues Part II. The goal is to revise the existing Part II draft so
 - [x] produce architecture/stack review notes as evidence
 
 ## Aziel Tan Zheng Chuan - Programming Leader
+
+### Week 10
+
+- [ ] resolve any remaining database design feedback or schema mismatches before Part II submission
+- [ ] assist Team Leader in setting up the Supabase project schemas (tables, auth, storage, RLS) for Part III
+- [ ] create database seeding scripts or initial sample data setup for prototype testing
+- [ ] initialize backend folders (Next.js route handlers or server actions structure) for Part III
+- [ ] produce database setup logs, schema execution logs, or prototype changed files as evidence
 
 ### Week 9
 
@@ -133,6 +181,14 @@ This week continues Part II. The goal is to revise the existing Part II draft so
 
 ## Vincent Lock Chun Kit - Documentation Manager
 
+### Week 10
+
+- [ ] complete final formatting, style review, and academic writing polish of `Part-II-Design-Report.md`
+- [ ] cross-check that all section numbers, table headings, and figure captions match submission guidelines
+- [ ] begin drafting the Part III System Documentation structure (copying and refining sections from Part II design)
+- [ ] collaborate with Kian Rong to format the Part III testing templates
+- [ ] produce the formatted Part II Design Report PDF/Markdown and Part III draft sections as evidence
+
 ### Week 9
 
 - [ ] complete `Part-II-Design-Report.md` incomplete sections
@@ -143,6 +199,14 @@ This week continues Part II. The goal is to revise the existing Part II draft so
 - [ ] produce updated report sections and caption list as evidence
 
 ## Soo Kian Rong - Quality and Traceability Owner
+
+### Week 10
+
+- [ ] manage and verify the Part II submission completeness checklist
+- [ ] verify that all UML diagrams (Use Case, ERD, Sequence, State, Component, Deployment) are correctly referenced and linked in the report
+- [ ] verify that no placeholders (e.g. `TO DO`, `Insert exported`) remain in the submitted report
+- [ ] draft the Part III Testing Strategy covering 5 sections: unit, integration, functional, security, and acceptance testing
+- [ ] produce the Part II final submission check log and the 5-section Part III Testing Strategy draft as evidence
 
 ### Week 9
 
@@ -176,6 +240,15 @@ Expected final state:
 
 ## Evidence Required
 
+### Week 10 Evidence
+| Member | Required Evidence |
+| --- | --- |
+| See Wing Kit | Final review checklist and prototype setup notes |
+| Aziel Tan Zheng Chuan | Backend/database task notes or changed files |
+| Vincent Lock Chun Kit | Formatted report and Part III draft sections |
+| Soo Kian Rong | Submission checklist and 5-section testing strategy draft |
+
+### Week 9 Evidence
 | Member | Required Evidence |
 | --- | --- |
 | See Wing Kit | Architecture/stack review notes |
@@ -188,12 +261,12 @@ Expected final state:
 | Milestone | Date | Status |
 | --- | --- | --- |
 | Part I submitted | 2026-05-01 | Done |
-| Week 9 Part II revision | 2026-05-27 to 2026-05-31 | In progress |
-| Part II cleanup and final review | 2026-06-01 to 2026-06-04 | Pending |
-| Part II submission | 2026-06-05 | Pending |
+| Week 9 Part II revision | 2026-05-27 to 2026-05-31 | Done |
+| Week 10 Part II submission & prototype setup | 2026-06-01 to 2026-06-07 | In progress |
+| Part II submission deadline | 2026-06-05 | Pending |
 | Part III prototype first working version | 2026-06-15 | Pending |
 | Part III testing and reports | 2026-06-20 | Pending |
-| Part III submission | 2026-06-26 | Pending |
+| Part III submission deadline | 2026-06-26 | Pending |
 | Presentation window | 2026-06-29 to 2026-07-03 | Pending |
 
 ## Status Legend
