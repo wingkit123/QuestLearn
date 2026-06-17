@@ -9,9 +9,9 @@ The QuestLearn database is organized into four logical entity groups that reflec
 | Group | Entities | Purpose |
 |-------|----------|---------|
 | Identity & Access | `role`, `user`, `student_profile`, `instructor_profile`, `advisor_profile` | Authentication, role-based access control, and profile storage |
-| Learning Structure | `course`, `module`, `lesson`, `enrollment` | Course hierarchy and student-course relationships |
+| Learning Structure | `course`, `module`, `lesson`, `content_item`, `enrollment` | Course hierarchy, lesson content, H5P/Lumi embeds, and student-course relationships |
 | Assessment & Performance | `quiz`, `assignment`, `assignment_submission`, `question_bank`, `question`, `quiz_question`, `quiz_attempt`, `attempt_answer`, `progress_record` | Assessments, grading, and progress tracking |
-| Support & Analytics | `activity_log`, `announcement`, `notification` | User engagement tracking and communication |
+| Support & Analytics | `activity_log`, `advisor_student_assignment`, `advisor_alert`, `advisor_follow_up`, `announcement`, `notification`, `moderation_action`, `audit_log` | User engagement tracking, advisor intervention, communication, moderation, and auditability |
 
 > Figure 2.1: Entity Relationship Diagram for QuestLearn — see exported ERD diagram.
 
@@ -60,7 +60,7 @@ All foreign key constraints use appropriate `ON DELETE` actions:
 | Table | Constraint | Business Rule |
 |---|---|---|
 | `role` | `role_name IN ('Student', ...)` | Only the four defined roles are permitted |
-| `user` | `account_status IN ('active', ...)` | Users must be in a valid account state |
+| `user` | `account_status IN ('pending', 'active', ...)` | Users must be in a valid account state |
 | `course` | `status IN ('draft', ...)` | Courses follow a defined lifecycle |
 | `quiz` | `total_marks > 0` | A quiz must have a positive total mark allocation |
 | `progress_record` | `percentage BETWEEN 0 AND 100` | Progress cannot exceed 100% or be negative |
@@ -76,6 +76,8 @@ All foreign key constraints use appropriate `ON DELETE` actions:
 | `enrollment` | `(student_profile_id, course_id)` | A student cannot enroll in the same course twice |
 | `progress_record` | `(student_profile_id, lesson_id)` | One progress record per student per lesson |
 | `module` | `(course_id, sequence_no)` | Module ordering within a course is unique |
+| `content_item` | `(lesson_id, sequence_no)` | Content ordering within a lesson is unique |
+| `advisor_student_assignment` | `(advisor_profile_id, student_profile_id)` | A student-advisor assignment cannot be duplicated |
 
 ### Indexes
 
@@ -91,6 +93,10 @@ Performance-critical indexes are created on columns that support frequent lookup
 | `idx_activity_time` | `activity_log` | Time-range analytics queries |
 | `idx_notification_user` | `notification` | Notification inbox queries |
 | `idx_assignment_deadline` | `assignment` | Overdue assignment detection |
+| `idx_content_item_lesson` | `content_item` | Lesson viewer content loading |
+| `idx_advisor_alert_status` | `advisor_alert` | Open alert queues for advisors |
+| `idx_moderation_target` | `moderation_action` | Admin moderation history lookups |
+| `idx_audit_target` | `audit_log` | Sensitive action audit review |
 
 ---
 
@@ -122,6 +128,16 @@ UPDATE "user" SET account_status = 'deactivated' WHERE user_id = 5;
 ```
 
 ### 4.2 JOIN Queries
+
+**Get published H5P/Lumi activities for a lesson (UC-06 support):**
+```sql
+SELECT title, embed_url, sequence_no
+FROM content_item
+WHERE lesson_id = 1
+  AND content_type = 'h5p_lumi'
+  AND publish_status = 'published'
+ORDER BY sequence_no;
+```
 
 **Get all students enrolled in a course with their profiles (UC-05 support):**
 ```sql
@@ -186,15 +202,14 @@ ORDER BY aa.attempt_answer_id;
 
 **Students with low progress for advisor follow-up (UC-08 support):**
 ```sql
-SELECT u.full_name, sp.student_no, sp.programme,
-       ROUND(AVG(pr.percentage), 1) AS avg_completion
-FROM student_profile sp
+SELECT aa.advisor_alert_id, u.full_name, sp.student_no,
+       aa.alert_type, aa.severity, aa.message, aa.created_at
+FROM advisor_alert aa
+JOIN student_profile sp ON aa.student_profile_id = sp.student_profile_id
 JOIN "user" u ON sp.user_id = u.user_id
-JOIN progress_record pr ON sp.student_profile_id = pr.student_profile_id
-WHERE sp.department = 'Computer Science'
-GROUP BY sp.student_profile_id, u.full_name, sp.student_no, sp.programme
-HAVING AVG(pr.percentage) < 50
-ORDER BY avg_completion ASC;
+WHERE aa.advisor_profile_id = 1
+  AND aa.status = 'open'
+ORDER BY aa.severity DESC, aa.created_at ASC;
 ```
 
 **Overdue assignments for advisor dashboard (UC-08 support):**
@@ -211,6 +226,31 @@ LEFT JOIN assignment_submission asub
 WHERE a.deadline < CURRENT_TIMESTAMP
   AND asub.submission_id IS NULL
 ORDER BY a.deadline ASC;
+```
+
+**Record advisor follow-up and link it to an alert (UC-08 support):**
+```sql
+INSERT INTO advisor_follow_up
+    (advisor_alert_id, advisor_profile_id, student_profile_id, follow_up_type, message, next_action)
+VALUES
+    (1, 1, 1, 'message', 'Please review Module 2 and attend consultation this week.', 'Check progress again in 7 days');
+
+UPDATE advisor_alert
+SET status = 'reviewed'
+WHERE advisor_alert_id = 1;
+```
+
+**Review admin moderation and audit history (UC-09 support):**
+```sql
+SELECT ma.action_type, ma.target_type, ma.target_id, ma.reason,
+       al.summary AS audit_summary, ma.action_at
+FROM moderation_action ma
+LEFT JOIN audit_log al
+  ON al.target_type = ma.target_type
+ AND al.target_id = ma.target_id
+WHERE ma.target_type = 'content_item'
+  AND ma.target_id = 1
+ORDER BY ma.action_at DESC;
 ```
 
 ### 4.5 Student Activity Engagement (Activity tracking support)
@@ -236,9 +276,13 @@ The schema creates targeted indexes on columns used in `WHERE`, `JOIN`, and `ORD
 ### Query Optimization Notes
 
 1. **Pagination** — Dashboard queries should use `LIMIT` and `OFFSET` or keyset pagination to avoid loading full result sets.
-2. **Caching** — Frequently accessed reference data (roles, course lists) can be cached in Redis to reduce database load.
+2. **Supabase Query Efficiency** — Frequently accessed reference data such as roles and course lists should be fetched with selective columns and server-side filters through Supabase clients.
 3. **Materialized Views** — For analytics dashboards that display aggregated data, materialized views can pre-compute averages and counts, refreshed periodically rather than on every request.
-4. **Connection Pooling** — The application layer should use connection pooling (e.g., `pg-pool` for Node.js) to manage database connections efficiently under concurrent load.
+4. **Managed Connection Pooling** — The prototype relies on Supabase's managed PostgreSQL platform and server-side Next.js access patterns rather than maintaining a separate application connection pool.
+
+### Supabase Security Notes
+
+The Part III Supabase project should enable Row Level Security on all public tables before exposing them through the Supabase Data API. Policies should be based on trusted role/profile tables, course ownership, enrollment, advisor assignment, and admin privileges. The `service_role` key must only be used in server-side environments, never in browser code. Storage buckets for lesson assets and assignment submissions should use policies that check course membership, instructor ownership, or admin access.
 
 ---
 
@@ -248,14 +292,15 @@ Every functional requirement from Part I maps to one or more database tables:
 
 | Requirement | Supporting Tables |
 |---|---|
-| Account registration and login (UC-01) | `user`, `role` |
+| Account registration and login (UC-01) | Supabase Auth identity, `user`, `role` |
 | Profile management | `student_profile`, `instructor_profile`, `advisor_profile` |
-| Course creation and management (UC-05) | `course`, `module`, `lesson` |
+| Course creation and management (UC-05) | `course`, `module`, `lesson`, `content_item` |
 | Quiz management (UC-03, UC-07) | `quiz`, `question_bank`, `question`, `quiz_question` |
 | Assignment management (UC-04, UC-07) | `assignment`, `assignment_submission` |
 | Auto-grading and feedback | `quiz_attempt`, `attempt_answer` |
 | Progress tracking (UC-02) | `progress_record` |
 | Activity tracking | `activity_log` |
 | Notifications | `notification`, `announcement` |
-| Advisor monitoring (UC-08) | `student_profile`, `progress_record`, `activity_log` |
-| Admin moderation (UC-09) | `announcement`, `notification`, `user` |
+| H5P/Lumi content publishing (UC-06) | `lesson`, `content_item`, `activity_log` |
+| Advisor monitoring (UC-08) | `advisor_student_assignment`, `advisor_alert`, `advisor_follow_up`, `student_profile`, `progress_record`, `activity_log` |
+| Admin moderation (UC-09) | `moderation_action`, `audit_log`, `announcement`, `notification`, `user`, `content_item` |

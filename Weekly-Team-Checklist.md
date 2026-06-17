@@ -36,7 +36,7 @@ Main Part II working files:
 - [x] requirements traceability completed
 - [x] latest source identified as `Part I_Group5_QuestLearn latest.md`
 
-### Part II - Drafted, Needs Revision
+### Part II - Final Cleanup Complete, Submission Packaging Pending
 
 - [x] `part-ii/` directory structure exists
 - [x] database design document drafted
@@ -46,13 +46,13 @@ Main Part II working files:
 - [x] state transition diagrams drafted
 - [x] interface design / wireframes drafted
 - [x] technology stack justification drafted
-- [/] Part II master design report drafted but incomplete
-- [/] align Part II stack with README stack
-- [ ] complete all `TO DO` and `Insert exported` placeholders in `Part-II-Design-Report.md`
-- [ ] add H5P/Lumi database support
-- [ ] add advisor follow-up and advisor alert modeling
-- [ ] add admin audit/moderation modeling
-- [ ] add Supabase Auth/RLS/Storage security section
+- [x] Part II master design report drafted and cleanup references added
+- [x] align Part II stack with README stack
+- [x] complete all `TO DO` and `Insert exported` placeholders in `Part-II-Design-Report.md`
+- [x] add H5P/Lumi database support
+- [x] add advisor follow-up and advisor alert modeling
+- [x] add admin audit/moderation modeling
+- [x] add Supabase Auth/RLS/Storage security section
 
 ### Official Stack
 
@@ -73,11 +73,11 @@ This week focuses on submitting the final Part II Design Report by the 5 June 20
 
 ### Week 10 Part II Submission & Part III Setup Targets
 
-- [ ] Complete final review, formatting, and audit of `Part-II-Design-Report.md`
-- [ ] Run final search audits (ensure zero placeholder text, correct stack terminology)
+- [x] Complete final review, formatting, and audit of `Part-II-Design-Report.md`
+- [x] Run final search audits (ensure zero placeholder text, correct stack terminology)
 - [ ] Package and submit the Part II Design Report
-- [ ] Create Next.js and Supabase prototype project structures (repository and setup configuration)
-- [ ] Draft the initial Part III Testing Strategy (unit, integration, functional, security, and acceptance)
+- [/] Create Next.js and Supabase prototype project structures (repository and setup configuration)
+- [x] Draft the initial Part III Testing Strategy (unit, integration, functional, security, and acceptance)
 
 ### Who Does What This Week
 
@@ -103,14 +103,14 @@ This week continues Part II. The goal is to revise the existing Part II draft so
 
 ### Week 9 Part II Revision Targets
 
-- [ ] Standardize all Part II documents to the README stack
-- [ ] Complete `Part-II-Design-Report.md`
-- [ ] Add H5P/Lumi database support
-- [ ] Add advisor follow-up and advisor alert modeling
-- [ ] Add admin audit/moderation modeling
-- [ ] Add Supabase Auth, RLS, and Storage security section
-- [ ] Remove stale Express/Sequelize/JWT/Redis/Docker wording unless listed as rejected alternatives
-- [ ] Confirm every Part I requirement maps to Part II database, architecture, interface, and diagrams
+- [x] Standardize all Part II documents to the README stack
+- [x] Complete `Part-II-Design-Report.md`
+- [x] Add H5P/Lumi database support
+- [x] Add advisor follow-up and advisor alert modeling
+- [x] Add admin audit/moderation modeling
+- [x] Add Supabase Auth, RLS, and Storage security section
+- [x] Remove stale Express/Sequelize/JWT/Redis/Docker wording unless listed as rejected alternatives
+- [x] Confirm every Part I requirement maps to Part II database, architecture, interface, and diagrams
 
 ### Who Does What This Week
 
@@ -143,21 +143,21 @@ This week continues Part II. The goal is to revise the existing Part II draft so
 
 ### Week 10
 
-- [ ] conduct final review of Part II Design Report for completeness, coherence, and consistency
-- [ ] audit and verify all final Part II files (Database, Architecture, Sequence/State diagrams, Interface, Tech Stack)
-- [ ] oversee and sign off on all team members' Week 10 evidence submissions
+- [x] conduct final review of Part II Design Report for completeness, coherence, and consistency
+- [x] audit and verify all final Part II files (Database, Architecture, Sequence/State diagrams, Interface, Tech Stack)
+- [x] oversee and sign off on all team members' Week 10 evidence submissions
 - [ ] package and submit Part II Design Report by the 5 June 2026 deadline
-- [ ] initialize Part III Next.js codebase and connect to Supabase project
-- [ ] create and share prototype setup notes and configurations
-- [ ] produce final review checklist and prototype setup notes as evidence
+- [/] initialize Part III Next.js codebase and connect to Supabase project
+- [x] create and share prototype setup notes and configurations
+- [x] produce final review checklist and prototype setup notes as evidence
 
 ### Week 9
 
 - [x] review `README.md` stack and lock it as the official Part II stack
 - [x] revise `Architecture-Design.md` direction to Next.js + Supabase
 - [x] revise `Technology-Stack.md` to remove old selected-stack wording
-- [ ] review `Part-II-Design-Report.md` for consistency after all member updates
-- [ ] approve final Part II scope before submission cleanup
+- [x] review `Part-II-Design-Report.md` for consistency after all member updates
+- [x] approve final Part II scope before submission cleanup
 - [x] produce architecture/stack review notes as evidence
 
 ## Aziel Tan Zheng Chuan - Programming Leader
@@ -172,12 +172,12 @@ This week continues Part II. The goal is to revise the existing Part II draft so
 
 ### Week 9
 
-- [ ] revise `Database-Design.md` for Supabase PostgreSQL direction
-- [ ] revise `Database-Schema.sql` with H5P/Lumi content support
-- [ ] add advisor follow-up and advisor alert table design
-- [ ] add admin audit/moderation table design
-- [ ] update indexes and sample SQL queries for new tables
-- [ ] produce updated schema/table list and database design notes as evidence
+- [x] revise `Database-Design.md` for Supabase PostgreSQL direction
+- [x] revise `Database-Schema.sql` with H5P/Lumi content support
+- [x] add advisor follow-up and advisor alert table design
+- [x] add admin audit/moderation table design
+- [x] update indexes and sample SQL queries for new tables
+- [x] produce updated schema/table list and database design notes as evidence
 
 ## Vincent Lock Chun Kit - Documentation Manager
 
@@ -191,12 +191,12 @@ This week continues Part II. The goal is to revise the existing Part II draft so
 
 ### Week 9
 
-- [ ] complete `Part-II-Design-Report.md` incomplete sections
-- [ ] remove all unresolved `TO DO` and `Insert exported` placeholders from the final report draft
-- [ ] add diagram references and captions
-- [ ] update interface design wording to reflect H5P/Lumi, advisor follow-up, alerts, and audit trail
-- [ ] polish academic writing and formatting
-- [ ] produce updated report sections and caption list as evidence
+- [x] complete `Part-II-Design-Report.md` incomplete sections
+- [x] remove all unresolved `TO DO` and `Insert exported` placeholders from the final report draft
+- [x] add diagram references and captions
+- [x] update interface design wording to reflect H5P/Lumi, advisor follow-up, alerts, and audit trail
+- [x] polish academic writing and formatting
+- [x] produce updated report sections and caption list as evidence
 
 ## Soo Kian Rong - Quality and Traceability Owner
 
@@ -210,33 +210,33 @@ This week continues Part II. The goal is to revise the existing Part II draft so
 
 ### Week 9
 
-- [ ] create Part II completion checklist
-- [ ] create traceability checklist from latest Part I requirements to Part II database, architecture, interface, and diagrams
-- [ ] create Supabase security/RLS review checklist
-- [ ] run old-stack audit for `React SPA`, `Express`, `Sequelize`, `JWT`, `bcrypt`, `Redis`, and `Docker Compose`
-- [ ] track unresolved `TO DO` and `Insert exported` placeholders
-- [ ] produce traceability checklist, security checklist, and old-stack audit list as evidence
+- [x] create Part II completion checklist
+- [x] create traceability checklist from latest Part I requirements to Part II database, architecture, interface, and diagrams
+- [x] create Supabase security/RLS review checklist
+- [x] run old-stack audit for `React SPA`, `Express`, `Sequelize`, `JWT`, `bcrypt`, `Redis`, and `Docker Compose`
+- [x] track unresolved `TO DO` and `Insert exported` placeholders
+- [x] produce traceability checklist, security checklist, and old-stack audit list as evidence
 
 ## Part II Search Audit
 
 Before finalizing Part II, search for these terms:
 
-- [ ] `TO DO`
-- [ ] `Insert exported`
-- [ ] `React SPA`
-- [ ] `Express`
-- [ ] `Sequelize`
-- [ ] `JWT`
-- [ ] `bcrypt`
-- [ ] `Redis`
-- [ ] `Docker Compose`
+- [x] `TO DO`
+- [x] `Insert exported`
+- [x] `React SPA`
+- [x] `Express`
+- [x] `Sequelize`
+- [x] `JWT`
+- [x] `bcrypt`
+- [x] `Redis`
+- [x] `Docker Compose`
 
 Expected final state:
 
-- [ ] no unresolved TODO placeholders remain
-- [ ] old stack terms are removed or clearly marked as rejected alternatives
-- [ ] Part II consistently uses Next.js + Supabase + Vercel wording
-- [ ] H5P/Lumi, advisor follow-up, admin audit, and Supabase security are covered
+- [x] no unresolved TODO placeholders remain
+- [x] old stack terms are removed or clearly marked as rejected alternatives
+- [x] Part II consistently uses Next.js + Supabase + Vercel wording
+- [x] H5P/Lumi, advisor follow-up, admin audit, and Supabase security are covered
 
 ## Evidence Required
 

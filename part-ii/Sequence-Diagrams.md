@@ -6,36 +6,36 @@ This document provides sequence diagrams for the five critical user flows in Que
 
 ## SD-01: User Registration and Login
 
-This sequence covers UC-01. The user registers a new account and then logs in to receive a JWT token for subsequent requests.
+This sequence covers UC-01. The user registers a new account through Supabase Auth and then logs in to establish an authenticated session for subsequent requests.
 
 ```mermaid
 sequenceDiagram
     actor User
     participant FE as Frontend
-    participant Auth as AuthenticationService
-    participant DB as Database
+    participant Auth as Supabase Auth
+    participant App as Next.js Auth Action
+    participant DB as Supabase PostgreSQL
 
     User->>FE: Opens registration page
     User->>FE: Submits name, email, password, role, department
-    FE->>Auth: POST /api/v1/auth/register
-    Auth->>DB: SELECT * FROM user WHERE email = ?
-    DB-->>Auth: No matching record
-    Auth->>Auth: Hash password with bcrypt
-    Auth->>DB: INSERT INTO user (email, password_hash, role_id, ...)
-    DB-->>Auth: User created (user_id)
-    Auth->>DB: INSERT INTO student_profile / instructor_profile (user_id, ...)
-    DB-->>Auth: Profile created
-    Auth-->>FE: 201 Created — Registration successful
+    FE->>App: submit registration form
+    App->>Auth: signUp(email, password)
+    Auth-->>App: Auth user created
+    App->>DB: INSERT INTO user (auth_user_id, email, role_id, account_status, ...)
+    DB-->>App: User created (user_id)
+    App->>DB: INSERT INTO student_profile / instructor_profile / advisor_profile
+    DB-->>App: Profile created
+    App-->>FE: Registration successful
     FE-->>User: Show success message, redirect to login
 
     User->>FE: Enters email and password
-    FE->>Auth: POST /api/v1/auth/login
-    Auth->>DB: SELECT * FROM user WHERE email = ?
-    DB-->>Auth: User record with password_hash
-    Auth->>Auth: Compare password with bcrypt
-    Auth->>Auth: Generate JWT (user_id, role_name, exp)
-    Auth-->>FE: 200 OK — { token, user profile }
-    FE->>FE: Store token, redirect to role dashboard
+    FE->>Auth: signInWithPassword(email, password)
+    Auth-->>FE: Authenticated session
+    FE->>App: Load current profile
+    App->>DB: SELECT user, role, profile for auth user
+    DB-->>App: Role and profile data
+    App-->>FE: Session-aware user profile
+    FE->>FE: Redirect to role dashboard
 ```
 
 **Alternate Flow — Duplicate Email:**
@@ -43,14 +43,15 @@ sequenceDiagram
 sequenceDiagram
     actor User
     participant FE as Frontend
-    participant Auth as AuthenticationService
-    participant DB as Database
+    participant Auth as Supabase Auth
+    participant App as Next.js Auth Action
+    participant DB as Supabase PostgreSQL
 
     User->>FE: Submits registration with existing email
-    FE->>Auth: POST /api/v1/auth/register
-    Auth->>DB: SELECT * FROM user WHERE email = ?
-    DB-->>Auth: Existing user found
-    Auth-->>FE: 409 Conflict — "Account already exists"
+    FE->>App: submit registration form
+    App->>DB: SELECT user WHERE email = ?
+    DB-->>App: Existing user found
+    App-->>FE: Registration rejected — "Account already exists"
     FE-->>User: Show error, link to login page
 ```
 

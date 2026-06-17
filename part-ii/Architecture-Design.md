@@ -11,7 +11,7 @@ The architecture is organized into four layers:
 3. Data and Security Layer - Supabase Auth, Supabase PostgreSQL, Row Level Security policies, and Supabase Storage.
 4. External Integration Layer - H5P/Lumi interactive content, embedded videos, email/notification triggers, and deployment services.
 
-This structure preserves the separation of concerns required for the Part II design while avoiding the older split between a separate React SPA, Express API, Sequelize ORM, Redis cache, and Docker Compose deployment.
+This structure preserves the separation of concerns required for the Part II design while avoiding the older multi-service stack rejected in [Technology-Stack.md](./Technology-Stack.md).
 
 > Figure 3.1: Multi-Layer Architecture Diagram - see exported architecture diagram.
 
@@ -166,7 +166,7 @@ The data and security layer uses Supabase PostgreSQL for relational storage, Sup
 | Identity and Access | `role`, `user`, `student_profile`, `instructor_profile`, `advisor_profile` |
 | Learning Structure | `course`, `module`, `lesson`, `content_item`, `enrollment` |
 | Assessment and Performance | `quiz`, `assignment`, `assignment_submission`, `question_bank`, `question`, `quiz_question`, `quiz_attempt`, `attempt_answer`, `progress_record` |
-| Support and Analytics | `activity_log`, `recommendation`, `advisor_student_assignment`, `advisor_alert`, `advisor_follow_up`, `announcement`, `notification`, `moderation_action`, `audit_log` |
+| Support and Analytics | `activity_log`, `advisor_student_assignment`, `advisor_alert`, `advisor_follow_up`, `announcement`, `notification`, `moderation_action`, `audit_log` |
 
 ### Supabase Access Model
 
@@ -268,4 +268,3 @@ The project can use GitHub and Vercel for deployment flow:
 | Cross-Site Scripting | React escaping and controlled rendering of embedded content reduce XSS risk |
 | Admin Misuse | `audit_log` and `moderation_action` record sensitive admin actions |
 | Advisor Privacy | Advisor policies allow access only to assigned students or department-authorized data |
-
