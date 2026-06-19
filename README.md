@@ -94,7 +94,7 @@ For the first version, gamification should remain lightweight, recommendations s
 - File and Media Storage: `Supabase Storage`
 - Charts and Analytics: `Recharts` or `Chart.js`
 - Interactive Content Pipeline: `H5P` authored via `Lumi`
-- Deployment: `Vercel` with `Supabase`
+- Deployment: `Netlify` with `Supabase`
 
 ## High-Level System Modules
 
