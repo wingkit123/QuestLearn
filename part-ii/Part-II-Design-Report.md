@@ -79,7 +79,7 @@
 | Version | Primary Author(s) | Description of Version | Date Completed |
 | --- | --- | --- | --- |
 | 1.0 | All members | SRS — Part I (Project Planning / Requirements Analysis) | 01/05/2026 |
-| 2.0 | All members | SDS — Part II (Design / Architecture / Interfaces / Database) | [fill in] |
+| 2.0 | All members | SDS — Part II (Design / Architecture / Interfaces / Database) | 05/06/2026 |
 
 ---
 
@@ -87,7 +87,7 @@
 
 ## 1.1 Description
 
-QuestLearn is a Smart Interactive Learning System that combines microlearning principles, interactive content delivery, formative assessment, progress analytics, and advisor-oriented early alert support. The system enables students to engage in guided learning sprints, receive immediate quiz feedback with weak-topic detection, and track their progress through role-appropriate dashboards. Instructors create and manage course structures with embedded video and reading content, while academic advisors monitor student performance for early intervention. Administrators oversee platform-wide user management, content moderation, and announcements.
+QuestLearn is a Smart Interactive Learning System that combines short lesson-based learning, interactive content delivery, formative assessment, progress analytics, and advisor-oriented early alert support. The system enables students to work through ordered lesson modules, receive immediate quiz feedback with weak-topic detection, and track their progress through role-appropriate dashboards. Instructors create and manage course structures with embedded video, reading content, and H5P/Lumi references, while academic advisors monitor student performance for early intervention. Administrators oversee platform-wide user management, content moderation, and announcements.
 
 The major process groups and their relationships are summarised in the following table.
 
@@ -114,12 +114,13 @@ The assumptions and dependencies established in Part I remain valid for Part II.
 1. The system is deployed as a web application accessible through modern browsers (Chrome, Firefox, Edge, Safari).
 2. Video content is hosted externally (YouTube) and embedded via IFrame API; the system does not host video files directly.
 3. The prototype uses a single PostgreSQL database instance; production scaling considerations (read replicas, sharding) are out of scope.
-4. Assignment submissions are stored as file uploads on the local file system for the prototype; cloud storage (AWS S3) would be used in production.
+4. Assignment submissions and lesson assets are stored through Supabase Storage with access controlled by bucket policies.
 5. Email notifications are implemented via SMTP; the prototype may use a local SMTP testing tool (e.g., Mailtrap) rather than a production email service.
 
 ## 1.4 Use Case Diagram
 
-> TO DO: Insert the exported UML use case diagram here (same diagram as Part I, unchanged).
+**Figure 1.1: QuestLearn UML Use Case Diagram**
+The approved Part I use case diagram is reused without functional changes. The diagram source remains in the latest Part I document and should be exported as the final report image during packaging.
 
 ---
 
@@ -127,7 +128,8 @@ The assumptions and dependencies established in Part I remain valid for Part II.
 
 ## 2.1 Use Case Diagram
 
-> TO DO: Insert the exported UML use case diagram here (same diagram as Section 1.4, referenced or re-inserted).
+**Figure 2.1: QuestLearn UML Use Case Diagram**
+This section references the same approved use case diagram from Section 1.4 to avoid conflicting versions across the report.
 
 ## 2.2 Student Use Cases
 
@@ -137,7 +139,8 @@ The registration and login process allows a new user to create an account and au
 **Sequence Diagram (SD-01):**
 This sequence shows the registration and authentication flow. The user submits account details, Supabase Auth validates the credentials, the matching QuestLearn profile is loaded, and an authenticated session is established for role-based access. Full alternate flows are documented in [Sequence-Diagrams.md](./Sequence-Diagrams.md).
 
-> TO DO: Insert exported sequence diagram for SD-01.
+**Figure 2.2: SD-01 User Registration and Login**
+The final sequence is documented in [Sequence-Diagrams.md](./Sequence-Diagrams.md) and should be exported as SD-01 for submission packaging.
 
 ### 2.2.2 UC-02 Start Lesson
 The lesson access process allows an enrolled student to navigate to a lesson, view content, and have their engagement tracked.
@@ -148,7 +151,8 @@ The quiz attempt process includes question display, answer submission, auto-grad
 **Sequence Diagram (SD-02):**
 This sequence shows the quiz attempt flow including question display, answer submission, auto-grading, weak-topic detection, feedback generation, and notification delivery. Full details are documented in [Sequence-Diagrams.md](./Sequence-Diagrams.md).
 
-> TO DO: Insert exported sequence diagram for SD-02.
+**Figure 2.3: SD-02 Student Quiz Attempt with Auto-Grading and Feedback**
+The final sequence is documented in [Sequence-Diagrams.md](./Sequence-Diagrams.md) and should be exported as SD-02 for submission packaging.
 
 ### 2.2.4 UC-04 Submit Assignment
 The assignment submission process includes validation, deadline checking, late submission handling, and confirmation.
@@ -161,7 +165,8 @@ The course creation process allows an instructor to build a hierarchical course 
 **Sequence Diagram (SD-03):**
 This sequence shows the instructor flow for creating a course structure (course → module → lesson) and publishing content with student notification. Full details are documented in [Sequence-Diagrams.md](./Sequence-Diagrams.md).
 
-> TO DO: Insert exported sequence diagram for SD-03.
+**Figure 2.4: SD-03 Instructor Creates Course Content**
+The final sequence is documented in [Sequence-Diagrams.md](./Sequence-Diagrams.md) and should be exported as SD-03 for submission packaging.
 
 ### 2.3.2 UC-06 Publish Lesson Content
 The content publishing process allows an instructor to upload materials and make a lesson available to enrolled students.
@@ -177,7 +182,8 @@ The advisor monitoring process allows an academic advisor to review student prog
 **Sequence Diagram (SD-04):**
 This sequence shows the advisor monitoring flow including department student listing, progress summary review, and follow-up message delivery. Full details are documented in [Sequence-Diagrams.md](./Sequence-Diagrams.md).
 
-> TO DO: Insert exported sequence diagram for SD-04.
+**Figure 2.5: SD-04 Advisor Reviews Student Progress and Follows Up**
+The final sequence is documented in [Sequence-Diagrams.md](./Sequence-Diagrams.md) and should be exported as SD-04 for submission packaging.
 
 ## 2.5 Admin Use Cases
 
@@ -187,7 +193,8 @@ The admin moderation process covers content review, announcement management, and
 **Sequence Diagram (SD-05):**
 This sequence shows the admin workflow for user account approval, content moderation, and announcement creation with notification broadcasting. Full details are documented in [Sequence-Diagrams.md](./Sequence-Diagrams.md).
 
-> TO DO: Insert exported sequence diagram for SD-05.
+**Figure 2.6: SD-05 Admin Moderates Content and Manages Announcements**
+The final sequence is documented in [Sequence-Diagrams.md](./Sequence-Diagrams.md) and should be exported as SD-05 for submission packaging.
 
 ---
 
@@ -195,9 +202,10 @@ This sequence shows the admin workflow for user account approval, content modera
 
 ## 3.1 Design Class Diagram / ERD
 
-The QuestLearn data model consists of 21 entities organised into four logical groups. The Entity-Relationship Diagram below shows all entities, their attributes, primary keys, foreign keys, and relationships.
+The QuestLearn data model consists of 27 entities organised into four logical groups. The Entity-Relationship Diagram below shows all entities, their attributes, primary keys, foreign keys, and relationships.
 
-> TO DO: Insert exported ERD diagram from ERD-UML.drawio.xml.
+**Figure 3.1: QuestLearn Entity-Relationship Diagram**
+The ERD is derived from [Database-Schema.sql](./Database-Schema.sql), including H5P/Lumi content items, advisor alerts and follow-ups, admin moderation actions, audit logs, and Supabase security-oriented entities.
 
 The schema uses Third Normal Form (3NF) to ensure data integrity and minimise redundancy. Separate profile tables (`student_profile`, `instructor_profile`, `advisor_profile`) are linked to the base `user` table through unique foreign keys, which avoids sparse columns and supports role-specific queries.
 
@@ -210,13 +218,14 @@ The following data dictionary summarises all entities, their key attributes, dat
 | Entity | Key Attributes | Type | Purpose |
 | --- | --- | --- | --- |
 | role | role_id (PK), role_name | Lookup | Stores system roles (Student, Instructor, Academic Advisor, Admin) |
-| user | user_id (PK), role_id (FK), email (UNIQUE), password_hash, account_status | Core | Login and identity for all platform users |
+| user | user_id (PK), auth_user_id (UNIQUE), role_id (FK), email (UNIQUE), account_status | Core | Application profile linked to Supabase Auth identity |
 | student_profile | student_profile_id (PK), user_id (FK+UNIQUE), academic_level, programme, department, learning_preference | Profile | Student-specific academic information |
 | instructor_profile | instructor_profile_id (PK), user_id (FK+UNIQUE), specialization, subjects_taught, office_hours | Profile | Instructor-specific teaching information |
 | advisor_profile | advisor_profile_id (PK), user_id (FK+UNIQUE), department, office_hours | Profile | Advisor-specific details |
 | course | course_id (PK), instructor_profile_id (FK), course_code (UNIQUE), course_title, status | Core | Courses created by instructors |
 | module | module_id (PK), course_id (FK), module_title, sequence_no | Structure | Subdivisions of a course |
 | lesson | lesson_id (PK), module_id (FK), lesson_title, lesson_type, content_text, video_url, publish_status | Structure | Individual lessons with content |
+| content_item | content_item_id (PK), lesson_id (FK), content_type, title, resource_url, embed_url, publish_status | Structure | Lesson content blocks, including H5P/Lumi embeds |
 | enrollment | enrollment_id (PK), student_profile_id (FK), course_id (FK) | Bridge | Student-course many-to-many relationship |
 | quiz | quiz_id (PK), lesson_id (FK), quiz_title, total_marks, randomized, publish_status | Assessment | Quizzes linked to lessons |
 | assignment | assignment_id (PK), course_id (FK), lesson_id (FK, optional), assignment_title, deadline, total_marks | Assessment | Course assignments with deadlines |
@@ -228,8 +237,13 @@ The following data dictionary summarises all entities, their key attributes, dat
 | attempt_answer | attempt_answer_id (PK), attempt_id (FK), question_id (FK), student_answer, is_correct | Performance | Per-question answers in a quiz attempt |
 | progress_record | progress_record_id (PK), student_profile_id (FK), lesson_id (FK), completion_status, percentage | Tracking | Lesson-level progress tracking |
 | activity_log | activity_log_id (PK), user_id (FK), activity_type, target_type, target_id, duration_seconds, metadata (JSONB) | Analytics | User engagement event records |
+| advisor_student_assignment | advisor_student_assignment_id (PK), advisor_profile_id (FK), student_profile_id (FK), status | Support | Maps advisors to assigned students |
+| advisor_alert | advisor_alert_id (PK), student_profile_id (FK), advisor_profile_id (FK), alert_type, severity, status | Support | Advisor early-warning alerts |
+| advisor_follow_up | advisor_follow_up_id (PK), advisor_alert_id (FK), advisor_profile_id (FK), student_profile_id (FK), message | Support | Advisor intervention notes and actions |
 | announcement | announcement_id (PK), user_id (FK), title, message, scope, status | Communication | Platform or course announcements |
 | notification | notification_id (PK), user_id (FK), announcement_id (FK, nullable), message, is_read | Communication | In-app notifications |
+| moderation_action | moderation_action_id (PK), admin_user_id (FK), target_type, target_id, action_type, reason | Audit | Admin moderation decisions |
+| audit_log | audit_log_id (PK), actor_user_id (FK), action_type, target_type, target_id, summary | Audit | Sensitive action traceability |
 
 ## 3.3 Data Structures
 
@@ -241,9 +255,9 @@ This group manages authentication, roles, and role-specific profiles. The `user`
 
 ### 3.3.2 Learning Structure Group
 
-This group manages the course content hierarchy. Courses are owned by instructors and contain modules, which contain lessons. Enrollment maps students to courses.
+This group manages the course content hierarchy. Courses are owned by instructors and contain modules, which contain lessons and ordered content items. Content items support reading, video, file, and H5P/Lumi embed resources. Enrollment maps students to courses.
 
-**Key relationships:** `instructor_profile` 1→∗ `course`, `course` 1→∗ `module`, `module` 1→∗ `lesson`, `student_profile` ∗→∗ `course` through `enrollment`.
+**Key relationships:** `instructor_profile` 1→∗ `course`, `course` 1→∗ `module`, `module` 1→∗ `lesson`, `lesson` 1→∗ `content_item`, `student_profile` ∗→∗ `course` through `enrollment`.
 
 ### 3.3.3 Assessment and Performance Group
 
@@ -253,9 +267,9 @@ This group manages quizzes, assignments, question banks, grading, and progress t
 
 ### 3.3.4 Support and Analytics Group
 
-This group manages activity logging, announcements, and notifications. The `activity_log` uses a generic structure with JSONB metadata to support variable event types without schema changes.
+This group manages activity logging, advisor assignment, advisor alerts, follow-up records, announcements, notifications, moderation actions, and audit logs. The `activity_log` and `audit_log` tables use JSONB metadata to support variable event types without schema changes.
 
-**Key relationships:** `user` 1→∗ `activity_log`, `user` 1→∗ `announcement`, `announcement` 1→∗ `notification`, `user` 1→∗ `notification`.
+**Key relationships:** `user` 1→∗ `activity_log`, `advisor_profile` ∗→∗ `student_profile` through `advisor_student_assignment`, `student_profile` 1→∗ `advisor_alert`, `advisor_alert` 1→∗ `advisor_follow_up`, `user` 1→∗ `announcement`, `announcement` 1→∗ `notification`, `user` 1→∗ `notification`, `user` 1→∗ `moderation_action`, `user` 1→∗ `audit_log`.
 
 ## 3.4 Entity Lifecycle States
 
@@ -263,23 +277,28 @@ The following state transition diagrams define the valid lifecycles for key syst
 
 ### 3.4.1 User Account States
 States: Pending → Active → Suspended → Deactivated
-> TO DO: Insert exported state diagram for ST-01.
+**Figure 3.2: ST-01 User Account State Diagram**
+The state definition is documented in [State-Diagrams.md](./State-Diagrams.md).
 
 ### 3.4.2 Course States
 States: Draft → Published → Active → Completed → Archived
-> TO DO: Insert exported state diagram for ST-02.
+**Figure 3.3: ST-02 Course State Diagram**
+The state definition is documented in [State-Diagrams.md](./State-Diagrams.md).
 
 ### 3.4.3 Quiz States
 States: Draft → Published → Active → Closed → Archived
-> TO DO: Insert exported state diagram for ST-03.
+**Figure 3.4: ST-03 Quiz State Diagram**
+The state definition is documented in [State-Diagrams.md](./State-Diagrams.md).
 
 ### 3.4.4 Assignment Submission States
 States: Not Started → In Progress → Submitted → Under Review → Graded → Returned
-> TO DO: Insert exported state diagram for ST-04.
+**Figure 3.5: ST-04 Assignment Submission State Diagram**
+The state definition is documented in [State-Diagrams.md](./State-Diagrams.md).
 
 ### 3.4.5 Enrollment States
 States: Enrolled → Active → Completed / Withdrawn
-> TO DO: Insert exported state diagram for ST-05.
+**Figure 3.6: ST-05 Enrollment State Diagram**
+The state definition is documented in [State-Diagrams.md](./State-Diagrams.md).
 
 ---
 
@@ -287,9 +306,10 @@ States: Enrolled → Active → Completed / Withdrawn
 
 ## 4.1 Software Architecture
 
-QuestLearn adopts a four-layer architecture: Presentation, Application Logic, Data and Security, and External Integration. The selected stack is Next.js with Supabase and Vercel, matching the README direction for the prototype. This architecture keeps the application realistic for Part III because the team can use one framework for the user interface and controlled server-side workflows, while Supabase provides authentication, PostgreSQL storage, row-level authorization, and file storage.
+QuestLearn adopts a four-layer architecture: Presentation, Application Logic, Data and Security, and External Integration. The selected stack is Next.js with Supabase and Netlify, matching the README direction for the prototype. This architecture keeps the application realistic for Part III because the team can use one framework for the user interface and controlled server-side workflows, while Supabase provides authentication, PostgreSQL storage, row-level authorization, and file storage.
 
-> TO DO: Insert exported architecture layer diagram.
+**Figure 4.1: QuestLearn Four-Layer Architecture Diagram**
+The architecture is documented in [Architecture-Design.md](./Architecture-Design.md) and should be exported from the final architecture drawing during packaging.
 
 The system is divided into subsystems assigned to team members as follows:
 
@@ -324,9 +344,10 @@ Full architecture details are documented in [Architecture-Design.md](./Architect
 
 ## 5.1 Main Screens
 
-The system includes 14 key screens covering all actor workflows. Each screen uses a consistent layout with role-based navigation sidebar, responsive design for desktop and mobile viewports, and the Material UI component library.
+The system includes 14 key screens covering all actor workflows. Each screen uses a consistent layout with role-based navigation sidebar and responsive design for desktop and mobile viewports.
 
-> TO DO: Insert wireframe or mockup for each screen.
+**Figure 5.1: QuestLearn Interface Wireframes**
+The wireframe set is documented in [Interface-Design.md](./Interface-Design.md), including login, dashboards, lesson viewer, quiz, advisor, admin, notification, and profile screens.
 
 | # | Screen | Primary Actor | Related Use Cases |
 | --- | --- | --- | --- |
@@ -434,47 +455,56 @@ The following activity diagrams describe the processing flow for the underlying 
 ### 6.2.1 UC-01 Register Account and Login
 The registration and login process allows a new user to create an account and authenticate with the system.
 
-> TO DO: Insert exported activity diagram for UC-01 from Activity-Diagrams_UC-01.drawio.xml.
+**Figure 6.1: Activity Diagram for UC-01 Register Account and Login**
+Use the approved UC-01 activity diagram from the Part I activity diagram set.
 
 ### 6.2.2 UC-02 Start Lesson
 The lesson access process allows an enrolled student to navigate to a lesson, view content, and have their engagement tracked.
 
-> TO DO: Insert exported activity diagram for UC-02 from Activity-Diagrams_UC-02.drawio.xml.
+**Figure 6.2: Activity Diagram for UC-02 Start Lesson**
+Use the approved UC-02 activity diagram from the Part I activity diagram set.
 
 ### 6.2.3 UC-03 Attempt Quiz and Receive Automated Feedback
 The quiz attempt process includes question display, answer submission, auto-grading, weak-topic detection, and feedback presentation.
 
-> TO DO: Insert exported activity diagram for UC-03 from Activity-Diagrams_UC-03.drawio.xml.
+**Figure 6.3: Activity Diagram for UC-03 Attempt Quiz and Receive Automated Feedback**
+Use the approved UC-03 activity diagram from the Part I activity diagram set.
 
 ### 6.2.4 UC-04 Submit Assignment
 The assignment submission process includes validation, deadline checking, late submission handling, and confirmation.
 
-> TO DO: Insert exported activity diagram for UC-04 from Activity-Diagrams_UC-04.drawio.xml.
+**Figure 6.4: Activity Diagram for UC-04 Submit Assignment**
+Use the approved UC-04 activity diagram from the Part I activity diagram set.
 
 ### 6.2.5 UC-05 Create Course and Learning Structure
 The course creation process allows an instructor to build a hierarchical course structure with modules and lessons.
 
-> TO DO: Insert exported activity diagram for UC-05 from Activity-Diagrams_UC-05.drawio.xml.
+**Figure 6.5: Activity Diagram for UC-05 Create Course and Learning Structure**
+Use the approved UC-05 activity diagram from the Part I activity diagram set.
 
 ### 6.2.6 UC-06 Publish Lesson Content
 The content publishing process allows an instructor to upload materials and make a lesson available to enrolled students.
 
-> TO DO: Insert exported activity diagram for UC-06 from Activity-Diagrams_UC-06.drawio.xml.
+**Figure 6.6: Activity Diagram for UC-06 Publish Lesson Content**
+Use the approved UC-06 activity diagram from the Part I activity diagram set.
 
 ### 6.2.7 UC-07 Create Assessment and Configure Feedback
 The assessment configuration process covers quiz and assignment creation with question bank integration and feedback setup.
 
-> TO DO: Insert exported activity diagram for UC-07 from Activity-Diagrams_UC-07.drawio.xml.
+**Figure 6.7: Activity Diagram for UC-07 Create Assessment and Configure Feedback**
+Use the approved UC-07 activity diagram from the Part I activity diagram set.
 
 ### 6.2.8 UC-08 View Advisor Dashboard and Follow Up
 The advisor monitoring process allows an academic advisor to review student progress and send follow-up messages.
 
-> TO DO: Insert exported activity diagram for UC-08 from Activity-Diagrams_UC-08.drawio.xml.
+**Figure 6.8: Activity Diagram for UC-08 View Advisor Dashboard and Follow Up**
+Use the approved UC-08 activity diagram from the Part I activity diagram set.
 
 ### 6.2.9 UC-09 Moderate Content and Manage Announcements
 The admin moderation process covers content review, announcement management, and password reset operations.
 
-> TO DO: Insert exported activity diagram for UC-09 from Activity-Diagrams_UC-09.drawio.xml.
+**Figure 6.9: Activity Diagram for UC-09 Moderate Content and Manage Announcements**
+Use the approved UC-09 activity diagram from the Part I activity diagram set.
 
 ---
 
@@ -482,7 +512,7 @@ The admin moderation process covers content review, announcement management, and
 
 ## 7.1 Deployment Diagram
 
-The QuestLearn prototype is deployed using Vercel for the Next.js application and Supabase for managed backend services. The UML deployment diagram below shows the physical deployment topology, including all nodes, execution environments, artifacts, and communication paths.
+The QuestLearn prototype is deployed using Netlify for the Next.js application and Supabase for managed backend services. The UML deployment diagram below shows the physical deployment topology, including all nodes, execution environments, artifacts, and communication paths.
 
 **Figure 7.1: QuestLearn UML Deployment Diagram**
 
@@ -494,11 +524,11 @@ The QuestLearn prototype is deployed using Vercel for the Next.js application an
 | --- | --- | --- |
 | **User Device** | `<<device>>` | Web Browser (execution environment) |
 | Web Browser | `<<execution environment>>` | Next.js Client Bundle (React), Static Assets (CSS, JS, Images) |
-| **Vercel Platform** | `<<cloud>>` | Node.js Runtime (execution environment) |
+| **Netlify Platform** | `<<cloud>>` | Node.js Runtime (execution environment) |
 | Node.js Runtime | `<<execution environment>>` | Next.js Pages & Layouts, Route Handlers (API), Server Actions, Middleware (Auth Guard) |
 | **Supabase Platform** | `<<cloud>>` | PostgreSQL 15, Supabase Auth, Supabase Storage |
-| PostgreSQL 15 | `<<database server>>` | QuestLearn Schema (21 tables), Row Level Security Policies |
-| Supabase Auth | `<<server>>` | JWT Session Manager, User Identity Store |
+| PostgreSQL 15 | `<<database server>>` | QuestLearn Schema (27 tables), Row Level Security Policies |
+| Supabase Auth | `<<server>>` | Session Manager, User Identity Store |
 | Supabase Storage | `<<server>>` | Lesson Files Bucket, Submission Files Bucket |
 | **GitHub** | `<<infrastructure>>` | Source Repository, CI/CD Pipeline |
 
@@ -506,27 +536,27 @@ The QuestLearn prototype is deployed using Vercel for the Next.js application an
 
 | From | To | Protocol | Purpose |
 | --- | --- | --- | --- |
-| User Device | Vercel Platform | `<<HTTPS>>` TLS 1.3 | Browser requests pages and API endpoints |
-| Vercel (Node.js) | Supabase PostgreSQL | `<<HTTPS>>` Supabase Client SDK | Database queries via server-side Supabase client |
-| Vercel (Node.js) | Supabase Auth | `<<HTTPS>>` Auth API | User registration, login, and session verification |
-| Vercel (Node.js) | Supabase Storage | `<<HTTPS>>` Storage API | File uploads and downloads for lessons and submissions |
-| GitHub | Vercel Platform | `<<webhook>>` Git Push Deploy | Automated deployment on push to main branch |
+| User Device | Netlify Platform | `<<HTTPS>>` TLS 1.3 | Browser requests pages and API endpoints |
+| Netlify Functions | Supabase PostgreSQL | `<<HTTPS>>` Supabase Client SDK | Database queries via server-side Supabase client |
+| Netlify Functions | Supabase Auth | `<<HTTPS>>` Auth API | User registration, login, and session verification |
+| Netlify Functions | Supabase Storage | `<<HTTPS>>` Storage API | File uploads and downloads for lessons and submissions |
+| GitHub | Netlify Platform | `<<webhook>>` Git Push Deploy | Automated deployment on push to main branch |
 
 | Component | Platform | Responsibility |
 | --- | --- | --- |
-| Next.js App | Vercel | Pages, route handlers, server actions, and UI rendering |
+| Next.js App | Netlify | Pages, route handlers, server actions, and UI rendering |
 | Supabase Auth | Supabase | Registration, login, sessions, and authenticated identity |
 | Supabase PostgreSQL | Supabase | Relational database for all project entities |
 | Supabase Storage | Supabase | Lesson files, assignment submissions, and media assets |
 | Supabase RLS Policies | Supabase/PostgreSQL | Role-based row access rules |
 
-The deployment workflow uses GitHub for source control and Vercel for preview and production deployments. Pull requests can generate preview builds, while merges to the main branch can deploy the production build connected to the configured Supabase project.
+The deployment workflow uses GitHub for source control and Netlify for preview and production deployments. Pull requests can generate preview builds, while merges to the main branch can deploy the production build connected to the configured Supabase project.
 
 ---
 
 # Summary
 
-This Software Design Specification translates the QuestLearn requirements from Part I into a complete, implementable technical design. The database schema provides normalised storage for the main academic entities with appropriate constraints and indexes. The four-layer Next.js and Supabase architecture supports all functional requirements and three innovations: weak-topic detection, advisor early alerts, and activity-based analytics. Five sequence diagrams and five state transition diagrams verify the correctness of critical user flows and entity lifecycles. The interface design covers 14 screens across all four actor roles. The component design includes pseudocode for the auto-grading algorithm. The deployment architecture uses Vercel and Supabase for a realistic prototype path.
+This Software Design Specification translates the QuestLearn requirements from Part I into a complete, implementable technical design. The database schema provides normalised storage for the main academic entities with appropriate constraints and indexes. The four-layer Next.js and Supabase architecture supports all functional requirements and three innovations: weak-topic detection, advisor early alerts, and activity-based analytics. Five sequence diagrams and five state transition diagrams verify the correctness of critical user flows and entity lifecycles. The interface design covers 14 screens across all four actor roles. The component design includes pseudocode for the auto-grading algorithm. The deployment architecture uses Netlify and Supabase for a realistic prototype path.
 
 The design is ready for prototype implementation in Part III.
 

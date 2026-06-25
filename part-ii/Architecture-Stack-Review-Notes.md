@@ -13,13 +13,13 @@ The official Part II stack is the README stack:
 - Supabase PostgreSQL for relational data
 - Supabase Auth for registration, login, and sessions
 - Supabase Storage for files and media
-- Vercel for deployment
+- Netlify for deployment
 - Recharts or Chart.js for dashboard charts
 - H5P/Lumi for interactive lesson content
 
 ## Reason
 
-This stack is more realistic for the team than maintaining separate React, Express, Sequelize, Redis, and Docker services. It also supports the Part III prototype path because Supabase provides database, auth, storage, and row-level authorization in one platform.
+This stack is more realistic for the team than maintaining the older rejected multi-service stack. It also supports the Part III prototype path because Supabase provides database, auth, storage, and row-level authorization in one platform.
 
 ## Updated Files
 
@@ -42,4 +42,3 @@ This stack is more realistic for the team than maintaining separate React, Expre
 | Technology stack revised | Complete |
 | Report stack wording partially aligned | Complete |
 | Final Part II report approval | Pending team updates |
-

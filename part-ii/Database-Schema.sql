@@ -17,12 +17,12 @@ CREATE TABLE role (
 -- Stores the shared login and identity details for all platform users.
 CREATE TABLE "user" (
     user_id        SERIAL PRIMARY KEY,
+    auth_user_id   UUID UNIQUE,
     role_id        INT NOT NULL REFERENCES role(role_id),
     full_name      VARCHAR(150) NOT NULL,
     email          VARCHAR(255) NOT NULL UNIQUE,
-    password_hash  VARCHAR(255) NOT NULL,
-    account_status VARCHAR(20) NOT NULL DEFAULT 'active'
-        CHECK (account_status IN ('active', 'suspended', 'deactivated')),
+    account_status VARCHAR(20) NOT NULL DEFAULT 'pending'
+        CHECK (account_status IN ('pending', 'active', 'suspended', 'deactivated')),
     created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -106,6 +106,27 @@ CREATE TABLE lesson (
         CHECK (publish_status IN ('unpublished', 'published')),
     UNIQUE (module_id, sequence_no)
 );
+
+-- Stores lesson content blocks, including reading, video, file, and H5P/Lumi embed items.
+CREATE TABLE content_item (
+    content_item_id  SERIAL PRIMARY KEY,
+    lesson_id        INT NOT NULL REFERENCES lesson(lesson_id) ON DELETE CASCADE,
+    content_type     VARCHAR(20) NOT NULL
+        CHECK (content_type IN ('reading', 'video', 'file', 'h5p_lumi')),
+    title            VARCHAR(200) NOT NULL,
+    body_text        TEXT,
+    resource_url     VARCHAR(500),
+    storage_path     VARCHAR(500),
+    embed_url        VARCHAR(500),
+    sequence_no      INT NOT NULL,
+    publish_status   VARCHAR(20) NOT NULL DEFAULT 'draft'
+        CHECK (publish_status IN ('draft', 'published', 'archived')),
+    created_at       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (lesson_id, sequence_no)
+);
+
+CREATE INDEX idx_content_item_lesson ON content_item(lesson_id);
+CREATE INDEX idx_content_item_type   ON content_item(content_type);
 
 -- Maps students to courses (many-to-many bridge table).
 CREATE TABLE enrollment (
@@ -256,6 +277,58 @@ CREATE INDEX idx_activity_user      ON activity_log(user_id);
 CREATE INDEX idx_activity_time      ON activity_log(activity_time);
 CREATE INDEX idx_activity_type      ON activity_log(activity_type);
 
+-- Maps advisors to students for monitoring and early intervention.
+CREATE TABLE advisor_student_assignment (
+    advisor_student_assignment_id SERIAL PRIMARY KEY,
+    advisor_profile_id            INT NOT NULL REFERENCES advisor_profile(advisor_profile_id) ON DELETE CASCADE,
+    student_profile_id            INT NOT NULL REFERENCES student_profile(student_profile_id) ON DELETE CASCADE,
+    assigned_at                   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    status                        VARCHAR(20) NOT NULL DEFAULT 'active'
+        CHECK (status IN ('active', 'inactive')),
+    UNIQUE (advisor_profile_id, student_profile_id)
+);
+
+CREATE INDEX idx_advisor_assignment_advisor ON advisor_student_assignment(advisor_profile_id);
+CREATE INDEX idx_advisor_assignment_student ON advisor_student_assignment(student_profile_id);
+
+-- Stores advisor-facing risk alerts generated from progress, assessment, and activity signals.
+CREATE TABLE advisor_alert (
+    advisor_alert_id   SERIAL PRIMARY KEY,
+    student_profile_id INT NOT NULL REFERENCES student_profile(student_profile_id) ON DELETE CASCADE,
+    advisor_profile_id INT REFERENCES advisor_profile(advisor_profile_id) ON DELETE SET NULL,
+    alert_type         VARCHAR(30) NOT NULL
+        CHECK (alert_type IN ('low_progress', 'overdue_assignment', 'low_quiz_score', 'low_engagement')),
+    severity           VARCHAR(10) NOT NULL DEFAULT 'medium'
+        CHECK (severity IN ('low', 'medium', 'high')),
+    source_type        VARCHAR(50),
+    source_id          INT,
+    message            TEXT NOT NULL,
+    status             VARCHAR(20) NOT NULL DEFAULT 'open'
+        CHECK (status IN ('open', 'reviewed', 'resolved', 'dismissed')),
+    created_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    resolved_at        TIMESTAMP
+);
+
+CREATE INDEX idx_advisor_alert_student ON advisor_alert(student_profile_id);
+CREATE INDEX idx_advisor_alert_advisor ON advisor_alert(advisor_profile_id);
+CREATE INDEX idx_advisor_alert_status  ON advisor_alert(status);
+
+-- Stores advisor follow-up actions and notes linked to students and optional alerts.
+CREATE TABLE advisor_follow_up (
+    advisor_follow_up_id SERIAL PRIMARY KEY,
+    advisor_alert_id     INT REFERENCES advisor_alert(advisor_alert_id) ON DELETE SET NULL,
+    advisor_profile_id   INT NOT NULL REFERENCES advisor_profile(advisor_profile_id),
+    student_profile_id   INT NOT NULL REFERENCES student_profile(student_profile_id),
+    follow_up_type       VARCHAR(30) NOT NULL DEFAULT 'message'
+        CHECK (follow_up_type IN ('message', 'meeting', 'email', 'call', 'note')),
+    message              TEXT NOT NULL,
+    next_action          TEXT,
+    follow_up_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_advisor_follow_up_student ON advisor_follow_up(student_profile_id);
+CREATE INDEX idx_advisor_follow_up_alert   ON advisor_follow_up(advisor_alert_id);
+
 -- Stores platform or course announcements.
 CREATE TABLE announcement (
     announcement_id    SERIAL PRIMARY KEY,
@@ -282,6 +355,43 @@ CREATE TABLE notification (
 
 CREATE INDEX idx_notification_user   ON notification(user_id);
 CREATE INDEX idx_notification_read   ON notification(is_read);
+
+-- Records admin moderation decisions for content, accounts, and announcements.
+CREATE TABLE moderation_action (
+    moderation_action_id SERIAL PRIMARY KEY,
+    admin_user_id        INT NOT NULL REFERENCES "user"(user_id),
+    target_type          VARCHAR(30) NOT NULL
+        CHECK (target_type IN ('user', 'course', 'lesson', 'content_item', 'announcement')),
+    target_id            INT NOT NULL,
+    action_type          VARCHAR(30) NOT NULL
+        CHECK (action_type IN ('approve', 'reject', 'flag', 'hide', 'restore', 'suspend')),
+    reason               TEXT,
+    action_at            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_moderation_target ON moderation_action(target_type, target_id);
+CREATE INDEX idx_moderation_admin  ON moderation_action(admin_user_id);
+
+-- Captures sensitive system actions for traceability and accountability.
+CREATE TABLE audit_log (
+    audit_log_id   SERIAL PRIMARY KEY,
+    actor_user_id  INT REFERENCES "user"(user_id) ON DELETE SET NULL,
+    action_type    VARCHAR(80) NOT NULL,
+    target_type    VARCHAR(50),
+    target_id      INT,
+    summary        TEXT NOT NULL,
+    metadata       JSONB,
+    created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_audit_actor  ON audit_log(actor_user_id);
+CREATE INDEX idx_audit_target ON audit_log(target_type, target_id);
+CREATE INDEX idx_audit_time   ON audit_log(created_at);
+
+-- Supabase RLS design note:
+-- In the Part III Supabase project, enable RLS on all public tables and add
+-- role, ownership, enrollment, advisor-assignment, and admin policies before
+-- exposing tables through the Supabase Data API.
 
 -- ============================================================
 -- SAMPLE QUERIES
@@ -409,6 +519,36 @@ CREATE INDEX idx_notification_read   ON notification(is_read);
 --   (SELECT COUNT(*) FROM course WHERE status = 'active') AS active_courses,
 --   (SELECT COUNT(*) FROM quiz_attempt WHERE submitted_at >= CURRENT_DATE - INTERVAL '7 days') AS quiz_attempts_this_week,
 --   (SELECT COUNT(*) FROM activity_log WHERE activity_time >= CURRENT_DATE - INTERVAL '7 days') AS activities_this_week;
+
+-- Q13: H5P/Lumi content items for a lesson viewer
+-- SELECT title, embed_url, sequence_no
+-- FROM content_item
+-- WHERE lesson_id = 1
+--   AND content_type = 'h5p_lumi'
+--   AND publish_status = 'published'
+-- ORDER BY sequence_no;
+
+-- Q14: Open advisor alerts with latest follow-up count
+-- SELECT aa.advisor_alert_id, u.full_name, aa.alert_type, aa.severity, aa.status,
+--        COUNT(afu.advisor_follow_up_id) AS follow_up_count
+-- FROM advisor_alert aa
+-- JOIN student_profile sp ON aa.student_profile_id = sp.student_profile_id
+-- JOIN "user" u ON sp.user_id = u.user_id
+-- LEFT JOIN advisor_follow_up afu ON aa.advisor_alert_id = afu.advisor_alert_id
+-- WHERE aa.status = 'open'
+-- GROUP BY aa.advisor_alert_id, u.full_name, aa.alert_type, aa.severity, aa.status
+-- ORDER BY aa.severity DESC, aa.created_at ASC;
+
+-- Q15: Admin moderation and audit history for a target record
+-- SELECT ma.action_type, ma.target_type, ma.target_id, ma.reason, ma.action_at,
+--        al.summary AS audit_summary
+-- FROM moderation_action ma
+-- LEFT JOIN audit_log al
+--   ON al.target_type = ma.target_type
+--   AND al.target_id = ma.target_id
+-- WHERE ma.target_type = 'content_item'
+--   AND ma.target_id = 1
+-- ORDER BY ma.action_at DESC;
 
 -- ============================================================
 -- END OF SCHEMA

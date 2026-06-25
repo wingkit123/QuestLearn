@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-The selected technology stack for QuestLearn follows the project README: `Next.js`, `Supabase`, `Supabase Auth`, `Supabase Storage`, and `Vercel`. This stack is suitable for a university prototype because it reduces backend setup work while still supporting authentication, relational data design, file storage, analytics dashboards, and role-based access control.
+The selected technology stack for QuestLearn follows the project README: `Next.js`, `Supabase`, `Supabase Auth`, `Supabase Storage`, and `Netlify`. This stack is suitable for a university prototype because it reduces backend setup work while still supporting authentication, relational data design, file storage, analytics dashboards, and role-based access control.
 
 The earlier React SPA + Express + Sequelize + Redis + Docker direction is no longer the selected stack. Those technologies may be mentioned only as alternatives considered, not as the implementation target.
 
@@ -21,7 +21,7 @@ The earlier React SPA + Express + Sequelize + Redis + Docker direction is no lon
 | File and Media Storage | Supabase Storage | Lesson assets, assignment submissions, profile/media files |
 | Charts and Analytics | Recharts or Chart.js | Dashboard visualizations for progress, engagement, and performance |
 | Interactive Content | H5P authored through Lumi | Embeddable interactive learning activities |
-| Deployment | Vercel + Supabase | Hosted Next.js application with managed backend services |
+| Deployment | Netlify + Supabase | Hosted Next.js application with managed backend services |
 | Version Control | Git + GitHub | Source code management and collaboration |
 
 ---
@@ -69,9 +69,9 @@ H5P/Lumi content can be linked through embed URLs or stored as related lesson co
 
 H5P content authored through Lumi provides interactive learning activities without requiring the team to build a custom interactive content engine. The database should store H5P/Lumi references as lesson content items so the lesson viewer can render them with video and reading resources.
 
-### 3.7 Vercel
+### 3.7 Netlify
 
-Vercel is selected for deployment because it is designed for Next.js applications. It can provide preview deployments for review and production deployment for the final prototype, while Supabase hosts the backend services.
+Netlify is selected for deployment because it is designed for Next.js applications. It can provide preview deployments for review and production deployment for the final prototype, while Supabase hosts the backend services.
 
 ### 3.8 Charts and Analytics
 
@@ -89,7 +89,7 @@ Recharts or Chart.js can be used to display progress, engagement, quiz distribut
 | npm | 10.x |
 | Git | 2.40+ |
 | Supabase Project | Database, Auth, and Storage enabled |
-| Vercel Account | For deployment and preview builds |
+| Netlify Account | For deployment and preview builds |
 
 ### 4.2 Project Structure
 
@@ -165,5 +165,5 @@ The service role key must never be exposed to browser code. Public environment v
 | Sequelize ORM | Supabase client and SQL schema are sufficient for the project prototype |
 | Custom JWT + bcrypt auth | Supabase Auth already provides secure authentication and session handling |
 | Redis cache | Not necessary for the Part III prototype; dashboard queries can be optimized later |
-| Docker Compose deployment | Vercel + Supabase is simpler and matches the README direction |
+| Docker Compose deployment | Netlify + Supabase is simpler and matches the README direction |
 

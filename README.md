@@ -1,10 +1,10 @@
 # QuestLearn
 
-### A Smart Interactive Learning System for Personalized Microlearning and Early Academic Support
+### A Smart Interactive Learning System for Interactive Lesson Practice and Early Academic Support
 
-QuestLearn is a smart interactive learning platform designed for higher education. It combines microlearning-based lesson flows, H5P/Lumi interactive content, automated quiz feedback, progress analytics, and advisor-facing early alerts to create a more engaging and supportive learning experience for students.
+QuestLearn is a smart interactive learning platform designed for higher education. It combines short lesson-based learning, H5P/Lumi interactive content, automated quiz feedback, progress analytics, and advisor-facing early alerts to create a more engaging and supportive learning experience for students.
 
-Built around four key roles, `Student`, `Instructor`, `Academic Advisor`, and `Admin`, QuestLearn is positioned as more than a basic LMS. It focuses on guided learning, meaningful feedback, and proactive academic support rather than only storing materials and reporting final grades.
+Built around four key roles, `Student`, `Instructor`, `Academic Advisor`, and `Admin`, QuestLearn is positioned as more than a basic LMS. It focuses on interactive lesson practice, meaningful feedback, and proactive academic support rather than only storing materials and reporting final grades.
 
 ## Problem It Solves
 
@@ -12,7 +12,7 @@ Many university learning platforms are effective at hosting notes, slides, and q
 
 QuestLearn addresses these gaps by:
 
-- breaking content into short guided learning sprints
+- breaking content into short lesson modules
 - embedding interactive activities alongside lesson content
 - giving students quick feedback and recommended next steps
 - tracking completion, engagement, and quiz performance over time
@@ -23,11 +23,11 @@ QuestLearn addresses these gaps by:
 ### Student
 
 - Personalized learning dashboard with enrolled courses and progress overview
-- Microlearning lesson path with modules, lessons, and completion tracking
+- Short lesson modules with lesson and completion tracking
 - Interactive H5P-based lesson activities authored through Lumi
 - Quiz practice with instant feedback for objective question types
 - Weak-topic review and rule-based next-step recommendations
-- Lightweight motivation features such as streaks, XP, and badges
+- Lightweight progress indicators where they are supported by the prototype
 - Notifications for deadlines, content updates, and quiz results
 
 ### Instructor
@@ -59,9 +59,9 @@ QuestLearn addresses these gaps by:
 
 ## Innovation Highlights
 
-### Microlearning Journey
+### Short Lesson Practice
 
-QuestLearn uses a Duolingo-inspired structure built around short learning sprints, guided progress paths, and visible progress markers. The goal is to make learning feel manageable, motivating, and easy to resume.
+QuestLearn uses short lesson modules, interactive practice, and visible progress markers. The MVP avoids claiming a full guided path engine unless that workflow is implemented and captured as evidence.
 
 ### H5P/Lumi Interactive Content
 
@@ -79,12 +79,12 @@ QuestLearn flags students who show signs of academic risk, such as low activity,
 
 The recommended MVP focuses on the highest-value workflow for each role:
 
-- student registration, login, profile, course access, lesson launch, quiz attempts, and progress tracking
-- instructor course setup, module and lesson creation, content upload, quiz management, and analytics viewing
-- advisor risk dashboard with student progress summaries and alert review
+- student registration, login, profile, course access, lesson launch, quiz attempts, progress tracking, and basic recommendations
+- instructor course setup, module and lesson creation, H5P/Lumi content linking, quiz management, and analytics viewing
+- advisor risk dashboard with student progress summaries, alert review, and follow-up notes
 - admin user management, role assignment, and system announcement control
 
-For the first version, gamification should remain lightweight, recommendations should remain rule-based, and H5P/Lumi should be treated as integrated content rather than a built-in authoring studio.
+For the first version, advanced gamification, predictive personalization, and a full H5P authoring studio are out of scope. Recommendations remain rule-based, early alerts remain threshold-based, and H5P/Lumi is treated as externally authored integrated content.
 
 ## Suggested Tech Stack
 
@@ -94,14 +94,14 @@ For the first version, gamification should remain lightweight, recommendations s
 - File and Media Storage: `Supabase Storage`
 - Charts and Analytics: `Recharts` or `Chart.js`
 - Interactive Content Pipeline: `H5P` authored via `Lumi`
-- Deployment: `Vercel` with `Supabase`
+- Deployment: `Netlify` with `Supabase`
 
 ## High-Level System Modules
 
 ### Course & Content Management
 
 - Course creation and editing
-- Module and lesson sequencing
+- Module and lesson ordering
 - Video, reading, and H5P/Lumi content integration
 
 ### Assessment & Progress Tracking
@@ -144,7 +144,7 @@ These core entities provide a strong starting point for future ERD and database 
 - `AttemptAnswer`
 - `ProgressRecord`
 - `ActivityLog`
-- `Recommendation`
+- `Recommendation` / rule-based next step
 - `AdvisorAlert`
 - `Notification`
 
@@ -176,17 +176,17 @@ Planned setup direction:
 - clone the repository
 - install dependencies
 - configure Supabase environment variables
-- run the Next.js development server
+- run the development server
 
 ## Future Enhancements
 
-- richer badge and achievement system
+- richer badge and achievement system after the core MVP is verified
 - deeper advisor follow-up workflow tracking
-- smarter recommendation rules for remedial learning paths
+- smarter recommendation rules for remedial learning support
 - expanded analytics dashboards for instructors and admins
 - mobile-optimized learning experience refinements
 - optional SCORM export or LMS interoperability exploration
 
 ## Portfolio Summary
 
-QuestLearn is a higher-education learning platform concept that combines guided microlearning, interactive content, formative feedback, learning analytics, and advisor-focused early alerts. It is designed to demonstrate full-stack product thinking, role-based workflow design, and a practical approach to building a more engaging and supportive academic learning experience.
+QuestLearn is a higher-education learning platform concept that combines short lesson-based learning, interactive content, formative feedback, learning analytics, and advisor-focused early alerts. It is designed to demonstrate full-stack product thinking, role-based workflow design, and a practical approach to building a more engaging and supportive academic learning experience.

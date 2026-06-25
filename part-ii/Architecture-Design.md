@@ -2,7 +2,7 @@
 
 ## 1. Architecture Overview
 
-QuestLearn uses a cloud-backed web architecture based on `Next.js`, `Supabase`, and `Vercel`. This direction matches the project README and keeps the prototype realistic for Part III because authentication, database access, file storage, API routes, and deployment can be built from one integrated stack.
+QuestLearn uses a cloud-backed web architecture based on `Next.js`, `Supabase`, and `Netlify`. This direction matches the project README and keeps the prototype realistic for Part III because authentication, database access, file storage, API routes, and deployment can be built from one integrated stack.
 
 The architecture is organized into four layers:
 
@@ -11,7 +11,7 @@ The architecture is organized into four layers:
 3. Data and Security Layer - Supabase Auth, Supabase PostgreSQL, Row Level Security policies, and Supabase Storage.
 4. External Integration Layer - H5P/Lumi interactive content, embedded videos, email/notification triggers, and deployment services.
 
-This structure preserves the separation of concerns required for the Part II design while avoiding the older split between a separate React SPA, Express API, Sequelize ORM, Redis cache, and Docker Compose deployment.
+This structure preserves the separation of concerns required for the Part II design while avoiding the older multi-service stack rejected in [Technology-Stack.md](./Technology-Stack.md).
 
 > Figure 3.1: Multi-Layer Architecture Diagram - see exported architecture diagram.
 
@@ -166,7 +166,7 @@ The data and security layer uses Supabase PostgreSQL for relational storage, Sup
 | Identity and Access | `role`, `user`, `student_profile`, `instructor_profile`, `advisor_profile` |
 | Learning Structure | `course`, `module`, `lesson`, `content_item`, `enrollment` |
 | Assessment and Performance | `quiz`, `assignment`, `assignment_submission`, `question_bank`, `question`, `quiz_question`, `quiz_attempt`, `attempt_answer`, `progress_record` |
-| Support and Analytics | `activity_log`, `recommendation`, `advisor_student_assignment`, `advisor_alert`, `advisor_follow_up`, `announcement`, `notification`, `moderation_action`, `audit_log` |
+| Support and Analytics | `activity_log`, `advisor_student_assignment`, `advisor_alert`, `advisor_follow_up`, `announcement`, `notification`, `moderation_action`, `audit_log` |
 
 ### Supabase Access Model
 
@@ -186,7 +186,7 @@ The data and security layer uses Supabase PostgreSQL for relational storage, Sup
 | Video Embedding | Display lesson videos within the course viewer | YouTube or external video embed URLs |
 | File Storage | Store assignment submissions and lesson assets | Supabase Storage |
 | Authentication | Register, sign in, and manage sessions | Supabase Auth |
-| Deployment | Host the Next.js application | Vercel |
+| Deployment | Host the Next.js application | Netlify |
 | Charts | Display engagement and performance analytics | Recharts or Chart.js |
 
 ---
@@ -233,11 +233,11 @@ Instructor Upload/Link -> content_item -> LessonViewer
 
 ## 7. Deployment Architecture
 
-QuestLearn is deployed using Vercel for the Next.js application and Supabase for managed backend services.
+QuestLearn is deployed using Netlify for the Next.js application and Supabase for managed backend services.
 
 | Component | Platform | Responsibility |
 | --- | --- | --- |
-| Next.js App | Vercel | Pages, server components, route handlers, server actions |
+| Next.js App | Netlify | Pages, server components, route handlers, server actions |
 | Supabase Auth | Supabase | Registration, login, sessions, authenticated user identity |
 | Supabase PostgreSQL | Supabase | Relational database and SQL queries |
 | Supabase Storage | Supabase | Assignment files, lesson assets, uploaded media |
@@ -248,11 +248,11 @@ QuestLearn is deployed using Vercel for the Next.js application and Supabase for
 
 ### CI/CD Pipeline
 
-The project can use GitHub and Vercel for deployment flow:
+The project can use GitHub and Netlify for deployment flow:
 
 1. **On Push:** Run linting and project checks.
 2. **On Pull Request:** Preview deployment is generated for review.
-3. **On Merge to Main:** Vercel deploys the production build and connects to the configured Supabase project.
+3. **On Merge to Main:** Netlify deploys the production build and connects to the configured Supabase project.
 
 ---
 
@@ -268,4 +268,3 @@ The project can use GitHub and Vercel for deployment flow:
 | Cross-Site Scripting | React escaping and controlled rendering of embedded content reduce XSS risk |
 | Admin Misuse | `audit_log` and `moderation_action` record sensitive admin actions |
 | Advisor Privacy | Advisor policies allow access only to assigned students or department-authorized data |
-
