@@ -120,8 +120,8 @@ Software Requirements Specification for QuestLearn (Smart Interactive Learning S
 
 ## 1 Project Introduction
 QuestLearn is a Smart Interactive Learning System proposed for higher education. The system is
-designed  to  improve  student  engagement  and  academic  support  by  combining  microlearning-
-based lesson delivery,  embedded video and reading content, quiz and assignment management,
+designed  to  improve  student  engagement  and  academic  support  by  combining  short lesson-
+based delivery,  embedded video and reading content, quiz and assignment management,
 automated  feedback,  activity  tracking,  progress  analytics,  and  academic  advisor  monitoring
 support.
 
@@ -162,7 +162,7 @@ meaningful  personalized  feedback,  and  academic  advisors  may  only  detect 
 academic  results  have  already  declined.  As  a  result,  universities  miss  opportunities  for  timely
 intervention and sustained learner motivation.
 
-QuestLearn  is  proposed  to  solve  this  problem  by  combining  guided  microlearning,  embedded
+QuestLearn  is  proposed  to  solve  this  problem  by  combining  short lesson-based learning,  embedded
 video  and  reading  content,  assignment  management,  activity  tracking,  automated  feedback,
 weak-topic identification, and advisor student monitoring in one integrated platform.
 
@@ -195,7 +195,7 @@ preferences
 - Course and Content Management
 - course creation and editing
 - module and lesson management
-- lesson sequencing into guided microlearning paths
+- lesson ordering into short module-based learning paths
 - integration of videos, reading materials, and H5P content authored through Lumi
 - content publishing workflow for lessons and modules
 - learning content moderation and platform oversight by admins
@@ -336,7 +336,7 @@ Software Requirements Specification for QuestLearn (Smart Interactive Learning S
 
 
 3.1.2 Use Case 2-Start Lesson
-This use case enables a student to access a course lesson and begin guided learning activities.
+This use case enables a student to access a course lesson and begin short lesson-based learning activities.
 
 ## Use Case Name
 ## Start Lesson
@@ -998,9 +998,6 @@ system for at-risk students. International Journal of Educational Technology in 
 - Buenadicha-Mateos, M., Sánchez-Hernández, M. I., González-López, O. R., & Tato-Jiménez, J. L.
 (2025). From engagement to achievement: How gamification impacts academic success in higher
 education. Education Sciences, 15(8), Article 1054. https://doi.org/10.3390/educsci15081054
-- Dennen, V. P., Arslan, Ö., & Bong, J. (2024). Optional embedded microlearning challenges:
-Promoting self-directed learning and extension in a higher education course. Educational
-Technology & Society, 27(1), 166–182. https://doi.org/10.30191/ETS.202401_27(1).SP04
 - Foster, E., & Siddle, R. (2020). The effectiveness of learning analytics for identifying at-risk
 students in higher education. Assessment & Evaluation in Higher Education, 45(6), 842–854.
 - H5P. (n.d.). H5P – Create and share rich HTML5 content and applications. https://h5p.org/
@@ -1013,9 +1010,6 @@ https://doi.org/10.1002/rev3.3292
 - Narciss, S., & Zumbach, J. (2022). Formative assessment and feedback strategies. In International
 handbook of psychology learning and teaching (pp. 1359–1386). Springer.
 https://doi.org/10.1007/978-3-030-28745-0_63
-- Salhab, R., & Aboushi, M. M. (2026). Impact of AI-assisted microlearning on student engagement
-in an online environment in higher education. Frontiers in Education, 11, Article 1766032.
-https://doi.org/10.3389/feduc.2026.1766032
 - Solis Trujillo, B. P., Velarde-Camaqui, D., Gonzales Nuñez, C. A., Castillo Silva, E. V., &
 Gonzalez Said de la Oliva, M. del P. (2025). The current landscape of formative assessment and
 feedback in graduate studies: A systematic literature review. Frontiers in Education, 10, Article

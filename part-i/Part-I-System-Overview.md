@@ -4,7 +4,7 @@
 
 # QuestLearn
 
-### A Smart Interactive Learning System for Personalized Microlearning and Early Academic Support
+### A Smart Interactive Learning System for Interactive Lesson Practice and Early Academic Support
 
 ## 1.1 Introduction
 
@@ -18,11 +18,11 @@ Current university learning systems are often effective for content storage and 
 
 Existing platforms also do not always connect content delivery, assessment, engagement tracking, and follow-up support into one coherent workflow. Students may complete quizzes without receiving targeted feedback, instructors may upload materials without seeing a clear picture of learning engagement, and advisors may only notice struggling students after weak results become visible. These gaps reduce the usefulness of digital learning systems as academic support tools.
 
-Instructors face practical limitations as well. They may want to provide more interactive and engaging learning materials, but they need tools that are simple to use, reusable, and realistic within a prototype project scope. Academic advisors face a related challenge because they need a way to monitor student risk in a meaningful and timely manner rather than reacting only after final academic outcomes are already poor. Therefore, there is a clear need for a smart interactive learning system that improves student engagement, supports short and guided learning experiences, provides quick formative feedback, and enables advisors to identify at-risk students earlier.
+Instructors face practical limitations as well. They may want to provide more interactive and engaging learning materials, but they need tools that are simple to use, reusable, and realistic within a prototype project scope. Academic advisors face a related challenge because they need a way to monitor student risk in a meaningful and timely manner rather than reacting only after final academic outcomes are already poor. Therefore, there is a clear need for a smart interactive learning system that improves student engagement, supports short lesson-based learning experiences, provides quick formative feedback, and enables advisors to identify at-risk students earlier.
 
 ## 1.3 Proposed Solution
 
-QuestLearn is proposed as a Smart Interactive Learning System that combines microlearning principles, interactive content, formative assessment, progress analytics, and advisor-oriented early alert support. Rather than functioning as a basic repository of course materials, the system is designed to guide students through short learning sprints and help them understand their performance while keeping instructors and advisors informed.
+QuestLearn is proposed as a Smart Interactive Learning System that combines short lesson-based learning, interactive content, formative assessment, progress analytics, and advisor-oriented early alert support. Rather than functioning as a basic repository of course materials, the system is designed to help students move through ordered lesson modules and understand their performance while keeping instructors and advisors informed.
 
 The system supports four user roles:
 
@@ -31,13 +31,13 @@ The system supports four user roles:
 - `Academic Advisor`
 - `Admin`
 
-QuestLearn uses a Duolingo-inspired microlearning structure, where lessons are organized into manageable modules and progress paths. Lesson content includes embedded video and reading material, enabling instructors to build engaging learning sequences without requiring complex third-party authoring tools. The platform also includes automated feedback after quizzes, assignment support, advisor monitoring dashboards for reviewing student progress and engagement, and in-app notifications that connect key academic events to the right users.
+QuestLearn uses a practical lesson-module structure, where lessons are organized into manageable modules with visible progress. Lesson content includes embedded video, reading material, and externally authored H5P/Lumi activities, enabling instructors to build engaging learning sequences without requiring a built-in authoring studio. The platform also includes automated feedback after quizzes, assignment support, advisor monitoring dashboards for reviewing student progress and engagement, and in-app notifications that connect key academic events to the right users.
 
 ## 1.4 Objectives
 
 The objectives of QuestLearn are as follows:
 
-1. To provide an engaging and interactive learning environment for university students through microlearning-based lessons, embedded video and reading content, quizzes, and assignment support.
+1. To provide an engaging and interactive learning environment for university students through short lesson modules, embedded video and reading content, quizzes, and assignment support.
 2. To enable instructors to create and manage courses, modules, lessons, assignments, and assessments efficiently using reusable digital content.
 3. To track learning progress, lesson completion, assessment performance, and student activity in a way that supports meaningful student and instructor dashboards.
 4. To support academic advisors through monitoring dashboards that surface student progress, quiz performance, and overdue work for timely follow-up.
@@ -61,7 +61,7 @@ QuestLearn includes the following major modules and capabilities.
 
 - course creation and editing
 - module and lesson management
-- lesson sequencing into guided microlearning paths
+- lesson ordering into short module-based learning paths
 - embedded video and reading content within lessons
 - content publishing workflow for lessons and modules
 - learning content moderation and platform oversight by admins
@@ -123,4 +123,4 @@ The system tracks user actions such as lesson views, quiz attempts, and assignme
 
 ## 1.8 Conclusion
 
-In summary, QuestLearn is proposed as a higher-education learning platform that emphasizes guided microlearning, embedded video and reading content, meaningful feedback, progress visibility, advisor monitoring support, and structured academic oversight. Its combination of student engagement features, instructor tools, advisor dashboards, assignment support, and admin governance makes it a more complete and better integrated response to the TT7L project brief.
+In summary, QuestLearn is proposed as a higher-education learning platform that emphasizes short lesson-based learning, embedded video and reading content, meaningful feedback, progress visibility, advisor monitoring support, and structured academic oversight. Its combination of student engagement features, instructor tools, advisor dashboards, assignment support, and admin governance makes it a more complete and better integrated response to the TT7L project brief.

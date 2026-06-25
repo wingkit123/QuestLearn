@@ -11,7 +11,7 @@ This checklist records the final Week 10 review led by See Wing Kit before Part 
 | `Part-II-Design-Report.md` | Placeholders replaced with figure references and submission notes |
 | `Database-Design.md` | Updated for H5P/Lumi, advisor alerts/follow-up, moderation, audit, and Supabase security |
 | `Database-Schema.sql` | Updated with missing content, advisor, moderation, and audit tables |
-| `Architecture-Design.md` | Uses Next.js, Supabase, Supabase Auth, Supabase Storage, and Vercel direction |
+| `Architecture-Design.md` | Uses Next.js, Supabase, Supabase Auth, Supabase Storage, and Netlify direction |
 | `Sequence-Diagrams.md` | Authentication flow aligned to Supabase Auth sessions |
 | `State-Diagrams.md` | Referenced by the master report for lifecycle diagrams |
 | `Interface-Design.md` | Referenced by the master report for all 14 screens |

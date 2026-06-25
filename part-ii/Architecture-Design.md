@@ -2,7 +2,7 @@
 
 ## 1. Architecture Overview
 
-QuestLearn uses a cloud-backed web architecture based on `Next.js`, `Supabase`, and `Vercel`. This direction matches the project README and keeps the prototype realistic for Part III because authentication, database access, file storage, API routes, and deployment can be built from one integrated stack.
+QuestLearn uses a cloud-backed web architecture based on `Next.js`, `Supabase`, and `Netlify`. This direction matches the project README and keeps the prototype realistic for Part III because authentication, database access, file storage, API routes, and deployment can be built from one integrated stack.
 
 The architecture is organized into four layers:
 
@@ -186,7 +186,7 @@ The data and security layer uses Supabase PostgreSQL for relational storage, Sup
 | Video Embedding | Display lesson videos within the course viewer | YouTube or external video embed URLs |
 | File Storage | Store assignment submissions and lesson assets | Supabase Storage |
 | Authentication | Register, sign in, and manage sessions | Supabase Auth |
-| Deployment | Host the Next.js application | Vercel |
+| Deployment | Host the Next.js application | Netlify |
 | Charts | Display engagement and performance analytics | Recharts or Chart.js |
 
 ---
@@ -233,11 +233,11 @@ Instructor Upload/Link -> content_item -> LessonViewer
 
 ## 7. Deployment Architecture
 
-QuestLearn is deployed using Vercel for the Next.js application and Supabase for managed backend services.
+QuestLearn is deployed using Netlify for the Next.js application and Supabase for managed backend services.
 
 | Component | Platform | Responsibility |
 | --- | --- | --- |
-| Next.js App | Vercel | Pages, server components, route handlers, server actions |
+| Next.js App | Netlify | Pages, server components, route handlers, server actions |
 | Supabase Auth | Supabase | Registration, login, sessions, authenticated user identity |
 | Supabase PostgreSQL | Supabase | Relational database and SQL queries |
 | Supabase Storage | Supabase | Assignment files, lesson assets, uploaded media |
@@ -248,11 +248,11 @@ QuestLearn is deployed using Vercel for the Next.js application and Supabase for
 
 ### CI/CD Pipeline
 
-The project can use GitHub and Vercel for deployment flow:
+The project can use GitHub and Netlify for deployment flow:
 
 1. **On Push:** Run linting and project checks.
 2. **On Pull Request:** Preview deployment is generated for review.
-3. **On Merge to Main:** Vercel deploys the production build and connects to the configured Supabase project.
+3. **On Merge to Main:** Netlify deploys the production build and connects to the configured Supabase project.
 
 ---
 

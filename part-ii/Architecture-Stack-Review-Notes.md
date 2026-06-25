@@ -13,7 +13,7 @@ The official Part II stack is the README stack:
 - Supabase PostgreSQL for relational data
 - Supabase Auth for registration, login, and sessions
 - Supabase Storage for files and media
-- Vercel for deployment
+- Netlify for deployment
 - Recharts or Chart.js for dashboard charts
 - H5P/Lumi for interactive lesson content
 

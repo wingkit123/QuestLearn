@@ -87,7 +87,7 @@
 
 ## 1.1 Description
 
-QuestLearn is a Smart Interactive Learning System that combines microlearning principles, interactive content delivery, formative assessment, progress analytics, and advisor-oriented early alert support. The system enables students to engage in guided learning sprints, receive immediate quiz feedback with weak-topic detection, and track their progress through role-appropriate dashboards. Instructors create and manage course structures with embedded video and reading content, while academic advisors monitor student performance for early intervention. Administrators oversee platform-wide user management, content moderation, and announcements.
+QuestLearn is a Smart Interactive Learning System that combines short lesson-based learning, interactive content delivery, formative assessment, progress analytics, and advisor-oriented early alert support. The system enables students to work through ordered lesson modules, receive immediate quiz feedback with weak-topic detection, and track their progress through role-appropriate dashboards. Instructors create and manage course structures with embedded video, reading content, and H5P/Lumi references, while academic advisors monitor student performance for early intervention. Administrators oversee platform-wide user management, content moderation, and announcements.
 
 The major process groups and their relationships are summarised in the following table.
 
@@ -306,7 +306,7 @@ The state definition is documented in [State-Diagrams.md](./State-Diagrams.md).
 
 ## 4.1 Software Architecture
 
-QuestLearn adopts a four-layer architecture: Presentation, Application Logic, Data and Security, and External Integration. The selected stack is Next.js with Supabase and Vercel, matching the README direction for the prototype. This architecture keeps the application realistic for Part III because the team can use one framework for the user interface and controlled server-side workflows, while Supabase provides authentication, PostgreSQL storage, row-level authorization, and file storage.
+QuestLearn adopts a four-layer architecture: Presentation, Application Logic, Data and Security, and External Integration. The selected stack is Next.js with Supabase and Netlify, matching the README direction for the prototype. This architecture keeps the application realistic for Part III because the team can use one framework for the user interface and controlled server-side workflows, while Supabase provides authentication, PostgreSQL storage, row-level authorization, and file storage.
 
 **Figure 4.1: QuestLearn Four-Layer Architecture Diagram**
 The architecture is documented in [Architecture-Design.md](./Architecture-Design.md) and should be exported from the final architecture drawing during packaging.
@@ -512,7 +512,7 @@ Use the approved UC-09 activity diagram from the Part I activity diagram set.
 
 ## 7.1 Deployment Diagram
 
-The QuestLearn prototype is deployed using Vercel for the Next.js application and Supabase for managed backend services. The UML deployment diagram below shows the physical deployment topology, including all nodes, execution environments, artifacts, and communication paths.
+The QuestLearn prototype is deployed using Netlify for the Next.js application and Supabase for managed backend services. The UML deployment diagram below shows the physical deployment topology, including all nodes, execution environments, artifacts, and communication paths.
 
 **Figure 7.1: QuestLearn UML Deployment Diagram**
 
@@ -524,7 +524,7 @@ The QuestLearn prototype is deployed using Vercel for the Next.js application an
 | --- | --- | --- |
 | **User Device** | `<<device>>` | Web Browser (execution environment) |
 | Web Browser | `<<execution environment>>` | Next.js Client Bundle (React), Static Assets (CSS, JS, Images) |
-| **Vercel Platform** | `<<cloud>>` | Node.js Runtime (execution environment) |
+| **Netlify Platform** | `<<cloud>>` | Node.js Runtime (execution environment) |
 | Node.js Runtime | `<<execution environment>>` | Next.js Pages & Layouts, Route Handlers (API), Server Actions, Middleware (Auth Guard) |
 | **Supabase Platform** | `<<cloud>>` | PostgreSQL 15, Supabase Auth, Supabase Storage |
 | PostgreSQL 15 | `<<database server>>` | QuestLearn Schema (27 tables), Row Level Security Policies |
@@ -536,27 +536,27 @@ The QuestLearn prototype is deployed using Vercel for the Next.js application an
 
 | From | To | Protocol | Purpose |
 | --- | --- | --- | --- |
-| User Device | Vercel Platform | `<<HTTPS>>` TLS 1.3 | Browser requests pages and API endpoints |
-| Vercel (Node.js) | Supabase PostgreSQL | `<<HTTPS>>` Supabase Client SDK | Database queries via server-side Supabase client |
-| Vercel (Node.js) | Supabase Auth | `<<HTTPS>>` Auth API | User registration, login, and session verification |
-| Vercel (Node.js) | Supabase Storage | `<<HTTPS>>` Storage API | File uploads and downloads for lessons and submissions |
-| GitHub | Vercel Platform | `<<webhook>>` Git Push Deploy | Automated deployment on push to main branch |
+| User Device | Netlify Platform | `<<HTTPS>>` TLS 1.3 | Browser requests pages and API endpoints |
+| Netlify Functions | Supabase PostgreSQL | `<<HTTPS>>` Supabase Client SDK | Database queries via server-side Supabase client |
+| Netlify Functions | Supabase Auth | `<<HTTPS>>` Auth API | User registration, login, and session verification |
+| Netlify Functions | Supabase Storage | `<<HTTPS>>` Storage API | File uploads and downloads for lessons and submissions |
+| GitHub | Netlify Platform | `<<webhook>>` Git Push Deploy | Automated deployment on push to main branch |
 
 | Component | Platform | Responsibility |
 | --- | --- | --- |
-| Next.js App | Vercel | Pages, route handlers, server actions, and UI rendering |
+| Next.js App | Netlify | Pages, route handlers, server actions, and UI rendering |
 | Supabase Auth | Supabase | Registration, login, sessions, and authenticated identity |
 | Supabase PostgreSQL | Supabase | Relational database for all project entities |
 | Supabase Storage | Supabase | Lesson files, assignment submissions, and media assets |
 | Supabase RLS Policies | Supabase/PostgreSQL | Role-based row access rules |
 
-The deployment workflow uses GitHub for source control and Vercel for preview and production deployments. Pull requests can generate preview builds, while merges to the main branch can deploy the production build connected to the configured Supabase project.
+The deployment workflow uses GitHub for source control and Netlify for preview and production deployments. Pull requests can generate preview builds, while merges to the main branch can deploy the production build connected to the configured Supabase project.
 
 ---
 
 # Summary
 
-This Software Design Specification translates the QuestLearn requirements from Part I into a complete, implementable technical design. The database schema provides normalised storage for the main academic entities with appropriate constraints and indexes. The four-layer Next.js and Supabase architecture supports all functional requirements and three innovations: weak-topic detection, advisor early alerts, and activity-based analytics. Five sequence diagrams and five state transition diagrams verify the correctness of critical user flows and entity lifecycles. The interface design covers 14 screens across all four actor roles. The component design includes pseudocode for the auto-grading algorithm. The deployment architecture uses Vercel and Supabase for a realistic prototype path.
+This Software Design Specification translates the QuestLearn requirements from Part I into a complete, implementable technical design. The database schema provides normalised storage for the main academic entities with appropriate constraints and indexes. The four-layer Next.js and Supabase architecture supports all functional requirements and three innovations: weak-topic detection, advisor early alerts, and activity-based analytics. Five sequence diagrams and five state transition diagrams verify the correctness of critical user flows and entity lifecycles. The interface design covers 14 screens across all four actor roles. The component design includes pseudocode for the auto-grading algorithm. The deployment architecture uses Netlify and Supabase for a realistic prototype path.
 
 The design is ready for prototype implementation in Part III.
 
