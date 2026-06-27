@@ -157,12 +157,34 @@ VALUES
     (
         (SELECT lesson_id FROM lesson l JOIN module m ON l.module_id = m.module_id JOIN course c ON m.course_id = c.course_id WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 2 AND l.sequence_no = 1),
         'h5p_lumi',
-        'Architecture Layer Matching Activity',
+        'Quiz 1: Testing Strategies',
+        '<iframe src="https://app.lumi.education/api/v1/run/GVsXA0/embed" width="1088" height="720" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></iframe>',
         NULL,
         NULL,
         NULL,
-        'https://example.com/h5p/questlearn-architecture-demo',
         1,
+        'published'
+    ),
+    (
+        (SELECT lesson_id FROM lesson l JOIN module m ON l.module_id = m.module_id JOIN course c ON m.course_id = c.course_id WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 2 AND l.sequence_no = 1),
+        'h5p_lumi',
+        'Quiz 2: Concept: Software Design',
+        '<iframe src="https://app.lumi.education/api/v1/run/OPq0RR/embed" width="1088" height="720" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></iframe>',
+        NULL,
+        NULL,
+        NULL,
+        2,
+        'published'
+    ),
+    (
+        (SELECT lesson_id FROM lesson l JOIN module m ON l.module_id = m.module_id JOIN course c ON m.course_id = c.course_id WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 2 AND l.sequence_no = 1),
+        'h5p_lumi',
+        'Quiz 3: Project Management',
+        '<iframe src="https://app.lumi.education/api/v1/run/vYNyk7/embed" width="1088" height="720" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></iframe>',
+        NULL,
+        NULL,
+        NULL,
+        3,
         'published'
     )
 ON CONFLICT (lesson_id, sequence_no) DO UPDATE SET
