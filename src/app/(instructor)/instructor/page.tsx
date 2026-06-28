@@ -60,7 +60,7 @@ export default async function InstructorDashboard() {
             user:user_id(full_name)
           )
         `)
-        .eq("grading_status", "submitted")
+        .eq("status", "submitted")
         .in("assignment_id", assignmentIds)
         .order("submitted_at", { ascending: true })
         .limit(5);

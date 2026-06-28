@@ -69,7 +69,7 @@ export default async function GradingPage({ params }: PageProps) {
                   {submission.student_profile?.user?.full_name} ({submission.student_profile?.student_no})
                 </p>
               </div>
-              <StatusBadge status={submission.grading_status as any} />
+              <StatusBadge status={submission.status as any} />
             </div>
 
             <div className="prose max-w-none p-6 bg-bg-page rounded-xl border border-border">
@@ -78,14 +78,14 @@ export default async function GradingPage({ params }: PageProps) {
               </h3>
               
               {/* If it's a URL, show a link, otherwise show raw text */}
-              {submission.submission_text?.startsWith("http") ? (
-                <a href={submission.submission_text} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline bg-primary/5 p-4 rounded-lg border border-primary/20">
+              {submission.submission_url?.startsWith("http") ? (
+                <a href={submission.submission_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline bg-primary/5 p-4 rounded-lg border border-primary/20">
                   <LinkIcon className="w-5 h-5" />
-                  {submission.submission_text}
+                  {submission.submission_url}
                 </a>
               ) : (
                 <div className="whitespace-pre-wrap text-text font-medium leading-relaxed bg-surface p-4 rounded-lg border border-border shadow-inner">
-                  {submission.submission_text}
+                  {submission.submission_url}
                 </div>
               )}
             </div>
@@ -107,7 +107,7 @@ export default async function GradingPage({ params }: PageProps) {
               initialScore={submission.score}
               initialFeedback={submission.feedback}
               maxScore={100} // Mocked max score
-              status={submission.grading_status}
+              status={submission.status}
             />
           </div>
         </div>

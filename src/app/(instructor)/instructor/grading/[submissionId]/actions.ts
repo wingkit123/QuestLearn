@@ -15,7 +15,7 @@ export async function submitGrade(submissionId: number, score: number, feedback:
     .update({
       score,
       feedback,
-      grading_status: "graded",
+      status: "graded",
     })
     .eq("submission_id", submissionId);
 

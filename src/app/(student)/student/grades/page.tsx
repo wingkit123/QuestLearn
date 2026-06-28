@@ -72,7 +72,7 @@ export default async function GradesPage() {
       courseCode: a.assignment?.course?.course_code || "Unknown",
       score: a.score,
       maxScore: 100, // Assuming 100 max for assignments, ideally from DB
-      status: a.grading_status, // 'submitted', 'graded', 'returned'
+      status: a.status, // 'submitted', 'graded', 'returned'
       date: new Date(a.submitted_at),
       link: "#", // Add link to assignment view if needed later
     })),
