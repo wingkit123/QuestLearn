@@ -209,8 +209,6 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 # Using Bun (recommended — faster startup)
 bun run dev
 
-# Or using npm
-npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
@@ -219,10 +217,10 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 | Command | Bun | npm |
 |---|---|---|
-| Dev server | `bun run dev` | `npm run dev` |
-| Production build | `bun run build` | `npm run build` |
-| Start production | `bun run start` | `npm run start` |
-| Lint | `bun run lint` | `npm run lint` |
+| Dev server | `bun run dev` |
+| Production build | `bun run build` |
+| Start production | `bun run start` | 
+| Lint | `bun run lint` | 
 
 ---
 
