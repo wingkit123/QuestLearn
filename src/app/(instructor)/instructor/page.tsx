@@ -26,7 +26,7 @@ export default async function InstructorDashboard() {
     .from("course")
     .select("*, enrollment(count)")
     .eq("instructor_profile_id", profile.instructor_profile_id)
-    .eq("status", "published");
+    .eq("status", "active");
 
   const activeCourses = courses || [];
   const courseIds = activeCourses.map((c) => c.course_id);
