@@ -2,12 +2,24 @@ import { getCurrentUser } from "@/lib/auth/helpers";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle2, Circle, PlayCircle, BookOpen, ChevronLeft } from "lucide-react";
+import {
+  CheckCircle2,
+  Circle,
+  PlayCircle,
+  BookOpen,
+  ChevronLeft,
+  Lock,
+  AlertTriangle,
+  BookOpenCheck,
+  RotateCcw,
+} from "lucide-react";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 
 interface PageProps {
   params: Promise<{ courseId: string }>;
 }
+
+const PASSING_THRESHOLD = 50; // 50% to pass
 
 export default async function CourseDetailPage({ params }: PageProps) {
   const { courseId } = await params;
@@ -60,14 +72,13 @@ export default async function CourseDetailPage({ params }: PageProps) {
   if (!course) notFound();
 
   // Fetch progress for this student for all lessons in this course
-  // We can just fetch all progress for the student and filter in memory since it's small
   const { data: progressRecords } = await supabase
     .from("progress_record")
     .select("*")
     .eq("student_profile_id", profile.student_profile_id);
 
   const progressMap = new Map(
-    (progressRecords || []).map((pr) => [pr.lesson_id, pr])
+    (progressRecords || []).map((pr: any) => [pr.lesson_id, pr])
   );
 
   // Sort modules and lessons
@@ -90,6 +101,47 @@ export default async function CourseDetailPage({ params }: PageProps) {
   const courseProgress =
     totalLessons > 0 ? Math.round(totalLessonProgress / totalLessons) : 0;
 
+  // Detect weak topics and locking status for quiz modules
+  // A quiz module is one where lesson titles start with "Quiz"
+  interface WeakTopic {
+    lessonTitle: string;
+    percentage: number;
+    moduleTitle: string;
+  }
+
+  const weakTopics: WeakTopic[] = [];
+
+  // Build a set of locked lesson IDs
+  // Logic: Within a module, if a quiz lesson is failed (< 50%), all subsequent lessons in that module are locked
+  const lockedLessonIds = new Set<number>();
+
+  modules.forEach((mod: any) => {
+    const lessons = (mod.lesson || []).sort(
+      (a: any, b: any) => a.sequence_no - b.sequence_no
+    );
+
+    let lockRemaining = false;
+
+    lessons.forEach((les: any) => {
+      const isQuizLesson = les.lesson_title?.startsWith("Quiz");
+      const pr = progressMap.get(les.lesson_id);
+
+      if (lockRemaining && isQuizLesson) {
+        lockedLessonIds.add(les.lesson_id);
+        return;
+      }
+
+      if (isQuizLesson && pr && pr.percentage < PASSING_THRESHOLD) {
+        weakTopics.push({
+          lessonTitle: les.lesson_title,
+          percentage: pr.percentage,
+          moduleTitle: mod.module_title,
+        });
+        lockRemaining = true;
+      }
+    });
+  });
+
   return (
     <div className="max-w-4xl animate-in fade-in duration-500">
       <Link
@@ -98,6 +150,61 @@ export default async function CourseDetailPage({ params }: PageProps) {
       >
         <ChevronLeft className="w-4 h-4" /> Back to Courses
       </Link>
+
+      {/* Weak-Topic Alert */}
+      {weakTopics.length > 0 && (
+        <div className="mb-8 space-y-4">
+          {weakTopics.map((wt, idx) => (
+            <div
+              key={idx}
+              className="bg-gradient-to-r from-danger/10 via-warning/5 to-danger/10 border-2 border-danger/30 rounded-xl p-6 shadow-sm animate-in slide-in-from-top duration-500"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-danger/15 flex items-center justify-center shrink-0 border border-danger/20">
+                  <AlertTriangle className="w-6 h-6 text-danger" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold text-danger mb-1">
+                    ⚠️ Weak Topic Detected: {wt.lessonTitle.replace(/^Quiz \d+:\s*/, "")}
+                  </h3>
+                  <p className="text-sm text-text-muted mb-4">
+                    You scored <span className="font-bold text-danger">{wt.percentage}%</span> on{" "}
+                    <span className="font-semibold text-text">{wt.lessonTitle}</span> — below the {PASSING_THRESHOLD}% passing threshold. Complete the recommended actions to unlock the remaining quizzes.
+                  </p>
+
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider">
+                      Recommended Action Plan
+                    </h4>
+                    <div className="flex items-center gap-3 bg-surface/80 p-3 rounded-lg border border-border">
+                      <BookOpenCheck className="w-5 h-5 text-primary shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium text-text">
+                          📖 Review Material: Lecture 11 - Testing Strategies (PDF)
+                        </p>
+                        <p className="text-xs text-text-muted">
+                          Revisit the core concepts before retaking the quiz.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 bg-surface/80 p-3 rounded-lg border border-border">
+                      <RotateCcw className="w-5 h-5 text-warning shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium text-text">
+                          🔄 Retake {wt.lessonTitle} to unlock the next topics.
+                        </p>
+                        <p className="text-xs text-text-muted">
+                          Score at least {PASSING_THRESHOLD}% to proceed.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Course Header */}
       <div className="bg-surface rounded-xl border border-border p-8 mb-8 shadow-sm">
@@ -168,9 +275,73 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   lessons.map((les: any) => {
                     const pr = progressMap.get(les.lesson_id);
                     const isCompleted = pr?.completion_status === "completed";
+                    const isFailed = pr && pr.percentage < PASSING_THRESHOLD;
                     const isMixed = les.lesson_type === "mixed";
                     const isVideo = les.lesson_type === "video";
+                    const isLocked = lockedLessonIds.has(les.lesson_id);
+                    const isQuizLesson = les.lesson_title?.startsWith("Quiz");
 
+                    // Locked lesson
+                    if (isLocked) {
+                      return (
+                        <div
+                          key={les.lesson_id}
+                          className="flex items-center justify-between p-4 opacity-50 cursor-not-allowed select-none"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-text-muted">
+                              <Lock className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <div className="font-medium text-text-muted line-through">
+                                {les.sequence_no}. {les.lesson_title}
+                              </div>
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="text-xs text-text-muted flex items-center gap-1">
+                                  <Lock className="w-3.5 h-3.5" />
+                                  <span>Locked — pass the previous quiz first</span>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <span className="text-xs font-semibold text-text-muted bg-bg-page px-3 py-1 rounded-full border border-border">
+                            🔒 Locked
+                          </span>
+                        </div>
+                      );
+                    }
+
+                    // Failed quiz lesson (special styling)
+                    if (isQuizLesson && isCompleted && isFailed) {
+                      return (
+                        <Link
+                          key={les.lesson_id}
+                          href={`/student/courses/${courseId}/lessons/${les.lesson_id}`}
+                          className="flex items-center justify-between p-4 bg-danger/5 hover:bg-danger/10 transition-colors group border-l-4 border-danger"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-danger">
+                              <AlertTriangle className="w-6 h-6" />
+                            </div>
+                            <div>
+                              <div className="font-medium text-danger group-hover:text-danger transition-colors">
+                                {les.sequence_no}. {les.lesson_title}
+                              </div>
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="text-xs text-danger/70 font-semibold flex items-center gap-1">
+                                  Score: {pr.percentage}% — Needs Retake
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <span className="text-sm font-medium text-danger opacity-0 group-hover:opacity-100 transition-opacity">
+                            🔄 Retake &rarr;
+                          </span>
+                        </Link>
+                      );
+                    }
+
+                    // Normal lesson
                     return (
                       <Link
                         key={les.lesson_id}
@@ -180,12 +351,12 @@ export default async function CourseDetailPage({ params }: PageProps) {
                         <div className="flex items-center gap-4">
                           <div
                             className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
-                              isCompleted
+                              isCompleted && !isFailed
                                 ? "text-success"
                                 : "text-border group-hover:text-primary/50"
                             }`}
                           >
-                            {isCompleted ? (
+                            {isCompleted && !isFailed ? (
                               <CheckCircle2 className="w-6 h-6" />
                             ) : (
                               <Circle className="w-6 h-6" />
@@ -206,6 +377,11 @@ export default async function CourseDetailPage({ params }: PageProps) {
                                   {les.lesson_type}
                                 </span>
                               </span>
+                              {isCompleted && !isFailed && pr && (
+                                <span className="text-xs text-success font-semibold">
+                                  ✓ {pr.percentage}%
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>

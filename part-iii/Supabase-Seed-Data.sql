@@ -88,7 +88,8 @@ ON CONFLICT (course_code) DO UPDATE SET
 INSERT INTO module (course_id, module_title, sequence_no, description, publish_status)
 VALUES
     ((SELECT course_id FROM course WHERE course_code = 'QL-SEF101'), 'Requirements and Use Cases', 1, 'Introduction to requirements analysis and use case modelling.', 'published'),
-    ((SELECT course_id FROM course WHERE course_code = 'QL-SEF101'), 'Design and Architecture', 2, 'Introduction to system architecture, interface design, and data design.', 'published')
+    ((SELECT course_id FROM course WHERE course_code = 'QL-SEF101'), 'Design and Architecture', 2, 'Introduction to system architecture, interface design, and data design.', 'published'),
+    ((SELECT course_id FROM course WHERE course_code = 'QL-SEF101'), 'Interactive Practice Quizzes', 3, 'Test your knowledge with interactive H5P quizzes. You must pass each quiz to unlock the next one.', 'published')
 ON CONFLICT (course_id, sequence_no) DO UPDATE SET
     module_title = EXCLUDED.module_title,
     description = EXCLUDED.description,
@@ -122,6 +123,52 @@ VALUES
         'https://www.youtube.com/embed/dQw4w9WgXcQ',
         1,
         'published'
+    ),
+    -- Module 3: Interactive Practice Quizzes (5 separate lessons)
+    (
+        (SELECT module_id FROM module m JOIN course c ON m.course_id = c.course_id WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 3),
+        'Quiz 1: Testing Strategies',
+        'mixed',
+        'Test your knowledge of software testing strategies including unit, integration, and system testing.',
+        NULL,
+        1,
+        'published'
+    ),
+    (
+        (SELECT module_id FROM module m JOIN course c ON m.course_id = c.course_id WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 3),
+        'Quiz 2: Software Design',
+        'mixed',
+        'Practice key software design concepts including coupling, cohesion, and design patterns.',
+        NULL,
+        2,
+        'published'
+    ),
+    (
+        (SELECT module_id FROM module m JOIN course c ON m.course_id = c.course_id WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 3),
+        'Quiz 3: Project Management',
+        'mixed',
+        'Test your understanding of project planning, risk management, and agile methodologies.',
+        NULL,
+        3,
+        'published'
+    ),
+    (
+        (SELECT module_id FROM module m JOIN course c ON m.course_id = c.course_id WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 3),
+        'Quiz 4: Requirements Analysis',
+        'mixed',
+        'Practice identifying and documenting functional and non-functional requirements.',
+        NULL,
+        4,
+        'published'
+    ),
+    (
+        (SELECT module_id FROM module m JOIN course c ON m.course_id = c.course_id WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 3),
+        'Quiz 5: Quality Assurance',
+        'mixed',
+        'Test your knowledge of QA processes, code reviews, and continuous integration.',
+        NULL,
+        5,
+        'published'
     )
 ON CONFLICT (module_id, sequence_no) DO UPDATE SET
     lesson_title = EXCLUDED.lesson_title,
@@ -130,6 +177,7 @@ ON CONFLICT (module_id, sequence_no) DO UPDATE SET
     video_url = EXCLUDED.video_url,
     publish_status = EXCLUDED.publish_status;
 
+-- Content items for Module 1 & 2 lessons (existing)
 INSERT INTO content_item (lesson_id, content_type, title, body_text, resource_url, storage_path, embed_url, sequence_no, publish_status)
 VALUES
     (
@@ -154,8 +202,9 @@ VALUES
         2,
         'published'
     ),
+    -- Module 3 Quiz Content Items (one per lesson)
     (
-        (SELECT lesson_id FROM lesson l JOIN module m ON l.module_id = m.module_id JOIN course c ON m.course_id = c.course_id WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 2 AND l.sequence_no = 1),
+        (SELECT lesson_id FROM lesson l JOIN module m ON l.module_id = m.module_id JOIN course c ON m.course_id = c.course_id WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 3 AND l.sequence_no = 1),
         'h5p_lumi',
         'Quiz 1: Testing Strategies',
         '<iframe src="https://app.lumi.education/api/v1/run/GVsXA0/embed" width="1088" height="720" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></iframe>',
@@ -166,25 +215,47 @@ VALUES
         'published'
     ),
     (
-        (SELECT lesson_id FROM lesson l JOIN module m ON l.module_id = m.module_id JOIN course c ON m.course_id = c.course_id WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 2 AND l.sequence_no = 1),
+        (SELECT lesson_id FROM lesson l JOIN module m ON l.module_id = m.module_id JOIN course c ON m.course_id = c.course_id WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 3 AND l.sequence_no = 2),
         'h5p_lumi',
-        'Quiz 2: Concept: Software Design',
+        'Quiz 2: Software Design',
         '<iframe src="https://app.lumi.education/api/v1/run/OPq0RR/embed" width="1088" height="720" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></iframe>',
         NULL,
         NULL,
         NULL,
-        2,
+        1,
         'published'
     ),
     (
-        (SELECT lesson_id FROM lesson l JOIN module m ON l.module_id = m.module_id JOIN course c ON m.course_id = c.course_id WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 2 AND l.sequence_no = 1),
+        (SELECT lesson_id FROM lesson l JOIN module m ON l.module_id = m.module_id JOIN course c ON m.course_id = c.course_id WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 3 AND l.sequence_no = 3),
         'h5p_lumi',
         'Quiz 3: Project Management',
         '<iframe src="https://app.lumi.education/api/v1/run/vYNyk7/embed" width="1088" height="720" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></iframe>',
         NULL,
         NULL,
         NULL,
-        3,
+        1,
+        'published'
+    ),
+    (
+        (SELECT lesson_id FROM lesson l JOIN module m ON l.module_id = m.module_id JOIN course c ON m.course_id = c.course_id WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 3 AND l.sequence_no = 4),
+        'h5p_lumi',
+        'Quiz 4: Requirements Analysis',
+        '<iframe src="https://app.lumi.education/api/v1/run/br-d4r/embed" width="1088" height="720" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></iframe>',
+        NULL,
+        NULL,
+        NULL,
+        1,
+        'published'
+    ),
+    (
+        (SELECT lesson_id FROM lesson l JOIN module m ON l.module_id = m.module_id JOIN course c ON m.course_id = c.course_id WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 3 AND l.sequence_no = 5),
+        'h5p_lumi',
+        'Quiz 5: Quality Assurance',
+        '<iframe src="https://app.lumi.education/api/v1/run/pwL-Qs/embed" width="1088" height="720" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></iframe>',
+        NULL,
+        NULL,
+        NULL,
+        1,
         'published'
     )
 ON CONFLICT (lesson_id, sequence_no) DO UPDATE SET
@@ -195,6 +266,22 @@ ON CONFLICT (lesson_id, sequence_no) DO UPDATE SET
     storage_path = EXCLUDED.storage_path,
     embed_url = EXCLUDED.embed_url,
     publish_status = EXCLUDED.publish_status;
+
+-- Mock failed progress: Student attempted Quiz 1 but scored poorly (40%)
+INSERT INTO progress_record (student_profile_id, lesson_id, completion_status, percentage)
+SELECT
+    (SELECT student_profile_id FROM student_profile WHERE student_no = 'QL-STU-001'),
+    l.lesson_id,
+    'completed',
+    40
+FROM lesson l
+JOIN module m ON l.module_id = m.module_id
+JOIN course c ON m.course_id = c.course_id
+WHERE c.course_code = 'QL-SEF101' AND m.sequence_no = 3 AND l.sequence_no = 1
+ON CONFLICT (student_profile_id, lesson_id) DO UPDATE SET
+    completion_status = EXCLUDED.completion_status,
+    percentage = EXCLUDED.percentage,
+    updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO enrollment (student_profile_id, course_id, status)
 VALUES (
