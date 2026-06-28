@@ -25,21 +25,20 @@ VALUES
     ('00000000-0000-0000-0000-000000000101', (SELECT role_id FROM role WHERE role_name = 'Student'), 'Demo Student', 'student@example.com', 'active'),
     ('00000000-0000-0000-0000-000000000102', (SELECT role_id FROM role WHERE role_name = 'Instructor'), 'Demo Instructor', 'instructor@example.com', 'active'),
     ('00000000-0000-0000-0000-000000000103', (SELECT role_id FROM role WHERE role_name = 'Academic Advisor'), 'Demo Advisor', 'advisor@example.com', 'active'),
-    ('00000000-0000-0000-0000-000000000104', (SELECT role_id FROM role WHERE role_name = 'Admin'), 'Demo Admin', 'admin@example.com', 'active')
+    ('00000000-0000-0000-0000-000000000104', (SELECT role_id FROM role WHERE role_name = 'Admin'), 'Demo Admin', 'admin@example.com', 'active'),
+    ('00000000-0000-0000-0000-000000000111', (SELECT role_id FROM role WHERE role_name = 'Student'), 'Alice Johnson', 'student2@example.com', 'active'),
+    ('00000000-0000-0000-0000-000000000112', (SELECT role_id FROM role WHERE role_name = 'Student'), 'Bob Smith', 'student3@example.com', 'active'),
+    ('00000000-0000-0000-0000-000000000113', (SELECT role_id FROM role WHERE role_name = 'Instructor'), 'Pending Instructor', 'pending_instructor@example.com', 'pending')
 ON CONFLICT (email) DO UPDATE SET
     full_name = EXCLUDED.full_name,
     role_id = EXCLUDED.role_id,
     account_status = EXCLUDED.account_status;
 
 INSERT INTO student_profile (user_id, student_no, academic_level, programme, department, learning_preference)
-VALUES (
-    (SELECT user_id FROM "user" WHERE email = 'student@example.com'),
-    'QL-STU-001',
-    'Year 1',
-    'Bachelor of Computer Science',
-    'Computer Science',
-    'visual'
-)
+VALUES 
+    ((SELECT user_id FROM "user" WHERE email = 'student@example.com'), 'QL-STU-001', 'Year 2', 'Degree in Computer Science', 'Computer Science', 'visual'),
+    ((SELECT user_id FROM "user" WHERE email = 'student2@example.com'), 'STU-8821', 'Year 2', 'Diploma in IT', 'Information Technology', 'visual'),
+    ((SELECT user_id FROM "user" WHERE email = 'student3@example.com'), 'STU-9391', 'Year 1', 'Diploma in IT', 'Information Technology', 'visual')
 ON CONFLICT (student_no) DO UPDATE SET
     academic_level = EXCLUDED.academic_level,
     programme = EXCLUDED.programme,
@@ -47,13 +46,21 @@ ON CONFLICT (student_no) DO UPDATE SET
     learning_preference = EXCLUDED.learning_preference;
 
 INSERT INTO instructor_profile (user_id, staff_no, specialization, subjects_taught, office_hours)
-VALUES (
-    (SELECT user_id FROM "user" WHERE email = 'instructor@example.com'),
-    'QL-INS-001',
-    'Software Engineering and Web Systems',
-    'Software Engineering Fundamentals, Web Application Development',
-    'Tuesday 10:00-12:00'
-)
+VALUES 
+    (
+        (SELECT user_id FROM "user" WHERE email = 'instructor@example.com'),
+        'QL-INS-001',
+        'Software Engineering and Web Systems',
+        'Software Engineering Fundamentals, Web Application Development',
+        'Mon, Wed 10:00-12:00'
+    ),
+    (
+        (SELECT user_id FROM "user" WHERE email = 'pending_instructor@example.com'),
+        'QL-INS-PND',
+        'Human Computer Interaction',
+        'UI/UX Design',
+        'Tue 14:00-16:00'
+    )
 ON CONFLICT (staff_no) DO UPDATE SET
     specialization = EXCLUDED.specialization,
     subjects_taught = EXCLUDED.subjects_taught,
@@ -509,11 +516,22 @@ WHERE sp.student_no = 'QL-STU-001'
   );
 
 INSERT INTO advisor_student_assignment (advisor_profile_id, student_profile_id, status)
-VALUES (
-    (SELECT advisor_profile_id FROM advisor_profile WHERE staff_no = 'QL-ADV-001'),
-    (SELECT student_profile_id FROM student_profile WHERE student_no = 'QL-STU-001'),
-    'active'
-)
+VALUES 
+    (
+        (SELECT advisor_profile_id FROM advisor_profile WHERE staff_no = 'QL-ADV-001'),
+        (SELECT student_profile_id FROM student_profile WHERE student_no = 'QL-STU-001'),
+        'active'
+    ),
+    (
+        (SELECT advisor_profile_id FROM advisor_profile WHERE staff_no = 'QL-ADV-001'),
+        (SELECT student_profile_id FROM student_profile WHERE student_no = 'STU-8821'),
+        'active'
+    ),
+    (
+        (SELECT advisor_profile_id FROM advisor_profile WHERE staff_no = 'QL-ADV-001'),
+        (SELECT student_profile_id FROM student_profile WHERE student_no = 'STU-9391'),
+        'active'
+    )
 ON CONFLICT (advisor_profile_id, student_profile_id) DO UPDATE SET
     status = EXCLUDED.status;
 

@@ -1,9 +1,22 @@
 import { getCurrentUser } from "@/lib/auth/helpers";
+import { createClient } from "@/lib/supabase/server";
 import { User, Mail, Shield, Award, Calendar, Contact, BookOpen } from "lucide-react";
 
 export default async function InstructorProfilePage() {
   const user = await getCurrentUser();
   if (!user) return null;
+
+  const supabase = await createClient();
+  const { data: profile } = await supabase
+    .from("instructor_profile")
+    .select("*")
+    .eq("user_id", user.userId)
+    .maybeSingle();
+
+  const specialization = profile?.specialization || "Software Engineering";
+  const subjects = profile?.subjects_taught || "SEF, Web Dev";
+  const officeHours = profile?.office_hours || "Mon-Wed 2PM-4PM";
+  const staffNo = profile?.staff_no || "QL-INS-001";
 
   return (
     <div className="max-w-4xl space-y-8 animate-in fade-in duration-500">
@@ -51,21 +64,28 @@ export default async function InstructorProfilePage() {
             <div className="space-y-1">
               <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Specialization</span>
               <div className="flex items-center gap-2 text-sm text-text font-medium bg-bg-page/50 p-3 rounded-lg border border-border">
-                <Award className="w-4 h-4 text-text-muted" /> Software Engineering
+                <Award className="w-4 h-4 text-text-muted" /> {specialization}
               </div>
             </div>
 
             <div className="space-y-1">
               <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Subjects Taught</span>
               <div className="flex items-center gap-2 text-sm text-text font-medium bg-bg-page/50 p-3 rounded-lg border border-border">
-                <BookOpen className="w-4 h-4 text-text-muted" /> SEF, Web Dev
+                <BookOpen className="w-4 h-4 text-text-muted" /> {subjects}
+              </div>
+            </div>
+
+            <div className="space-y-1 sm:col-span-2">
+              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Staff ID</span>
+              <div className="flex items-center gap-2 text-sm text-text font-medium bg-bg-page/50 p-3 rounded-lg border border-border">
+                <Award className="w-4 h-4 text-text-muted" /> {staffNo}
               </div>
             </div>
 
             <div className="space-y-1 sm:col-span-2">
               <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Office Hours</span>
               <div className="flex items-center gap-2 text-sm text-text font-medium bg-bg-page/50 p-3 rounded-lg border border-border">
-                <Calendar className="w-4 h-4 text-text-muted" /> Mon-Wed 2PM-4PM
+                <Calendar className="w-4 h-4 text-text-muted" /> {officeHours}
               </div>
             </div>
           </div>

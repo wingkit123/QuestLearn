@@ -61,9 +61,9 @@ export default async function AdvisorDashboard() {
                   </td>
                   <td className="px-6 py-4 text-right text-text-muted">{s.lastActive}</td>
                   <td className="px-6 py-4 text-center">
-                    <button className="text-sm font-medium text-primary hover:underline">
+                    <Link href="/advisor/students" className="text-sm font-medium text-primary hover:underline">
                       Review Profile
-                    </button>
+                    </Link>
                   </td>
                 </tr>
               ))}

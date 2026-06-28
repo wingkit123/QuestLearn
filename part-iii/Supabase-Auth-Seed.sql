@@ -62,6 +62,39 @@ VALUES
     '{"provider":"email","providers":["email"]}',
     '{"full_name":"Demo Admin"}',
     '', '', '', ''
+  ),
+  (
+    '00000000-0000-0000-0000-000000000000',
+    '00000000-0000-0000-0000-000000000111',
+    'authenticated', 'authenticated',
+    'student2@example.com',
+    crypt('123456', gen_salt('bf')),
+    NOW(), NOW(), NOW(),
+    '{"provider":"email","providers":["email"]}',
+    '{"full_name":"Alice Johnson"}',
+    '', '', '', ''
+  ),
+  (
+    '00000000-0000-0000-0000-000000000000',
+    '00000000-0000-0000-0000-000000000112',
+    'authenticated', 'authenticated',
+    'student3@example.com',
+    crypt('123456', gen_salt('bf')),
+    NOW(), NOW(), NOW(),
+    '{"provider":"email","providers":["email"]}',
+    '{"full_name":"Bob Smith"}',
+    '', '', '', ''
+  ),
+  (
+    '00000000-0000-0000-0000-000000000000',
+    '00000000-0000-0000-0000-000000000113',
+    'authenticated', 'authenticated',
+    'pending_instructor@example.com',
+    crypt('123456', gen_salt('bf')),
+    NOW(), NOW(), NOW(),
+    '{"provider":"email","providers":["email"]}',
+    '{"full_name":"Pending Instructor"}',
+    '', '', '', ''
   )
 ON CONFLICT (id) DO NOTHING;
 
@@ -98,6 +131,30 @@ VALUES
     '00000000-0000-0000-0000-000000000104',
     'email',
     jsonb_build_object('sub', '00000000-0000-0000-0000-000000000104', 'email', 'admin@example.com', 'email_verified', true),
+    NOW(), NOW(), NOW()
+  ),
+  (
+    gen_random_uuid(),
+    '00000000-0000-0000-0000-000000000111',
+    '00000000-0000-0000-0000-000000000111',
+    'email',
+    jsonb_build_object('sub', '00000000-0000-0000-0000-000000000111', 'email', 'student2@example.com', 'email_verified', true),
+    NOW(), NOW(), NOW()
+  ),
+  (
+    gen_random_uuid(),
+    '00000000-0000-0000-0000-000000000112',
+    '00000000-0000-0000-0000-000000000112',
+    'email',
+    jsonb_build_object('sub', '00000000-0000-0000-0000-000000000112', 'email', 'student3@example.com', 'email_verified', true),
+    NOW(), NOW(), NOW()
+  ),
+  (
+    gen_random_uuid(),
+    '00000000-0000-0000-0000-000000000113',
+    '00000000-0000-0000-0000-000000000113',
+    'email',
+    jsonb_build_object('sub', '00000000-0000-0000-0000-000000000113', 'email', 'pending_instructor@example.com', 'email_verified', true),
     NOW(), NOW(), NOW()
   )
 ON CONFLICT DO NOTHING;

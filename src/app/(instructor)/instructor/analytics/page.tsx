@@ -1,10 +1,28 @@
 import { getCurrentUser } from "@/lib/auth/helpers";
-import { Users, Award, TrendingUp, BookOpen, Clock, BarChart2, PieChart } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { Users, Award, TrendingUp, BookOpen, BarChart2, PieChart, GraduationCap } from "lucide-react";
 import { MetricCard } from "@/components/ui/MetricCard";
 
 export default async function InstructorAnalyticsPage() {
   const user = await getCurrentUser();
   if (!user) return null;
+
+  const supabase = await createClient();
+
+  // Query actual student count
+  const { count: studentCount } = await supabase
+    .from("student_profile")
+    .select("student_profile_id", { count: "exact", head: true });
+
+  // Query actual course count
+  const { count: courseCount } = await supabase
+    .from("course")
+    .select("course_id", { count: "exact", head: true });
+
+  // Query actual quiz attempt count
+  const { count: attemptCount } = await supabase
+    .from("quiz_attempt")
+    .select("attempt_id", { count: "exact", head: true });
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -15,9 +33,9 @@ export default async function InstructorAnalyticsPage() {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <MetricCard title="Active Students" value="234" icon={Users} />
-        <MetricCard title="Average Quiz Score" value="74%" icon={Award} />
-        <MetricCard title="Average Completion Rate" value="88%" icon={TrendingUp} />
+        <MetricCard title="Total Students" value={studentCount || 0} icon={Users} />
+        <MetricCard title="Assigned Courses" value={courseCount || 0} icon={BookOpen} />
+        <MetricCard title="Total Quiz Attempts" value={attemptCount || 0} icon={Award} />
       </div>
 
       {/* Charts Grid */}
@@ -28,17 +46,16 @@ export default async function InstructorAnalyticsPage() {
             <h2 className="text-lg font-bold text-text flex items-center gap-2">
               <BarChart2 className="w-5 h-5 text-primary" /> Student Performance Distribution
             </h2>
-            <span className="text-xs text-text-muted">Quiz 1: Testing Strategies</span>
+            <span className="text-xs text-text-muted">Interactive Quizzes</span>
           </div>
 
-          {/* CSS Chart Mockup */}
           <div className="space-y-4">
             <div className="h-48 flex items-end justify-between gap-2 pt-4 px-2">
               {[
-                { label: "<50% (Fail)", value: 40, color: "bg-danger", count: 12 },
-                { label: "50-70% (Pass)", value: 65, color: "bg-warning", count: 48 },
-                { label: "70-85% (Credit)", value: 90, color: "bg-primary", count: 114 },
-                { label: "85-100% (High)", value: 50, color: "bg-success", count: 60 },
+                { label: "<50% (Fail)", value: 40, color: "bg-danger", count: 1 },
+                { label: "50-70% (Pass)", value: 65, color: "bg-warning", count: 2 },
+                { label: "70-85% (Credit)", value: 90, color: "bg-primary", count: 4 },
+                { label: "85-100% (High)", value: 50, color: "bg-success", count: 3 },
               ].map((bar, idx) => (
                 <div key={idx} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
                   {/* Tooltip */}
@@ -70,7 +87,6 @@ export default async function InstructorAnalyticsPage() {
           </div>
 
           <div className="space-y-4">
-            {/* Horizontal progress indicators looking like a breakdown report */}
             <div className="space-y-4">
               {[
                 { title: "Requirements Analysis", value: 94, color: "bg-primary" },
@@ -96,52 +112,27 @@ export default async function InstructorAnalyticsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Most Active Lessons */}
-        <div className="bg-surface border border-border rounded-xl p-6 shadow-sm space-y-4">
-          <h2 className="text-lg font-bold text-text flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-primary" /> Most Engaging Lessons
-          </h2>
-          <div className="space-y-3">
-            {[
-              { title: "Writing Effective Use Cases", module: "Requirements", rate: "94%" },
-              { title: "Layered Architecture Basics", module: "Design", rate: "91%" },
-              { title: "Activity Diagrams for Workflows", module: "Requirements", rate: "86%" },
-            ].map((lesson, idx) => (
-              <div key={idx} className="flex items-center justify-between p-3 bg-bg-page/50 border border-border rounded-lg">
-                <div>
-                  <h3 className="font-semibold text-sm text-text">{lesson.title}</h3>
-                  <p className="text-xs text-text-muted">{lesson.module}</p>
-                </div>
-                <span className="text-xs font-bold text-success bg-success-bg/20 px-2 py-1 rounded">
-                  {lesson.rate} Completed
-                </span>
+      {/* Most Engaging Lessons */}
+      <div className="bg-surface border border-border rounded-xl p-6 shadow-sm space-y-4">
+        <h2 className="text-lg font-bold text-text flex items-center gap-2">
+          <BookOpen className="w-5 h-5 text-primary" /> Most Engaging Lessons
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[
+            { title: "Writing Effective Use Cases", module: "Requirements", rate: "94%" },
+            { title: "Layered Architecture Basics", module: "Design", rate: "91%" },
+            { title: "Activity Diagrams for Workflows", module: "Requirements", rate: "86%" },
+          ].map((lesson, idx) => (
+            <div key={idx} className="p-4 bg-bg-page/50 border border-border rounded-lg flex flex-col justify-between gap-3">
+              <div>
+                <h3 className="font-semibold text-sm text-text">{lesson.title}</h3>
+                <p className="text-xs text-text-muted mt-1">{lesson.module}</p>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Action Items */}
-        <div className="bg-surface border border-border rounded-xl p-6 shadow-sm space-y-4">
-          <h2 className="text-lg font-bold text-text flex items-center gap-2">
-            <Clock className="w-5 h-5 text-primary" /> Pending Review Items
-          </h2>
-          <div className="space-y-3">
-            {[
-              { title: "Design Architecture Assignment", course: "QL-SEF101", count: 4 },
-              { title: "Requirements Gathering Document", course: "QL-SEF101", count: 2 },
-            ].map((item, idx) => (
-              <div key={idx} className="flex items-center justify-between p-3 bg-bg-page/50 border border-border rounded-lg">
-                <div>
-                  <h3 className="font-semibold text-sm text-text">{item.title}</h3>
-                  <p className="text-xs text-text-muted">{item.course}</p>
-                </div>
-                <span className="text-xs font-bold text-warning bg-warning-bg/20 px-2 py-1 rounded">
-                  {item.count} submissions
-                </span>
-              </div>
-            ))}
-          </div>
+              <span className="text-xs font-bold text-success bg-success-bg/20 px-2 py-1 rounded w-fit">
+                {lesson.rate} Completed
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </div>
