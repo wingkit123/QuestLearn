@@ -101,6 +101,29 @@ export default function RegisterPage() {
         setLoading(false);
         return;
       }
+
+      // Auto-enroll student in the default course QL-SEF101 for demo convenience
+      const { data: courseData } = await supabase
+        .from("course")
+        .select("course_id")
+        .eq("course_code", "QL-SEF101")
+        .maybeSingle();
+
+      if (courseData) {
+        const { data: newProfile } = await supabase
+          .from("student_profile")
+          .select("student_profile_id")
+          .eq("user_id", userData.user_id)
+          .single();
+
+        if (newProfile) {
+          await supabase.from("enrollment").insert({
+            student_profile_id: newProfile.student_profile_id,
+            course_id: courseData.course_id,
+            status: "active",
+          });
+        }
+      }
     } else {
       const { error: profileError } = await supabase
         .from("instructor_profile")
