@@ -1,5 +1,5 @@
 import { getCurrentUser } from "@/lib/auth/helpers";
-import { UserCog, User, Mail, Shield, Award, Calendar } from "lucide-react";
+import { User, Mail, Shield, Award, Calendar, BookOpen, Brain, GraduationCap } from "lucide-react";
 
 export default async function StudentProfilePage() {
   const user = await getCurrentUser();
@@ -9,14 +9,14 @@ export default async function StudentProfilePage() {
     <div className="max-w-4xl space-y-8 animate-in fade-in duration-500">
       <header>
         <h1 className="text-2xl font-bold text-text mb-2">Student Profile</h1>
-        <p className="text-text-muted">Manage your personal information and preferences.</p>
+        <p className="text-text-muted">Manage your personal information, academic level, and learning preferences.</p>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Profile Card */}
         <div className="md:col-span-1 bg-surface border border-border rounded-xl p-6 text-center space-y-4 shadow-sm">
           <div className="w-24 h-24 mx-auto rounded-full bg-primary/10 text-primary font-bold text-3xl flex items-center justify-center border-2 border-primary/20">
-            {user.fullName.charAt(0)}
+            {user.fullName.charAt(0).toUpperCase()}
           </div>
           <div>
             <h2 className="text-xl font-bold text-text">{user.fullName}</h2>
@@ -49,16 +49,23 @@ export default async function StudentProfilePage() {
             </div>
 
             <div className="space-y-1">
-              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Student ID</span>
+              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Programme</span>
               <div className="flex items-center gap-2 text-sm text-text font-medium bg-bg-page/50 p-3 rounded-lg border border-border">
-                <Award className="w-4 h-4 text-text-muted" /> QL-STU-001
+                <GraduationCap className="w-4 h-4 text-text-muted" /> Diploma in IT
               </div>
             </div>
 
             <div className="space-y-1">
-              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Joined Date</span>
+              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Academic Level</span>
               <div className="flex items-center gap-2 text-sm text-text font-medium bg-bg-page/50 p-3 rounded-lg border border-border">
-                <Calendar className="w-4 h-4 text-text-muted" /> June 2026
+                <Award className="w-4 h-4 text-text-muted" /> Year 2
+              </div>
+            </div>
+
+            <div className="space-y-1 sm:col-span-2">
+              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Learning Preference</span>
+              <div className="flex items-center gap-2 text-sm text-text font-medium bg-bg-page/50 p-3 rounded-lg border border-border">
+                <Brain className="w-4 h-4 text-text-muted" /> Visual & Interactive (Short lessons & H5P quizzes)
               </div>
             </div>
           </div>

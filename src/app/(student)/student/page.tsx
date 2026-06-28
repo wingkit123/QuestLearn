@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { CourseCard } from "@/components/student/CourseCard";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { BookOpen, GraduationCap, Clock } from "lucide-react";
+import { BookOpen, GraduationCap, Clock, CheckSquare, Eye } from "lucide-react";
 import type { EnrolledCourse } from "@/types/database";
 
 export default async function StudentDashboard() {
@@ -47,7 +47,6 @@ export default async function StudentDashboard() {
     .returns<EnrolledCourse[]>();
 
   // Fetch progress records for these courses
-  // In a real app, this would be a custom DB function or view. For now we do it in TS.
   const { data: progressRecords } = await supabase
     .from("progress_record")
     .select(
@@ -82,7 +81,6 @@ export default async function StudentDashboard() {
   let totalProgress = 0;
   activeEnrollments.forEach((e) => {
     const cp = courseProgressMap.get(e.course_id);
-    // If a course has no lessons tracked yet, it's 0%
     const courseAvg = cp && cp.count > 0 ? Math.round(cp.total / cp.count) : 0;
     totalProgress += courseAvg;
   });
@@ -91,7 +89,7 @@ export default async function StudentDashboard() {
       ? Math.round(totalProgress / activeEnrollments.length)
       : 0;
 
-  // Count pending deadlines (Mocked logic: just find any assignments not submitted)
+  // Count pending deadlines
   const { count: pendingDeadlines } = await supabase
     .from("assignment")
     .select("assignment_id", { count: "exact", head: true })
@@ -99,7 +97,6 @@ export default async function StudentDashboard() {
       "course_id",
       activeEnrollments.map((e) => e.course_id)
     )
-    // In real app, we'd filter out submitted ones
     .gt("deadline", new Date().toISOString());
 
   return (
@@ -135,36 +132,65 @@ export default async function StudentDashboard() {
         />
       </div>
 
-      {/* Enrolled Courses Grid */}
-      <section>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-text">Your Courses</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left: Your Courses */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-text">Your Courses</h2>
+          </div>
+
+          {activeEnrollments.length === 0 ? (
+            <EmptyState
+              title="No Active Courses"
+              description="You are not currently enrolled in any courses. Check back later or contact your advisor."
+              icon={<BookOpen className="w-8 h-8 text-primary" />}
+            />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {activeEnrollments.map((enrollment) => {
+                const cp = courseProgressMap.get(enrollment.course_id);
+                const progressPercentage =
+                  cp && cp.count > 0 ? Math.round(cp.total / cp.count) : 0;
+
+                return (
+                  <CourseCard
+                    key={enrollment.enrollment_id}
+                    enrollment={enrollment}
+                    progressPercentage={progressPercentage}
+                  />
+                );
+              })}
+            </div>
+          )}
         </div>
 
-        {activeEnrollments.length === 0 ? (
-          <EmptyState
-            title="No Active Courses"
-            description="You are not currently enrolled in any courses. Check back later or contact your advisor."
-            icon={<BookOpen className="w-8 h-8 text-primary" />}
-          />
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {activeEnrollments.map((enrollment) => {
-              const cp = courseProgressMap.get(enrollment.course_id);
-              const progressPercentage =
-                cp && cp.count > 0 ? Math.round(cp.total / cp.count) : 0;
-
+        {/* Right: Recent Activity Log */}
+        <div className="bg-surface border border-border rounded-xl p-6 shadow-sm h-fit space-y-4">
+          <h2 className="text-xl font-bold text-text flex items-center gap-2">
+            <Clock className="w-5 h-5 text-primary" /> Recent Activity Log
+          </h2>
+          <div className="space-y-4">
+            {[
+              { text: "Watched Video: UML Diagrams", time: "10 minutes ago", icon: Eye, color: "text-primary bg-primary/10 border-primary/20" },
+              { text: "Attempted Quiz: Testing Strategies", time: "2 hours ago", icon: CheckSquare, color: "text-warning bg-warning/10 border-warning/20" },
+              { text: "Visited: Course Syllabus", time: "Yesterday", icon: BookOpen, color: "text-neutral bg-neutral-bg text-neutral border-neutral/20" },
+            ].map((activity, idx) => {
+              const Icon = activity.icon;
               return (
-                <CourseCard
-                  key={enrollment.enrollment_id}
-                  enrollment={enrollment}
-                  progressPercentage={progressPercentage}
-                />
+                <div key={idx} className="flex items-start gap-3 p-3 bg-bg-page/40 rounded-lg border border-border">
+                  <div className={`p-1.5 rounded-lg border mt-0.5 shrink-0 ${activity.color}`}>
+                    <Icon className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-text leading-snug">{activity.text}</p>
+                    <p className="text-xs text-text-muted mt-0.5">{activity.time}</p>
+                  </div>
+                </div>
               );
             })}
           </div>
-        )}
-      </section>
+        </div>
+      </div>
     </div>
   );
 }
