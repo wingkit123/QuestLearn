@@ -184,8 +184,6 @@ cd QuestLearn
 # Using Bun (recommended — faster)
 bun install
 
-# Or using npm
-npm install
 ```
 
 ### 2. Supabase Setup
