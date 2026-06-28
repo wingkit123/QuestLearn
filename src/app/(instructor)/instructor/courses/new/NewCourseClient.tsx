@@ -49,8 +49,15 @@ export function NewCourseClient({ instructorProfileId }: Props) {
         router.refresh();
       }, 1000);
     } catch (err: any) {
-      console.error(err);
-      showToast(err.message || "Failed to create course. Ensure code is unique.", "error");
+      console.error("NewCourseClient handleSubmit error:", {
+        message: err?.message,
+        code: err?.code,
+        details: err?.details,
+        hint: err?.hint,
+        err: err,
+      });
+      const errorMsg = err?.message || (typeof err === "string" ? err : JSON.stringify(err));
+      showToast(`Failed to create course: ${errorMsg}`, "error");
     } finally {
       setLoading(false);
     }
