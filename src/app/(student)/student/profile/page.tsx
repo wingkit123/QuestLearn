@@ -51,7 +51,7 @@ export default async function StudentProfilePage() {
             <div className="space-y-1">
               <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Programme</span>
               <div className="flex items-center gap-2 text-sm text-text font-medium bg-bg-page/50 p-3 rounded-lg border border-border">
-                <GraduationCap className="w-4 h-4 text-text-muted" /> Diploma in IT
+                <GraduationCap className="w-4 h-4 text-text-muted" /> Degree in Computer Science
               </div>
             </div>
 
