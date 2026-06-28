@@ -11,7 +11,13 @@ interface PageProps {
 export default async function QuizResultsPage({ params }: PageProps) {
   const { quizId } = await params;
   const user = await getCurrentUser();
-  if (!user) return null;
+  if (!user) {
+    return (
+      <div className="p-8 text-center bg-surface border border-border rounded-xl max-w-xl mx-auto mt-10">
+        <p className="text-danger font-medium">User session not found. Please log in again.</p>
+      </div>
+    );
+  }
 
   const supabase = await createClient();
 
@@ -22,7 +28,13 @@ export default async function QuizResultsPage({ params }: PageProps) {
     .eq("user_id", user.userId)
     .single();
 
-  if (!profile) return null;
+  if (!profile) {
+    return (
+      <div className="p-8 text-center bg-surface border border-border rounded-xl max-w-xl mx-auto mt-10">
+        <p className="text-danger font-medium">Student profile not found. Please contact support.</p>
+      </div>
+    );
+  }
 
   // Fetch quiz
   const { data: quiz } = await supabase
@@ -108,7 +120,7 @@ export default async function QuizResultsPage({ params }: PageProps) {
           <h2 className="text-lg font-bold text-text mb-6">Detailed Review</h2>
           <div className="space-y-6">
             {answers?.map((ans: any, idx: number) => {
-              const q = ans.question;
+              const q = ans.question || { prompt: "Question prompt unavailable", question_type: "", points: ans.points_earned || 0 };
               const isShortAnswer = q.question_type === "short_answer";
 
               return (

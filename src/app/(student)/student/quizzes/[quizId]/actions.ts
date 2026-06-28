@@ -2,6 +2,8 @@
 
 import { createClient } from "@/lib/supabase/server";
 
+import { revalidatePath } from "next/cache";
+
 interface SubmitArgs {
   quizId: number;
   studentProfileId: number;
@@ -94,6 +96,26 @@ export async function submitQuizAttempt({
     .insert(answersToInsert);
 
   if (ansError) throw new Error("Failed to save answers.");
+
+  // 5. Update progress_record so the visual lock/unlock triggers instantly
+  const { data: quizData } = await supabase
+    .from("quiz")
+    .select("lesson_id")
+    .eq("quiz_id", quizId)
+    .single();
+
+  if (quizData?.lesson_id) {
+    const percentage = Math.round((totalScore / maxScore) * 100);
+    await supabase.from("progress_record").upsert({
+      student_profile_id: studentProfileId,
+      lesson_id: quizData.lesson_id,
+      completion_status: "completed",
+      percentage: percentage,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: "student_profile_id, lesson_id" });
+  }
+
+  revalidatePath("/student", "layout");
 
   return { success: true, attemptId: attempt.attempt_id };
 }

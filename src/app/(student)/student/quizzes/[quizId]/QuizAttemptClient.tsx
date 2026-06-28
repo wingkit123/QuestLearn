@@ -41,7 +41,6 @@ export function QuizAttemptClient({ quiz, questions, studentProfileId }: QuizAtt
       });
       
       router.push(`/student/quizzes/${quiz.quiz_id}/results`);
-      router.refresh();
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Failed to submit quiz.");
