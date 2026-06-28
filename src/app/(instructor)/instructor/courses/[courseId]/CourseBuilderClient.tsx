@@ -41,6 +41,18 @@ export function CourseBuilderClient({
   const [description, setDescription] = useState(course.description || "");
   const [loading, setLoading] = useState(false);
   
+  // Modals state
+  const [isModuleModalOpen, setIsModuleModalOpen] = useState(false);
+  const [moduleTitle, setModuleTitle] = useState("");
+  const [moduleDesc, setModuleDesc] = useState("");
+  const [moduleLoading, setModuleLoading] = useState(false);
+
+  const [isLessonModalOpen, setIsLessonModalOpen] = useState(false);
+  const [targetModuleId, setTargetModuleId] = useState<number | null>(null);
+  const [lessonTitle, setLessonTitle] = useState("");
+  const [lessonType, setLessonType] = useState<"video" | "reading">("reading");
+  const [lessonLoading, setLessonLoading] = useState(false);
+
   // Enrollment dropdown state
   const [selectedStudentId, setSelectedStudentId] = useState<string>("");
   const [enrollLoading, setEnrollLoading] = useState(false);
@@ -98,6 +110,89 @@ export function CourseBuilderClient({
       showToast(err.message || "Failed to toggle status", "error");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAddModuleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!moduleTitle.trim()) return;
+    setModuleLoading(true);
+
+    try {
+      const nextSeq = (course.module || []).length + 1;
+      const { data: newMod, error } = await supabase
+        .from("module")
+        .insert({
+          course_id: parseInt(courseId),
+          module_title: moduleTitle.trim(),
+          description: moduleDesc.trim() || null,
+          sequence_no: nextSeq,
+          publish_status: "published",
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Update state
+      const updatedModules = [...(course.module || []), { ...newMod, lesson: [] }];
+      setCourse({ ...course, module: updatedModules });
+
+      showToast("Module created successfully!");
+      setModuleTitle("");
+      setModuleDesc("");
+      setIsModuleModalOpen(false);
+    } catch (err: any) {
+      console.error(err);
+      showToast(err.message || "Failed to create module.", "error");
+    } finally {
+      setModuleLoading(false);
+    }
+  };
+
+  const handleAddLessonSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!lessonTitle.trim() || targetModuleId === null) return;
+    setLessonLoading(true);
+
+    try {
+      const targetMod = (course.module || []).find((m: any) => m.module_id === targetModuleId);
+      const nextSeq = ((targetMod?.lesson || []).length) + 1;
+
+      const { data: newLesson, error } = await supabase
+        .from("lesson")
+        .insert({
+          module_id: targetModuleId,
+          lesson_title: lessonTitle.trim(),
+          lesson_type: lessonType,
+          sequence_no: nextSeq,
+          is_required: true,
+          is_preview: false,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Update state
+      const updatedModules = (course.module || []).map((m: any) => {
+        if (m.module_id === targetModuleId) {
+          return { ...m, lesson: [...(m.lesson || []), newLesson] };
+        }
+        return m;
+      });
+
+      setCourse({ ...course, module: updatedModules });
+
+      showToast("Lesson content added successfully!");
+      setLessonTitle("");
+      setIsLessonModalOpen(false);
+      setTargetModuleId(null);
+    } catch (err: any) {
+      console.error(err);
+      showToast(err.message || "Failed to add lesson content.", "error");
+    } finally {
+      setLessonLoading(false);
     }
   };
 
@@ -301,7 +396,7 @@ export function CourseBuilderClient({
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-text">Modules & Content</h2>
             <button
-              onClick={() => showToast("Module added successfully!")}
+              onClick={() => setIsModuleModalOpen(true)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface border border-border text-text font-medium text-sm hover:bg-bg-page transition-colors shadow-sm"
             >
               <Plus className="w-4 h-4" /> Add Module
@@ -313,7 +408,7 @@ export function CourseBuilderClient({
               <div className="text-center p-12 bg-surface border border-border border-dashed rounded-xl">
                 <p className="text-text-muted mb-4">No modules added yet.</p>
                 <button
-                  onClick={() => showToast("First module created successfully!")}
+                  onClick={() => setIsModuleModalOpen(true)}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary-light transition-colors"
                 >
                   <Plus className="w-4 h-4" /> Create First Module
@@ -336,16 +431,13 @@ export function CourseBuilderClient({
                       </div>
                       <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
-                          onClick={() => showToast("Edit Module settings placeholder opened.")}
-                          className="p-2 text-text-muted hover:text-primary rounded-lg hover:bg-primary/10"
+                          onClick={() => {
+                            setTargetModuleId(mod.module_id);
+                            setIsLessonModalOpen(true);
+                          }}
+                          className="p-2 text-text-muted hover:text-primary rounded-lg hover:bg-primary/10 flex items-center gap-1 text-xs font-semibold"
                         >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => showToast("Add Content options triggered.")}
-                          className="p-2 text-text-muted hover:text-primary rounded-lg hover:bg-primary/10"
-                        >
-                          <Plus className="w-4 h-4" />
+                          <Plus className="w-4 h-4" /> Add Content
                         </button>
                       </div>
                     </div>
@@ -372,12 +464,6 @@ export function CourseBuilderClient({
                                   {les.lesson_type}
                                 </span>
                               </div>
-                              <button
-                                onClick={() => showToast("Lesson settings triggered!")}
-                                className="p-1.5 text-text-muted hover:text-primary rounded-md hover:bg-primary/10 opacity-0 group-hover/lesson:opacity-100 transition-opacity"
-                              >
-                                <Settings className="w-4 h-4" />
-                              </button>
                             </div>
                           ))}
                         </div>
@@ -385,7 +471,10 @@ export function CourseBuilderClient({
                     </div>
                     <div className="bg-bg-page/30 p-3 border-t border-border flex justify-center">
                       <button
-                        onClick={() => showToast("Add content module placeholder triggered.")}
+                        onClick={() => {
+                          setTargetModuleId(mod.module_id);
+                          setIsLessonModalOpen(true);
+                        }}
                         className="text-xs font-medium text-text-muted hover:text-primary transition-colors flex items-center gap-1"
                       >
                         <Plus className="w-3 h-3" /> Add content to Module {mod.sequence_no}
@@ -483,6 +572,118 @@ export function CourseBuilderClient({
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {/* Modal: Add Module */}
+      {isModuleModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-40 animate-in fade-in duration-200">
+          <form onSubmit={handleAddModuleSubmit} className="bg-surface border border-border rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6 border-b border-border bg-bg-page/50">
+              <h3 className="text-lg font-bold text-text">Create Module</h3>
+              <p className="text-xs text-text-muted mt-1">Add a new curriculum block to this course.</p>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Module Title</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="E.g., Module 4: Code Quality & Refactoring"
+                  value={moduleTitle}
+                  onChange={(e) => setModuleTitle(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border border-border bg-bg-page focus:ring-2 focus:ring-accent focus:border-transparent outline-none text-text text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Description</label>
+                <textarea
+                  rows={3}
+                  placeholder="Summary of module learning goals..."
+                  value={moduleDesc}
+                  onChange={(e) => setModuleDesc(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border border-border bg-bg-page focus:ring-2 focus:ring-accent focus:border-transparent outline-none text-text text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-border flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setIsModuleModalOpen(false)}
+                className="px-4 py-2 bg-neutral-bg hover:bg-neutral-bg/80 text-text text-sm font-semibold rounded-lg border border-border"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={moduleLoading}
+                className="px-4 py-2 bg-primary hover:bg-primary-light text-white text-sm font-semibold rounded-lg disabled:opacity-75"
+              >
+                {moduleLoading ? "Creating..." : "Create Module"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Modal: Add Lesson Content */}
+      {isLessonModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-40 animate-in fade-in duration-200">
+          <form onSubmit={handleAddLessonSubmit} className="bg-surface border border-border rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6 border-b border-border bg-bg-page/50">
+              <h3 className="text-lg font-bold text-text">Add Lesson Content</h3>
+              <p className="text-xs text-text-muted mt-1">Add a new lesson node inside this module block.</p>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Lesson Title</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="E.g., Integration Testing Frameworks"
+                  value={lessonTitle}
+                  onChange={(e) => setLessonTitle(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border border-border bg-bg-page focus:ring-2 focus:ring-accent focus:border-transparent outline-none text-text text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Content Type</label>
+                <select
+                  value={lessonType}
+                  onChange={(e) => setLessonType(e.target.value as "video" | "reading")}
+                  className="w-full px-4 py-2.5 rounded-lg border border-border bg-bg-page focus:ring-2 focus:ring-accent focus:border-transparent outline-none text-text text-sm font-semibold"
+                >
+                  <option value="reading">📖 Reading / Slide Content</option>
+                  <option value="video">🎥 Video Embed Player</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-border flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsLessonModalOpen(false);
+                  setTargetModuleId(null);
+                }}
+                className="px-4 py-2 bg-neutral-bg hover:bg-neutral-bg/80 text-text text-sm font-semibold rounded-lg border border-border"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={lessonLoading}
+                className="px-4 py-2 bg-primary hover:bg-primary-light text-white text-sm font-semibold rounded-lg disabled:opacity-75"
+              >
+                {lessonLoading ? "Adding..." : "Add Content"}
+              </button>
+            </div>
+          </form>
         </div>
       )}
     </div>
