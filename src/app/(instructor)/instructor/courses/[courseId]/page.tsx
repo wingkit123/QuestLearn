@@ -39,7 +39,41 @@ export default async function CourseBuilderPage({ params }: PageProps) {
 
   if (!course) notFound();
 
+  // Fetch current enrollments
+  const { data: enrollments } = await supabase
+    .from("enrollment")
+    .select(`
+      enrollment_id,
+      status,
+      student_profile:student_profile_id (
+        student_profile_id,
+        student_no,
+        user:user_id (
+          full_name,
+          email
+        )
+      )
+    `)
+    .eq("course_id", courseId);
+
+  // Fetch all student profiles
+  const { data: allStudents } = await supabase
+    .from("student_profile")
+    .select(`
+      student_profile_id,
+      student_no,
+      user:user_id (
+        full_name,
+        email
+      )
+    `);
+
   return (
-    <CourseBuilderClient course={course} courseId={courseId} />
+    <CourseBuilderClient 
+      course={course} 
+      courseId={courseId} 
+      initialEnrollments={enrollments || []}
+      allStudents={allStudents || []}
+    />
   );
 }
