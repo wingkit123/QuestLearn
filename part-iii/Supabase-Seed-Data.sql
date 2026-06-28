@@ -22,10 +22,10 @@ ON CONFLICT (role_name) DO NOTHING;
 
 INSERT INTO "user" (auth_user_id, role_id, full_name, email, account_status)
 VALUES
-    ('00000000-0000-0000-0000-000000000101', (SELECT role_id FROM role WHERE role_name = 'Student'), 'Demo Student', 'student.questlearn@example.com', 'active'),
-    ('00000000-0000-0000-0000-000000000102', (SELECT role_id FROM role WHERE role_name = 'Instructor'), 'Demo Instructor', 'instructor.questlearn@example.com', 'active'),
-    ('00000000-0000-0000-0000-000000000103', (SELECT role_id FROM role WHERE role_name = 'Academic Advisor'), 'Demo Advisor', 'advisor.questlearn@example.com', 'active'),
-    ('00000000-0000-0000-0000-000000000104', (SELECT role_id FROM role WHERE role_name = 'Admin'), 'Demo Admin', 'admin.questlearn@example.com', 'active')
+    ('00000000-0000-0000-0000-000000000101', (SELECT role_id FROM role WHERE role_name = 'Student'), 'Demo Student', 'student@example.com', 'active'),
+    ('00000000-0000-0000-0000-000000000102', (SELECT role_id FROM role WHERE role_name = 'Instructor'), 'Demo Instructor', 'instructor@example.com', 'active'),
+    ('00000000-0000-0000-0000-000000000103', (SELECT role_id FROM role WHERE role_name = 'Academic Advisor'), 'Demo Advisor', 'advisor@example.com', 'active'),
+    ('00000000-0000-0000-0000-000000000104', (SELECT role_id FROM role WHERE role_name = 'Admin'), 'Demo Admin', 'admin@example.com', 'active')
 ON CONFLICT (email) DO UPDATE SET
     full_name = EXCLUDED.full_name,
     role_id = EXCLUDED.role_id,
@@ -33,7 +33,7 @@ ON CONFLICT (email) DO UPDATE SET
 
 INSERT INTO student_profile (user_id, student_no, academic_level, programme, department, learning_preference)
 VALUES (
-    (SELECT user_id FROM "user" WHERE email = 'student.questlearn@example.com'),
+    (SELECT user_id FROM "user" WHERE email = 'student@example.com'),
     'QL-STU-001',
     'Year 1',
     'Bachelor of Computer Science',
@@ -48,7 +48,7 @@ ON CONFLICT (student_no) DO UPDATE SET
 
 INSERT INTO instructor_profile (user_id, staff_no, specialization, subjects_taught, office_hours)
 VALUES (
-    (SELECT user_id FROM "user" WHERE email = 'instructor.questlearn@example.com'),
+    (SELECT user_id FROM "user" WHERE email = 'instructor@example.com'),
     'QL-INS-001',
     'Software Engineering and Web Systems',
     'Software Engineering Fundamentals, Web Application Development',
@@ -61,7 +61,7 @@ ON CONFLICT (staff_no) DO UPDATE SET
 
 INSERT INTO advisor_profile (user_id, staff_no, department, office_hours)
 VALUES (
-    (SELECT user_id FROM "user" WHERE email = 'advisor.questlearn@example.com'),
+    (SELECT user_id FROM "user" WHERE email = 'advisor@example.com'),
     'QL-ADV-001',
     'Computer Science',
     'Thursday 14:00-16:00'
@@ -478,7 +478,7 @@ WHERE student_profile_id = (SELECT student_profile_id FROM student_profile WHERE
 
 INSERT INTO announcement (user_id, title, message, scope, target_scope_id, status)
 SELECT
-    (SELECT user_id FROM "user" WHERE email = 'admin.questlearn@example.com'),
+    (SELECT user_id FROM "user" WHERE email = 'admin@example.com'),
     'QuestLearn Demo Announcement',
     'New SEF lesson content and quiz practice are available.',
     'platform',
@@ -488,14 +488,14 @@ WHERE NOT EXISTS (
     SELECT 1
     FROM announcement
     WHERE title = 'QuestLearn Demo Announcement'
-      AND user_id = (SELECT user_id FROM "user" WHERE email = 'admin.questlearn@example.com')
+      AND user_id = (SELECT user_id FROM "user" WHERE email = 'admin@example.com')
 );
 
 INSERT INTO notification (user_id, announcement_id, message, is_read)
 SELECT u.user_id, a.announcement_id, 'New SEF lesson content is available.', FALSE
 FROM "user" u
 JOIN announcement a ON a.title = 'QuestLearn Demo Announcement'
-WHERE u.email = 'student.questlearn@example.com'
+WHERE u.email = 'student@example.com'
   AND NOT EXISTS (
       SELECT 1 FROM notification n
       WHERE n.user_id = u.user_id
@@ -507,7 +507,7 @@ INSERT INTO notification (user_id, announcement_id, message, is_read)
 SELECT u.user_id, a.announcement_id, 'Advisor follow-up has been recorded for a student.', TRUE
 FROM "user" u
 JOIN announcement a ON a.title = 'QuestLearn Demo Announcement'
-WHERE u.email = 'advisor.questlearn@example.com'
+WHERE u.email = 'advisor@example.com'
   AND NOT EXISTS (
       SELECT 1 FROM notification n
       WHERE n.user_id = u.user_id
@@ -517,7 +517,7 @@ WHERE u.email = 'advisor.questlearn@example.com'
 
 INSERT INTO moderation_action (admin_user_id, target_type, target_id, action_type, reason)
 SELECT
-    (SELECT user_id FROM "user" WHERE email = 'admin.questlearn@example.com'),
+    (SELECT user_id FROM "user" WHERE email = 'admin@example.com'),
     'content_item',
     ci.content_item_id,
     'approve',
@@ -534,7 +534,7 @@ WHERE ci.title = 'Architecture Layer Matching Activity'
 
 INSERT INTO audit_log (actor_user_id, action_type, target_type, target_id, summary, metadata)
 SELECT
-    (SELECT user_id FROM "user" WHERE email = 'admin.questlearn@example.com'),
+    (SELECT user_id FROM "user" WHERE email = 'admin@example.com'),
     'content_item.approve',
     'content_item',
     ci.content_item_id,

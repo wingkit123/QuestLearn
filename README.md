@@ -189,10 +189,15 @@ bun install
 ### 2. Supabase Setup
 
 1. Create a new project at [supabase.com](https://supabase.com/).
-2. Open the **SQL Editor** and run these files **in order**:
+2. **Disable email confirmation** (required for demo):
+   - Go to **Authentication** → **Providers** → **Email**
+   - Toggle **OFF** "Confirm email"
+   - Click **Save**
+3. Open the **SQL Editor** and run these files **in order**:
    1. `part-ii/Database-Schema.sql` — creates all tables
-   2. `part-iii/Supabase-Seed-Data.sql` — populates demo data
-3. Go to **Project Settings → API** and copy the `Project URL` and `anon public` key.
+   2. `part-iii/Supabase-Seed-Data.sql` — populates demo data (courses, quizzes, etc.)
+   3. `part-iii/Supabase-Auth-Seed.sql` — creates demo login accounts
+4. Go to **Project Settings → API** and copy the `Project URL` and `anon public` key.
 
 ### 3. Environment Variables
 
@@ -226,22 +231,16 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Demo Accounts
 
-The seed data creates these 4 users in the `user` table. To log in, you **must first create matching Supabase Auth accounts** with the same emails.
+After running the seed scripts, these accounts are ready to use:
 
-**How to create Auth accounts for seeded users:**
-1. Go to your Supabase Dashboard → **Authentication** → **Users**.
-2. Click **Add User** → **Create New User**.
-3. Enter the email and any password (e.g. `Password123!`).
-4. Repeat for each account you want to test.
-
-| Role | Email | Status |
+| Role | Email | Password |
 |---|---|---|
-| **Student** | `student.questlearn@example.com` | Active |
-| **Instructor** | `instructor.questlearn@example.com` | Active |
-| **Academic Advisor** | `advisor.questlearn@example.com` | Active |
-| **Admin** | `admin.questlearn@example.com` | Active |
+| **Student** | `student@example.com` | `123456` |
+| **Instructor** | `instructor@example.com` | `123456` |
+| **Academic Advisor** | `advisor@example.com` | `123456` |
+| **Admin** | `admin@example.com` | `123456` |
 
-> **Alternatively**, you can register a brand new account via the `/register` page. Students are active immediately. Instructors require admin approval.
+> You can also register new accounts via `/register`. Students are active immediately. Instructors require admin approval.
 
 ---
 
