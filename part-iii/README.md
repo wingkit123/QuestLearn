@@ -26,47 +26,37 @@ Part III uses all earlier project parts as reference:
 | [Testing-Strategy.md](./Testing-Strategy.md) | Unit, integration, browser, security, and acceptance testing plan |
 | [../docs/evidence/part-iii/README.md](../docs/evidence/part-iii/README.md) | Evidence folder instructions and artifact rules |
 
-## Current Role-Specific Scaffold
+## Current Prototype
 
-The repository root now contains a React + Vite scaffold for early Part III prototype screenshots and role-access checks. It is not yet the final Supabase-connected Next.js implementation, but it now demonstrates separate interfaces, functions, and visible permission boundaries for the four required actors:
+The repository root contains the production Next.js 15 (App Router) prototype with Supabase backend. It implements separate role-isolated interfaces for all four actors:
 
-- Student: enrolled learning path, quiz attempt, assignment status, progress, grades, and notifications.
-- Instructor: course authoring, lesson publishing, assessment setup, submission review, and class analytics.
-- Academic Advisor: assigned/department student monitoring, risk alerts, progress summaries, and follow-up actions.
-- Admin: user management, role assignment, instructor approval, moderation, announcements, and audit review.
+- **Student:** enrolled learning path, lesson viewer with H5P/Lumi interactive content, quiz attempt with auto-grading, progress tracking, and grades history.
+- **Instructor:** course management, curriculum builder, and assignment grading interface.
+- **Academic Advisor:** at-risk student monitoring dashboard with early alert data (mocked).
+- **Admin:** user management with pending instructor approval workflow.
 
-Run the current scaffold from the repository root:
+### Quick Start (from repository root)
 
-```text
+```bash
+# Install dependencies (Bun recommended for speed)
 bun install
-bun run test
-./node_modules/.bin/vite --host 127.0.0.1 --port 5173
+
+# Start dev server
+bun run dev
 ```
 
-Verified evidence files are stored in `../docs/evidence/part-iii/`, including desktop/mobile dashboard screenshots, Vitest output, build output, and local server status. After interface changes, regenerate screenshots so the evidence shows the role-specific scaffold rather than the older shared dashboard shell.
-
-## Supabase SQL Execution Order
-
-Run these files in this order when preparing the Supabase evidence environment:
-
-1. [../part-ii/Database-Schema.sql](../part-ii/Database-Schema.sql)
-2. [Supabase-Seed-Data.sql](./Supabase-Seed-Data.sql)
-3. [Supabase-Evidence-Queries.sql](./Supabase-Evidence-Queries.sql)
-4. [Supabase-RLS-Policy-Draft.sql](./Supabase-RLS-Policy-Draft.sql)
-5. [Supabase-RLS-Test-Queries.sql](./Supabase-RLS-Test-Queries.sql)
-
-The evidence query file is read-only. The RLS policy draft should be reviewed before applying to a live Supabase project because final policies may need adjustment after real Auth users and final app routes exist.
+Open [http://localhost:3000](http://localhost:3000). See the root `README.md` for full setup instructions including Supabase configuration and demo account credentials.
 
 ## Evidence Status
 
-Partial runtime evidence has been captured for the local React + Vite scaffold. Before final submission, the team still needs to capture:
+Before final submission, the team still needs to capture:
 
 - Supabase schema/table screenshots or SQL output
 - Seed data query screenshots
 - RLS/security test screenshots
 - Full browser workflow tests for all role workflows
 - Integration and security test outputs
-- Netlify deployment preview evidence
+- Vercel deployment preview evidence
 - Acceptance testing sign-off
 
 Use [Part-III-Evidence-Index.md](./Part-III-Evidence-Index.md) to update each evidence item from `Pending` to `Captured`, `Inserted`, or `Not Implemented`.

@@ -165,28 +165,134 @@ Screenshots and UI previews can be added here once the first interface prototype
 
 ## Getting Started
 
-Project setup instructions will be added once the initial codebase is created.
+### Prerequisites
 
-Documentation note:
+| Tool | Version | Install |
+|---|---|---|
+| **Node.js** | v18+ | [nodejs.org](https://nodejs.org/) |
+| **Bun** | v1.0+ (recommended) | `npm install -g bun` |
+| **Supabase Project** | — | [supabase.com](https://supabase.com/) |
 
-- Most Part I documentation is now stored under `part-i/`.
+> **Why Bun?** Bun is ~3× faster than npm for dependency installs and dev server startup. All `bun` commands below have an `npm` equivalent if you prefer.
 
-Planned setup direction:
+### 1. Clone & Install
 
-- clone the repository
-- install dependencies
-- configure Supabase environment variables
-- run the development server
+```bash
+git clone https://github.com/wingkit123/QuestLearn.git
+cd QuestLearn
+
+# Using Bun (recommended — faster)
+bun install
+
+# Or using npm
+npm install
+```
+
+### 2. Supabase Setup
+
+1. Create a new project at [supabase.com](https://supabase.com/).
+2. Open the **SQL Editor** and run these files **in order**:
+   1. `part-ii/Database-Schema.sql` — creates all tables
+   2. `part-iii/Supabase-Seed-Data.sql` — populates demo data
+3. Go to **Project Settings → API** and copy the `Project URL` and `anon public` key.
+
+### 3. Environment Variables
+
+Create a `.env.local` file in the project root:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### 4. Run the Dev Server
+
+```bash
+# Using Bun (recommended — faster startup)
+bun run dev
+
+# Or using npm
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### 5. Other Commands
+
+| Command | Bun | npm |
+|---|---|---|
+| Dev server | `bun run dev` | `npm run dev` |
+| Production build | `bun run build` | `npm run build` |
+| Start production | `bun run start` | `npm run start` |
+| Lint | `bun run lint` | `npm run lint` |
+
+---
+
+## Demo Accounts
+
+The seed data creates these 4 users in the `user` table. To log in, you **must first create matching Supabase Auth accounts** with the same emails.
+
+**How to create Auth accounts for seeded users:**
+1. Go to your Supabase Dashboard → **Authentication** → **Users**.
+2. Click **Add User** → **Create New User**.
+3. Enter the email and any password (e.g. `Password123!`).
+4. Repeat for each account you want to test.
+
+| Role | Email | Status |
+|---|---|---|
+| **Student** | `student.questlearn@example.com` | Active |
+| **Instructor** | `instructor.questlearn@example.com` | Active |
+| **Academic Advisor** | `advisor.questlearn@example.com` | Active |
+| **Admin** | `admin.questlearn@example.com` | Active |
+
+> **Alternatively**, you can register a brand new account via the `/register` page. Students are active immediately. Instructors require admin approval.
+
+---
+
+## Project Structure
+
+```
+QuestLearn/
+├── src/
+│   ├── app/
+│   │   ├── (auth)/          # Login, Register, Pending pages
+│   │   ├── (student)/       # Student dashboard, courses, quizzes, grades
+│   │   ├── (instructor)/    # Instructor dashboard, course builder, grading
+│   │   ├── (advisor)/       # Advisor dashboard (mocked data)
+│   │   ├── (admin)/         # Admin dashboard, user approvals
+│   │   └── api/auth/        # Supabase auth callback
+│   ├── components/          # Shared UI components
+│   ├── lib/                 # Supabase clients, auth helpers, constants
+│   └── types/               # TypeScript type definitions
+├── part-i/                  # Part I requirements documentation
+├── part-ii/                 # Part II design + Database-Schema.sql
+├── part-iii/                # Part III documentation + Seed Data
+└── .env.local               # Environment variables (not committed)
+```
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 15 (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS v4 |
+| Backend & DB | Supabase (PostgreSQL) |
+| Authentication | Supabase Auth (SSR) |
+| Interactive Content | H5P via Lumi Cloud (iframe embed) |
+| Icons | Lucide React |
+| Deployment | Vercel |
 
 ## Future Enhancements
 
-- richer badge and achievement system after the core MVP is verified
-- deeper advisor follow-up workflow tracking
-- smarter recommendation rules for remedial learning support
-- expanded analytics dashboards for instructors and admins
-- mobile-optimized learning experience refinements
-- optional SCORM export or LMS interoperability exploration
+- Richer badge and achievement system after the core MVP is verified
+- Deeper advisor follow-up workflow tracking
+- Smarter recommendation rules for remedial learning support
+- Expanded analytics dashboards for instructors and admins
+- Mobile-optimized learning experience refinements
+- Optional SCORM export or LMS interoperability exploration
 
 ## Portfolio Summary
 
 QuestLearn is a higher-education learning platform concept that combines short lesson-based learning, interactive content, formative feedback, learning analytics, and advisor-focused early alerts. It is designed to demonstrate full-stack product thinking, role-based workflow design, and a practical approach to building a more engaging and supportive academic learning experience.
+
