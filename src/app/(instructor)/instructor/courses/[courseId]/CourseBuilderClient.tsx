@@ -55,6 +55,19 @@ export function CourseBuilderClient({
   const [videoInput, setVideoInput] = useState("");
   const [lessonLoading, setLessonLoading] = useState(false);
 
+  // Edit Modals state
+  const [isEditModuleModalOpen, setIsEditModuleModalOpen] = useState(false);
+  const [editModuleId, setEditModuleId] = useState<number | null>(null);
+  const [editModuleTitle, setEditModuleTitle] = useState("");
+  const [editModuleDesc, setEditModuleDesc] = useState("");
+  const [editModuleLoading, setEditModuleLoading] = useState(false);
+
+  const [isEditLessonModalOpen, setIsEditLessonModalOpen] = useState(false);
+  const [editLessonId, setEditLessonId] = useState<number | null>(null);
+  const [editLessonModuleId, setEditLessonModuleId] = useState<number | null>(null);
+  const [editLessonTitle, setEditLessonTitle] = useState("");
+  const [editLessonLoading, setEditLessonLoading] = useState(false);
+
   // Enrollment dropdown state
   const [selectedStudentId, setSelectedStudentId] = useState<string>("");
   const [enrollLoading, setEnrollLoading] = useState(false);
@@ -237,6 +250,75 @@ export function CourseBuilderClient({
       showToast(err.message || "Failed to add lesson content.", "error");
     } finally {
       setLessonLoading(false);
+    }
+  };
+
+  const handleEditModuleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editModuleTitle.trim() || editModuleId === null) return;
+    setEditModuleLoading(true);
+
+    try {
+      const { error } = await supabase
+        .from("module")
+        .update({
+          module_title: editModuleTitle.trim(),
+          description: editModuleDesc.trim() || null,
+        })
+        .eq("module_id", editModuleId);
+
+      if (error) throw error;
+
+      const updatedModules = (course.module || []).map((m: any) =>
+        m.module_id === editModuleId
+          ? { ...m, module_title: editModuleTitle.trim(), description: editModuleDesc.trim() || null }
+          : m
+      );
+      setCourse({ ...course, module: updatedModules });
+
+      showToast("Module updated successfully!");
+      setIsEditModuleModalOpen(false);
+    } catch (err: any) {
+      console.error(err);
+      showToast(err.message || "Failed to update module.", "error");
+    } finally {
+      setEditModuleLoading(false);
+    }
+  };
+
+  const handleEditLessonSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editLessonTitle.trim() || editLessonId === null || editLessonModuleId === null) return;
+    setEditLessonLoading(true);
+
+    try {
+      const { error } = await supabase
+        .from("lesson")
+        .update({
+          lesson_title: editLessonTitle.trim(),
+        })
+        .eq("lesson_id", editLessonId);
+
+      if (error) throw error;
+
+      const updatedModules = (course.module || []).map((m: any) => {
+        if (m.module_id === editLessonModuleId) {
+          const updatedLessons = (m.lesson || []).map((l: any) =>
+            l.lesson_id === editLessonId ? { ...l, lesson_title: editLessonTitle.trim() } : l
+          );
+          return { ...m, lesson: updatedLessons };
+        }
+        return m;
+      });
+      setCourse({ ...course, module: updatedModules });
+
+      showToast("Lesson updated successfully!");
+      setIsEditLessonModalOpen(false);
+    } catch (err: any) {
+      console.error(err);
+      showToast(err.message || "Failed to update lesson.", "error");
+    } finally {
+      setEditLessonLoading(false);
     }
   };
 
@@ -476,6 +558,18 @@ export function CourseBuilderClient({
                       <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => {
+                            setEditModuleId(mod.module_id);
+                            setEditModuleTitle(mod.module_title);
+                            setEditModuleDesc(mod.description || "");
+                            setIsEditModuleModalOpen(true);
+                          }}
+                          className="p-2 text-text-muted hover:text-primary rounded-lg hover:bg-primary/10 transition-colors"
+                          title="Edit Module"
+                        >
+                          <Settings className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => {
                             setTargetModuleId(mod.module_id);
                             setIsLessonModalOpen(true);
                           }}
@@ -508,22 +602,26 @@ export function CourseBuilderClient({
                                   {les.lesson_type}
                                 </span>
                               </div>
+                              <div className="opacity-0 group-hover/lesson:opacity-100 transition-opacity flex items-center">
+                                <button
+                                  onClick={() => {
+                                    setEditLessonId(les.lesson_id);
+                                    setEditLessonModuleId(mod.module_id);
+                                    setEditLessonTitle(les.lesson_title);
+                                    setIsEditLessonModalOpen(true);
+                                  }}
+                                  className="p-1.5 text-text-muted hover:text-primary rounded-lg hover:bg-primary/10 transition-colors"
+                                  title="Edit Lesson"
+                                >
+                                  <Settings className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
                             </div>
                           ))}
                         </div>
                       )}
                     </div>
-                    <div className="bg-bg-page/30 p-3 border-t border-border flex justify-center">
-                      <button
-                        onClick={() => {
-                          setTargetModuleId(mod.module_id);
-                          setIsLessonModalOpen(true);
-                        }}
-                        className="text-xs font-medium text-text-muted hover:text-primary transition-colors flex items-center gap-1"
-                      >
-                        <Plus className="w-3 h-3" /> Add content to Module {mod.sequence_no}
-                      </button>
-                    </div>
+
                   </div>
                 );
               })
@@ -754,6 +852,98 @@ export function CourseBuilderClient({
                 className="px-4 py-2 bg-primary hover:bg-primary-light text-white text-sm font-semibold rounded-lg disabled:opacity-75"
               >
                 {lessonLoading ? "Adding..." : "Add Content"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Modal: Edit Module */}
+      {isEditModuleModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-40 animate-in fade-in duration-200">
+          <form onSubmit={handleEditModuleSubmit} className="bg-surface border border-border rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6 border-b border-border bg-bg-page/50">
+              <h3 className="text-lg font-bold text-text">Edit Module</h3>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Module Title</label>
+                <input
+                  type="text"
+                  required
+                  value={editModuleTitle}
+                  onChange={(e) => setEditModuleTitle(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border border-border bg-bg-page focus:ring-2 focus:ring-accent focus:border-transparent outline-none text-text text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Description</label>
+                <textarea
+                  rows={3}
+                  value={editModuleDesc}
+                  onChange={(e) => setEditModuleDesc(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border border-border bg-bg-page focus:ring-2 focus:ring-accent focus:border-transparent outline-none text-text text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-border flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setIsEditModuleModalOpen(false)}
+                className="px-4 py-2 bg-neutral-bg hover:bg-neutral-bg/80 text-text text-sm font-semibold rounded-lg border border-border"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={editModuleLoading}
+                className="px-4 py-2 bg-primary hover:bg-primary-light text-white text-sm font-semibold rounded-lg disabled:opacity-75"
+              >
+                {editModuleLoading ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Modal: Edit Lesson */}
+      {isEditLessonModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-40 animate-in fade-in duration-200">
+          <form onSubmit={handleEditLessonSubmit} className="bg-surface border border-border rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6 border-b border-border bg-bg-page/50">
+              <h3 className="text-lg font-bold text-text">Edit Lesson Title</h3>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Lesson Title</label>
+                <input
+                  type="text"
+                  required
+                  value={editLessonTitle}
+                  onChange={(e) => setEditLessonTitle(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border border-border bg-bg-page focus:ring-2 focus:ring-accent focus:border-transparent outline-none text-text text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-border flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setIsEditLessonModalOpen(false)}
+                className="px-4 py-2 bg-neutral-bg hover:bg-neutral-bg/80 text-text text-sm font-semibold rounded-lg border border-border"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={editLessonLoading}
+                className="px-4 py-2 bg-primary hover:bg-primary-light text-white text-sm font-semibold rounded-lg disabled:opacity-75"
+              >
+                {editLessonLoading ? "Saving..." : "Save Changes"}
               </button>
             </div>
           </form>
