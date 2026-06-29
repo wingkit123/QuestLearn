@@ -319,6 +319,7 @@ CREATE TABLE advisor_follow_up (
     advisor_alert_id     INT REFERENCES advisor_alert(advisor_alert_id) ON DELETE SET NULL,
     advisor_profile_id   INT NOT NULL REFERENCES advisor_profile(advisor_profile_id),
     student_profile_id   INT NOT NULL REFERENCES student_profile(student_profile_id),
+    instructor_profile_id INT REFERENCES instructor_profile(instructor_profile_id) ON DELETE SET NULL,
     follow_up_type       VARCHAR(30) NOT NULL DEFAULT 'message'
         CHECK (follow_up_type IN ('message', 'meeting', 'email', 'call', 'note')),
     message              TEXT NOT NULL,
