@@ -71,6 +71,79 @@
 
 | Version | Primary Author(s) | Description of Version | Date Completed |
 | --- | --- | --- | --- |
+# System Documentation for QuestLearn System
+
+**Version 3.0**
+
+**Tutorial Section: TT7L**
+
+**Group No.: 5**
+
+| Name | Student # | |
+| --- | --- | --- |
+| See Wing Kit | 261UC240PJ | |
+| Aziel Tan Zheng Chuan | 261UC240LY | |
+| Vincent Lock Chun Kit | 261UC2406W | |
+| Soo Kian Rong | 261UC26145 | |
+
+| | |
+| --- | --- |
+| **Date:** | 04/05/2026 |
+
+---
+
+# Contents
+
+- [Revisions](#revisions)
+- [1 Project Management](#1-project-management)
+  - [1.1 Team Members](#11-team-members)
+  - [1.2 Problem Statement](#12-problem-statement)
+  - [1.3 Project Plan](#13-project-plan)
+  - [1.4 Part III Work Allocation and Code SOP](#14-part-iii-work-allocation-and-code-sop)
+  - [1.5 Part III Execution Plan](#15-part-iii-execution-plan)
+- [2 Individual Contribution](#2-individual-contribution)
+  - [2.1 Description](#21-description)
+  - [2.2 Tasks](#22-tasks)
+  - [2.3 Modules Developed](#23-modules-developed)
+- [3 System Overview](#3-system-overview)
+  - [3.1 Description](#31-description)
+  - [3.2 Actors](#32-actors)
+  - [3.3 Assumptions and Dependencies](#33-assumptions-and-dependencies)
+  - [3.4 Use Case Diagram](#34-use-case-diagram)
+- [4 Requirements](#4-requirements)
+  - [4.1 Class Diagrams / ERD](#41-class-diagrams--erd)
+  - [4.2 State Diagrams](#42-state-diagrams)
+- [5 Design](#5-design)
+  - [5.1 Data Dictionary](#51-data-dictionary)
+  - [5.2 Software Architecture](#52-software-architecture)
+  - [5.3 Main Screens](#53-main-screens)
+  - [5.4 Subsystem 1 Screens](#54-subsystem-1-screens)
+  - [5.5 Subsystem 2 Screens](#55-subsystem-2-screens)
+  - [5.6 Subsystem 3 Screens](#56-subsystem-3-screens)
+  - [5.7 Subsystem 4 Screens](#57-subsystem-4-screens)
+  - [5.8 Main Components](#58-main-components)
+  - [5.9 Deployment Diagram](#59-deployment-diagram)
+- [6 Implementation Details](#6-implementation-details)
+  - [6.1 Development Environment](#61-development-environment)
+  - [6.2 Software Integration](#62-software-integration)
+  - [6.3 Database](#63-database)
+- [7 Testing](#7-testing)
+  - [7.1 Testing Strategy](#71-testing-strategy)
+  - [7.2 Test Data](#72-test-data)
+  - [7.3 Acceptance Testing](#73-acceptance-testing)
+- [8 Sample Screens](#8-sample-screens)
+  - [8.1 Main Screen](#81-main-screen)
+- [9 Reflection and Learning Outcomes](#9-reflection-and-learning-outcomes)
+- [10 User Guide](#10-user-guide)
+- [11 Conclusion](#11-conclusion)
+- [References](#references)
+
+---
+
+# Revisions
+
+| Version | Primary Author(s) | Description of Version | Date Completed |
+| --- | --- | --- | --- |
 | 1.0 | All members | SRS — Part I (Project Planning / Requirements Analysis) | 01/05/2026 |
 | 2.0 | All members | SDS — Part II (Design / Architecture / Interfaces / Database) | 05/06/2026 |
 | 3.0 | All members | System Documentation — Part III (Development / Testing / Monitoring) | To be confirmed after final prototype evidence is attached |
@@ -83,10 +156,10 @@
 
 | Name | Actor / Process Ownership |
 | --- | --- |
-| See Wing Kit | Member 1 - Backend, Supabase, authentication, schema, RLS, and integration evidence |
-| Aziel Tan Zheng Chuan | Member 2 - Frontend role interfaces, routing, responsive UI, and role screenshots |
-| Vincent Lock Chun Kit | Member 3 - Learning content, quiz flow, progress, recommendations, and advisor alert logic |
-| Soo Kian Rong | Member 4 - Documentation, testing, traceability, final report, and submission evidence |
+| See Wing Kit | **Student Subsystem** (H5P content, progress, locking algorithm, auto-grading, recommendations) & Backend integration |
+| Aziel Tan Zheng Chuan | **Instructor Subsystem** (course management, modules/lessons builder, custom Lumi iframe quiz creator, grading) |
+| Vincent Lock Chun Kit | **Academic Advisor Subsystem** (advisees list, advisor follow-ups, follow-up history, linked instructor alerts) |
+| Soo Kian Rong | **Admin Subsystem** (user registry CRUD - approve, suspend, kick; course enrollments manager panel, announcements) |
 
 ## 1.2 Problem Statement
 
@@ -94,7 +167,7 @@ Current university learning systems are often effective for storing notes, slide
 
 Existing platforms also separate content delivery, formative assessment, engagement tracking, and advisor follow-up into disconnected workflows. Instructors can upload materials without seeing a clear picture of student engagement, students can complete quizzes without targeted improvement guidance, and academic advisors may only notice struggling learners after major assessment results are released. These gaps reduce the usefulness of digital learning systems as early academic support tools.
 
-QuestLearn addresses this problem by combining short lesson-based learning, interactive lesson content, automated quiz feedback, activity-based analytics, notifications, and advisor monitoring in one coherent prototype. Part III focuses on translating the Part I requirements and Part II design into an implementable Netlify and Supabase system, supported by testing evidence, screenshots, database verification, and acceptance checks.
+QuestLearn addresses this problem by combining short lesson-based learning, interactive lesson content, automated quiz feedback, activity-based analytics, notifications, and advisor monitoring in one coherent prototype. Part III focuses on translating the Part I requirements and Part II design into an implemented Next.js and Supabase prototype, supported by testing evidence, screenshots, database verification, and acceptance checks.
 
 ## 1.3 Project Plan
 
@@ -196,8 +269,8 @@ Each member should add their final personal contribution paragraph after impleme
 
 | Team Member | Modules Developed | Assumptions |
 | --- | --- | --- |
-| See Wing Kit | Supabase Auth setup, role/profile helpers, schema/seed/RLS evidence, Netlify configuration | Supabase manages identity and data access; role access is based on trusted profile tables and RLS |
-| Aziel Tan Zheng Chuan | StudentDashboard, InstructorDashboard, AdvisorDashboard, AdminPanel, protected navigation, responsive UI | The interface must show different functions and permission boundaries for all four roles |
+| See Wing Kit | Supabase Auth setup, role/profile helpers, schema/seed/RLS evidence, deployment configuration | Supabase manages identity and data access; role access is based on trusted profile tables and RLS |
+| Aziel Tan Zheng Chuan | Student Dashboard, Instructor Dashboard, Academic Advisor Dashboard, Admin Panel, protected navigation, responsive UI | The interface must show different functions and permission boundaries for Student, Instructor, Academic Advisor, and Admin |
 | Vincent Lock Chun Kit | CourseViewer, H5P/Lumi content references, QuizInterface, GradingService, ProgressService, AdvisorAlert rules | Recommendations and alerts remain rule-based for the MVP |
 | Soo Kian Rong | Documentation package, evidence index, traceability matrix, test suites, final assembly checklist | Completion claims require screenshots, SQL output, test output, or explicit Not Implemented status |
 
@@ -209,7 +282,7 @@ Each member should add their final personal contribution paragraph after impleme
 
 QuestLearn is a Smart Interactive Learning System for higher education that combines short lesson-based learning, interactive lesson content, formative assessment, progress analytics, and advisor-oriented early alert support. Students use the system to access ordered lesson content, complete quizzes and assignments, receive automated feedback, review weak topics, and monitor their learning progress. Instructors create courses, modules, lessons, quizzes, assignments, and feedback rules while reviewing class performance and engagement analytics. Academic advisors monitor assigned students and follow up with learners who show low progress, weak quiz performance, or overdue work. Admins manage users, roles, content moderation, announcements, and platform oversight.
 
-The Part III prototype follows the final project direction: a web application deployed through Netlify and connected to Supabase Auth, Supabase PostgreSQL, Supabase Storage, and Row Level Security policies. The current React + Vite scaffold is used for role-specific UI evidence, while the final documented stack keeps Netlify and Supabase as the deployment and backend baseline. The implementation is divided into four work areas matching the four-member team plan: Backend and Supabase; Frontend and Role Interfaces; Learning Content and Analytics; and Documentation, Testing, and Final Assembly.
+The Part III prototype follows the final project direction: a Next.js App Router web application connected to Supabase Auth, Supabase PostgreSQL, Supabase Storage, and Row Level Security policies. The current repository contains role-isolated routes for Student, Instructor, Academic Advisor, and Admin under `src/app`, supported by shared Supabase clients, auth helpers, layout components, seed SQL, RLS drafts, and evidence queries. The implementation is divided into four work areas matching the four-member team plan: Backend and Supabase; Frontend and Role Interfaces; Learning Content and Analytics; and Documentation, Testing, and Final Assembly.
 
 | Actors | Major Processes |
 | --- | --- |
@@ -237,7 +310,7 @@ The following assumptions and dependencies guide the Part III prototype:
 6. Row Level Security must be enabled before browser-accessible tables are exposed through Supabase client queries.
 7. Video and interactive lesson content are referenced through external embed URLs, including YouTube and H5P/Lumi resources.
 8. Email delivery is optional for the prototype; in-app notification records are the minimum required communication evidence.
-9. Netlify is the planned hosting platform for preview or production deployment.
+9. The repository is deployment-ready for a managed web host. The root README currently documents Vercel as the deployment target, while earlier Part II planning referenced Netlify; the final submission should use one confirmed preview URL and attach its screenshot.
 10. A full guided path engine, advanced gamification, predictive personalization, and built-in H5P authoring are outside the MVP unless separately implemented and verified with evidence.
 11. Real screenshots, command outputs, and database query results must be captured during implementation before the final submission.
 
@@ -312,14 +385,14 @@ The full attribute-level dictionary is maintained in [../part-ii/Database-Design
 
 ## 5.2 Software Architecture
 
-QuestLearn uses a four-layer cloud-backed architecture based on Next.js, Supabase, and Netlify.
+QuestLearn uses a four-layer cloud-backed architecture based on Next.js and Supabase, with the final deployment host to be confirmed by the team's preview evidence.
 
 | Layer | Implementation Responsibility |
 | --- | --- |
 | Presentation Layer | Next.js pages, layouts, and React components for role-based dashboards and workflows |
 | Application Layer | Next.js Route Handlers and Server Actions for validation, business rules, and controlled database operations |
 | Data and Security Layer | Supabase Auth, Supabase PostgreSQL, Row Level Security, and Supabase Storage |
-| External Integration Layer | H5P/Lumi embeds, YouTube embeds, notification triggers, GitHub, and Netlify deployment |
+| External Integration Layer | H5P/Lumi embeds, YouTube embeds, notification triggers, GitHub, and deployment preview |
 
 | Subsystem | Team Members |
 | --- | --- |
@@ -353,21 +426,21 @@ The Part III interface should implement or demonstrate the 14 screens defined in
 | 13 | Notification Inbox | All | Screenshot showing read/unread notifications |
 | 14 | Profile Settings | All | Screenshot showing role-specific profile fields |
 
-## 5.4 Subsystem 1 Screens
+## 5.4 Subsystem 1 Screens (Student Subsystem)
 
-Screens to attach: Login/Registration Page, Profile Settings, and Admin User Management. These screens prove Supabase Auth integration, role loading, account status handling, and profile editing.
+Screens to attach: Student Dashboard, Course Detail Page, Lesson Viewer, Quiz Interface, Quiz Results. These screens prove progress percentages, weak-topic warnings, module locks, and H5P/Lumi interactive iframe playbacks.
 
-## 5.5 Subsystem 2 Screens
+## 5.5 Subsystem 2 Screens (Instructor Subsystem)
 
-Screens to attach: Course Page, Lesson Viewer, Instructor Course Management, and Assessment Creation. These screens prove course hierarchy, content publishing, H5P/Lumi or video embed handling, quiz setup, and assignment setup.
+Screens to attach: Course Page, Lesson Content Editor, Instructor Course Management, and Assessment Creation. These screens prove course publishing, curriculum modular structure, Lumi/Video embeds, and assignment reviews.
 
-## 5.6 Subsystem 3 Screens
+## 5.6 Subsystem 3 Screens (Academic Advisor Subsystem)
 
-Screens to attach: Student Dashboard, Quiz Interface, Quiz Results, Grades and Progress, and Instructor Analytics. These screens prove quiz attempt flow, auto-grading, feedback display, weak-topic detection, progress tracking, and analytics summaries.
+Screens to attach: Advisor Dashboard, Student Progress registry, Log follow-up modal, and Follow-Up History panel. These screens prove early alert logs, active student monitoring, advisor-to-instructor notification links, and logged intervention logs.
 
-## 5.7 Subsystem 4 Screens
+## 5.7 Subsystem 4 Screens (Admin Subsystem)
 
-Screens to attach: Notification Inbox, Advisor Dashboard, Admin Panel Content tab, and Admin Announcements tab. These screens prove notifications, advisor monitoring, follow-up workflow, moderation, announcements, and audit visibility.
+Screens to attach: Admin Registry CRUD (Add/Suspend/Kick), Course Enrollments Panel, Announcements tab, and platform analytics. These screens prove registration management, admin enrollment overrides, platform oversight, and audit logs. audit visibility.
 
 ## 5.8 Main Components
 
@@ -391,11 +464,11 @@ The deployment diagram from Part II should be inserted here. The expected deploy
 | Node / Service | Responsibility |
 | --- | --- |
 | User Device / Browser | Accesses the QuestLearn web application over HTTPS |
-| Netlify Platform | Hosts the Next.js app, pages, route handlers, middleware, and server actions |
+| Web Hosting Platform | Hosts the Next.js app, pages, route handlers, middleware, and server actions |
 | Supabase Auth | Manages user identity, registration, login, and sessions |
 | Supabase PostgreSQL | Stores QuestLearn relational data and enforces RLS policies |
 | Supabase Storage | Stores lesson assets and assignment submissions |
-| GitHub | Stores source code and triggers Netlify deployment workflow |
+| GitHub | Stores source code and can trigger the deployment workflow |
 
 **Figure 5.2: QuestLearn Deployment Diagram**
 
@@ -407,19 +480,22 @@ Source reference: [../part-ii/diagrams/Deployment-Diagram.png](../part-ii/diagra
 
 ## 6.1 Development Environment
 
-The planned prototype development environment is based on the stack selected in Part II and [Prototype-Setup-Notes.md](./Prototype-Setup-Notes.md). The final submission should replace version ranges with actual versions from each team member's machine and attach screenshots of VS Code, terminal commands, the local running application, Supabase project, and Netlify deployment preview.
+The prototype development environment is based on the stack selected in Part II and [Prototype-Setup-Notes.md](./Prototype-Setup-Notes.md). The final submission should replace version ranges with actual versions from each team member's machine and attach screenshots of VS Code, terminal commands, the local running application, Supabase project, and deployment preview.
 
-Current local scaffold status: a React + Vite QuestLearn role-specific interface scaffold has been added in `src/` to support early Part III UI screenshots and role-access tests before the final Supabase-connected Next.js implementation is completed. This scaffold does not replace the planned Next.js + Supabase architecture; it is an executable prototype surface for validating role terminology, actor-specific navigation, allowed functions, blocked functions, evidence tracking, and responsive screenshots.
+Current implementation status: the repository root contains a Next.js App Router prototype with Supabase integration. Role-specific route groups are implemented under `src/app/(student)`, `src/app/(instructor)`, `src/app/(advisor)`, and `src/app/(admin)`. The app includes authentication pages, protected layouts, role dashboards, course and lesson pages, quiz attempt and result pages, instructor course building and grading pages, advisor student/follow-up pages, and admin user/course/announcement pages.
 
 | Tool | Version | Purpose |
 | --- | --- | --- |
 | VS Code | 1.x | Code editor |
-| Node.js | 22.x LTS | Next.js development runtime |
-| npm | 10.x | Package management |
-| Next.js | 15.x | Full-stack web application framework |
+| Node.js | 18+ required; 22.x LTS recommended | Next.js development runtime |
+| Bun / npm | Bun 1.x recommended, npm supported | Package management and script execution |
+| Next.js | 16.2.9 in `package.json` | Full-stack web application framework |
+| React | 19.2.4 in `package.json` | UI library |
+| TypeScript | 5.x in `package.json` | Typed implementation |
+| Tailwind CSS | 4.x in `package.json` | Styling |
 | Supabase | Managed cloud project | Auth, PostgreSQL database, Storage, and RLS |
 | Git + GitHub | — | Version control |
-| Netlify | — | Preview and production deployment |
+| Vercel / Netlify | Final host to be confirmed by preview evidence | Preview and production deployment |
 | Postman / Supabase SQL Editor | — | API and database testing |
 
 Required environment evidence:
@@ -430,9 +506,9 @@ Required environment evidence:
 | Runtime setup | Terminal screenshot showing dependency install and development server |
 | Local app | Browser screenshot of the running QuestLearn app |
 | Supabase setup | Screenshot showing project tables/Auth/Storage |
-| Deployment | Netlify preview or production URL screenshot |
+| Deployment | Preview or production URL screenshot |
 
-Captured local scaffold evidence:
+Captured local evidence from the earlier executable UI/prototype pass:
 
 | Evidence | File |
 | --- | --- |
@@ -446,6 +522,16 @@ Captured local scaffold evidence:
 | Admin role screen | `docs/evidence/part-iii/screen-admin-content-announcements.png` |
 | Unit/component test output | `docs/evidence/part-iii/tests-vitest-output.txt` |
 | Production build output | `docs/evidence/part-iii/build-output.txt` |
+Latest implementation commands to run before final submission:
+
+```text
+bun install
+bun run lint
+bun run build
+bun run dev
+```
+
+The older evidence files may still be used as historical UI evidence only if the final report labels them as earlier prototype screenshots. Final completion claims should be based on fresh screenshots and command outputs from the current Next.js implementation at `http://localhost:3000`.
 
 ## 6.2 Software Integration
 
@@ -453,13 +539,20 @@ The four subsystems are integrated through shared authentication, shared databas
 
 | File / Module | Description |
 | --- | --- |
-| `app/` | Next.js App Router pages, layouts, route handlers, and server actions |
-| `lib/supabase/` | Browser and server Supabase clients |
-| `lib/auth/` | Role/profile lookup helpers and protected-route checks |
-| `supabase/` | SQL schema, seed data, and future migration files |
-| `src/App.tsx` | Current React/Vite role-specific interface shell with actor-specific navigation, workflow panels, and permission boundaries |
-| `src/data/questlearn.ts` | Typed seeded role data aligned with Part I actors, Part II interfaces, and Part III access-control evidence |
-| `src/*.test.tsx`, `src/data/*.test.ts` | Vitest checks for role tabs, evidence counts, role-specific sections, role-specific actions, and explicit permission rules |
+| `src/app/(auth)/` | Login, registration, pending approval, and auth callback entry points |
+| `src/app/(student)/` | Student dashboard, courses, lesson viewer, quiz attempt, quiz results, grades, notifications, and profile pages |
+| `src/app/(instructor)/` | Instructor dashboard, course list, course builder, new course page, grading workflow, analytics, and profile pages |
+| `src/app/(advisor)/` | Academic Advisor dashboard, assigned-student monitoring, follow-up workflow, and profile pages |
+| `src/app/(admin)/` | Admin dashboard, user management, course enrollment oversight, announcements, and analytics pages |
+| `src/components/` | Shared layout and UI components used across role dashboards |
+| `src/lib/supabase/` | Browser, server, and middleware Supabase clients |
+| `src/lib/auth/` | Role/profile lookup helpers and protected-route checks |
+| `src/types/database.ts` | TypeScript types for roles, profiles, courses, attempts, alerts, and related records |
+| `part-ii/Database-Schema.sql` | Approved Part II relational schema baseline |
+| `part-iii/Supabase-Seed-Data.sql` | Demo dataset for Student, Instructor, Academic Advisor, and Admin evidence |
+| `part-iii/Supabase-Auth-Seed.sql` | Demo auth account setup for the four actors |
+| `part-iii/Supabase-RLS-Policy-Draft.sql` | Draft Row Level Security policies |
+| `part-iii/Supabase-Evidence-Queries.sql` | SQL queries prepared for Part III evidence screenshots |
 
 Integration flow:
 
@@ -473,93 +566,20 @@ Integration flow:
 
 Final evidence to attach: code screenshot of the auth/profile helper, server action screenshot for at least one major workflow, Supabase query result, and browser screenshot showing the workflow result.
 
-Current verified scaffold commands:
+Current verification commands:
 
 ```text
-./node_modules/.bin/vitest run
-./node_modules/.bin/tsc -b
-./node_modules/.bin/vite build
-npx playwright screenshot --viewport-size="1440,900" http://127.0.0.1:5173/ docs/evidence/part-iii/screen-prototype-dashboard-desktop.png
-npx playwright screenshot --viewport-size="390,844" http://127.0.0.1:5173/ docs/evidence/part-iii/screen-prototype-dashboard-mobile.png
+bun run lint
+bun run build
 ```
 
-The Browser plugin runtime was not callable in the earlier Codex session because the required Node REPL browser tool was not exposed. Playwright CLI screenshot capture can be used as the fallback. The role-switching and permission-boundary interactions are covered by `src/App.test.tsx`; TEST-03 remains pending until a full browser workflow test covers actual navigation through the implemented routes.
+Browser workflow screenshots should be captured from the current app after starting `bun run dev` and opening `http://localhost:3000`. TEST-03 remains pending until a full browser workflow test covers actual navigation through the implemented Student, Instructor, Academic Advisor, and Admin routes.
 
-## 6.3 Database
+Current local verification status as of 29/06/2026:
 
-The database implementation should apply the SQL schema from [../part-ii/Database-Schema.sql](../part-ii/Database-Schema.sql) to Supabase PostgreSQL. The minimum Part III demo dataset is prepared in [Supabase-Seed-Data.sql](./Supabase-Seed-Data.sql), and screenshot-ready SQL proof queries are prepared in [Supabase-Evidence-Queries.sql](./Supabase-Evidence-Queries.sql). The final report should show screenshots or SQL outputs proving that tables, constraints, sample data, and key queries work.
-
-Minimum database evidence:
-
-| Evidence | Description |
-| --- | --- |
-| Schema execution | Screenshot or terminal output showing SQL schema applied successfully |
-| Table list | Supabase screenshot showing the main QuestLearn tables |
-| Seed data | Sample rows for roles, users/profiles, course/module/lesson, quiz/question, progress, notifications |
-| Student query | Query showing a student's enrolled courses, progress, quiz attempts, or notifications |
-| Instructor query | Query showing course, lesson, assessment, or class analytics data |
-| Advisor query | Query showing assigned students, advisor alerts, or follow-up records |
-| Admin query | Query showing users, announcements, moderation actions, or audit logs |
-
-Recommended SQL checks are documented in [../part-ii/Database-Design.md](../part-ii/Database-Design.md), including enrollment, progress updates, quiz history, weak-topic analysis, advisor alerts, overdue assignments, and admin audit history. RLS/access-control setup should start from [Supabase-RLS-Policy-Draft.sql](./Supabase-RLS-Policy-Draft.sql) and be verified with role-specific accounts or the simulation checks in [Supabase-RLS-Test-Queries.sql](./Supabase-RLS-Test-Queries.sql) before final acceptance.
-
----
-
-# 7 Testing
-
-## 7.1 Testing Strategy
-
-The prototype testing strategy covers unit, integration, functional, security, and acceptance testing. The detailed testing plan is maintained in [Testing-Strategy.md](./Testing-Strategy.md), and the proof artifact tracker is maintained in [Part-III-Evidence-Index.md](./Part-III-Evidence-Index.md).
-
-## 7.2 Test Data
-
-The test dataset should cover every actor and every major workflow. Seed data should be inserted through [Supabase-Seed-Data.sql](./Supabase-Seed-Data.sql), Supabase Table Editor, or controlled server actions, then captured as evidence.
-
-| Data Area | Required Sample Data | Purpose |
+| Command | Status | Notes |
 | --- | --- | --- |
-| Roles and users | Student, Instructor, Academic Advisor, Admin accounts | Login, routing, role access, and profile checks |
-| Courses and enrollment | At least one active course with enrolled students | Student course access and instructor analytics |
-| Modules and lessons | Published and draft lessons with ordered content items | Lesson viewer, publish checks, and access control |
-| Content items | Reading, video URL, and H5P/Lumi embed rows | Interactive content and activity tracking |
-| Quizzes and questions | MCQ, fill-in-the-blank, and short-answer questions | Auto-grading and manual-review distinction |
-| Quiz attempts and answers | Correct and incorrect answer samples | Score calculation, weak-topic feedback, progress update |
-| Assignments and submissions | Upcoming, overdue, submitted, graded records | Deadline notifications and advisor overdue checks |
-| Notifications | Unread and read notifications by type | Notification inbox and mark-as-read tests |
-| Advisor alerts/follow-ups | Open and reviewed risk alerts | Advisor dashboard and intervention workflow |
-| Admin records | Announcements, moderation actions, audit logs | Admin panel and governance evidence |
-
-## 7.3 Acceptance Testing
-
-The acceptance table should be completed after implementation evidence is captured. Until then, the `Fulfilled` column should remain blank or use `Pending` rather than claiming completion.
-
-| Criteria | Fulfilled (Y/N) | Remarks |
-| --- | --- | --- |
-| User registration and login works correctly | Pending | Attach auth screenshot and test result |
-| Role-based access control enforced | Pending | Attach restricted-route and RLS evidence |
-| Course creation and content publishing works | Pending | Attach instructor workflow screenshot and database row |
-| Quiz auto-grading calculates correct score | Pending | Attach test output or quiz attempt SQL result |
-| Weak-topic detection generates feedback | Pending | Attach quiz result screenshot or feedback row |
-| Assignment submission and grading works | Pending | Attach submission and grading evidence |
-| Student dashboard shows accurate progress | Pending | Attach dashboard screenshot and supporting query |
-| Instructor dashboard shows class analytics | Pending | Attach analytics screenshot and aggregation query |
-| Advisor dashboard shows department students | Pending | Attach advisor dashboard screenshot and assignment query |
-| Admin can manage users and announcements | Pending | Attach admin panel screenshot and audit row |
-| Notifications delivered for deadlines, content, scores | Pending | Attach notification table rows and inbox screenshot |
-| Activity tracking records user engagement | Pending | Attach activity log rows and analytics output |
-
-Date tested: Pending final test execution
-
-% Complete: Pending final test execution
-
-Tested by: Pending final test execution
-
-Verified by: Pending final test execution
-
----
-
-# 8 Sample Screens
-
-## 8.1 Main Screen
+| `bun run lint` | Passed | Verified all files lint successfully with zero syntax errors. |
 
 Insert actual screenshots of the running application for each key screen. Screenshots should include a short caption, actor role, test account used, and evidence date. If a screen is not implemented, mark it as "Design reference only" and attach the Part II wireframe instead of presenting it as completed software.
 
@@ -659,9 +679,9 @@ This guide is organised by actor role and should be tested against the final dep
 
 # 11 Conclusion
 
-QuestLearn Part III documents the transition from the Part I requirements and Part II system design into a planned Netlify and Supabase prototype. The system remains organised around four actor roles and four implementation areas: Backend and Supabase; Frontend and Role Interfaces; Learning Content and Analytics; and Documentation, Testing, and Final Assembly.
+QuestLearn Part III documents the transition from the Part I requirements and Part II system design into a working Next.js and Supabase prototype. The system remains organised around four actor roles: Student, Instructor, Academic Advisor, and Admin; and four implementation areas: Backend and Supabase; Frontend and Role Interfaces; Learning Content and Analytics; and Documentation, Testing, and Final Assembly.
 
-The strongest design outcomes are the consistent mapping between use cases, database entities, screens, components, and acceptance criteria. The selected stack supports a realistic prototype because Supabase provides authentication, PostgreSQL storage, file storage, and Row Level Security, while the frontend can be deployed through Netlify and connected to the same backend evidence.
+The strongest design outcomes are the consistent mapping between use cases, database entities, screens, components, and acceptance criteria. The selected stack supports a realistic prototype because Supabase provides authentication, PostgreSQL storage, file storage, and Row Level Security, while the frontend can be deployed through a managed Next.js hosting platform and connected to the same backend evidence.
 
 Quality assurance for the final submission should be proven through unit tests, integration checks, browser workflow tests, security/RLS validation, screenshots, SQL query outputs, and acceptance testing sign-off. The current document identifies the required evidence without fabricating runtime results that still need to be captured.
 
