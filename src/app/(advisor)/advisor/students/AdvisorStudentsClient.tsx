@@ -75,7 +75,25 @@ export function AdvisorStudentsClient({ students: initialStudents, advisorProfil
 
       if (followupError) throw followupError;
 
-      // Send a notification/message to the linked instructor
+      // 1. Send a notification/message to the student
+      const { data: studentData } = await supabase
+        .from("student_profile")
+        .select("user_id")
+        .eq("student_profile_id", selectedStudent.student_profile_id)
+        .single();
+
+      if (studentData?.user_id) {
+        await supabase
+          .from("notification")
+          .insert({
+            user_id: studentData.user_id,
+            title: "Academic Advisory Note",
+            message: `Your Academic Advisor has logged a follow-up intervention suggestion: "${followupMessage.trim()}"`,
+            is_read: false,
+          });
+      }
+
+      // 2. Send a notification/message to the linked instructor
       if (selectedInstructorId) {
         const { data: instructorData } = await supabase
           .from("instructor_profile")
