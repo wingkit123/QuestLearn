@@ -171,8 +171,6 @@ export function CourseBuilderClient({
           lesson_title: lessonTitle.trim(),
           lesson_type: dbLessonType,
           sequence_no: nextSeq,
-          is_required: true,
-          is_preview: false,
         })
         .select()
         .single();
