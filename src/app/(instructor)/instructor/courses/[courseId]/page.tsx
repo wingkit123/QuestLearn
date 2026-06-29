@@ -29,7 +29,10 @@ export default async function CourseBuilderPage({ params }: PageProps) {
       module (
         *,
         lesson (
-          *
+          *,
+          content_item (
+            *
+          )
         )
       )
     `)

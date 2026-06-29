@@ -46,7 +46,7 @@ export const ROLE_NAV: Record<RoleId, NavItem[]> = {
   advisor: [
     { label: "Dashboard", href: "/advisor", icon: "LayoutDashboard" },
     { label: "My Students", href: "/advisor/students", icon: "UsersRound" },
-    { label: "Follow-ups", href: "/advisor/follow-ups", icon: "Megaphone" },
+    { label: "Follow-Up History", href: "/advisor/follow-ups", icon: "History" },
     { label: "Profile", href: "/advisor/profile", icon: "UserCog" },
   ],
   admin: [

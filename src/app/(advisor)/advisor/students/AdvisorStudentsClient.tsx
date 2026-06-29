@@ -75,6 +75,26 @@ export function AdvisorStudentsClient({ students: initialStudents, advisorProfil
 
       if (followupError) throw followupError;
 
+      // Send a notification/message to the linked instructor
+      if (selectedInstructorId) {
+        const { data: instructorData } = await supabase
+          .from("instructor_profile")
+          .select("user_id")
+          .eq("instructor_profile_id", parseInt(selectedInstructorId))
+          .single();
+
+        if (instructorData?.user_id) {
+          await supabase
+            .from("notification")
+            .insert({
+              user_id: instructorData.user_id,
+              title: "Advisor Intervention Logged",
+              message: `Advisor logged an intervention follow-up for student ${selectedStudent.user.full_name}: "${followupMessage.trim()}"`,
+              is_read: false,
+            });
+        }
+      }
+
       showToast("Follow-up advisory message sent successfully!");
       setFollowupMessage("");
       setSelectedInstructorId("");
@@ -150,7 +170,7 @@ export function AdvisorStudentsClient({ students: initialStudents, advisorProfil
                       }}
                       className="text-xs font-bold text-warning bg-warning/10 border border-warning/20 px-3 py-1.5 rounded-lg hover:bg-warning/20 transition-all flex items-center gap-1"
                     >
-                      <Clock className="w-3.5 h-3.5" /> Log Follow-up
+                      <Clock className="w-3.5 h-3.5" /> Follow Up
                     </button>
                   </td>
                 </tr>

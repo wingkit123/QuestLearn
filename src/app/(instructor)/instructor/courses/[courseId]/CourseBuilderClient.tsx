@@ -66,6 +66,9 @@ export function CourseBuilderClient({
   const [editLessonId, setEditLessonId] = useState<number | null>(null);
   const [editLessonModuleId, setEditLessonModuleId] = useState<number | null>(null);
   const [editLessonTitle, setEditLessonTitle] = useState("");
+  const [editLessonType, setEditLessonType] = useState<"video" | "reading" | "h5p_lumi">("reading");
+  const [editLumiInput, setEditLumiInput] = useState("");
+  const [editVideoInput, setEditVideoInput] = useState("");
   const [editLessonLoading, setEditLessonLoading] = useState(false);
 
   // Enrollment dropdown state
@@ -286,37 +289,100 @@ export function CourseBuilderClient({
     }
   };
 
+  const handleOpenEditLesson = (les: any, moduleId: number) => {
+    setEditLessonId(les.lesson_id);
+    setEditLessonModuleId(moduleId);
+    setEditLessonTitle(les.lesson_title);
+
+    const dbType = les.lesson_type; // 'video', 'reading', 'mixed'
+    const mappedType = dbType === "mixed" ? "h5p_lumi" : dbType;
+    setEditLessonType(mappedType);
+
+    const h5pItem = (les.content_item || []).find((c: any) => c.content_type === "h5p_lumi");
+    const videoItem = (les.content_item || []).find((c: any) => c.content_type === "video");
+
+    setEditLumiInput(h5pItem ? (h5pItem.body_text || h5pItem.embed_url || "") : "");
+    setEditVideoInput(videoItem ? (videoItem.embed_url || "") : "");
+
+    setIsEditLessonModalOpen(true);
+  };
+
   const handleEditLessonSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editLessonTitle.trim() || editLessonId === null || editLessonModuleId === null) return;
     setEditLessonLoading(true);
 
     try {
-      const { error } = await supabase
+      // 1. Update lesson record
+      const dbLessonType = editLessonType === "h5p_lumi" ? "mixed" : editLessonType;
+      const { error: lessonError } = await supabase
         .from("lesson")
         .update({
           lesson_title: editLessonTitle.trim(),
+          lesson_type: dbLessonType,
         })
         .eq("lesson_id", editLessonId);
 
-      if (error) throw error;
+      if (lessonError) throw lessonError;
 
-      const updatedModules = (course.module || []).map((m: any) => {
-        if (m.module_id === editLessonModuleId) {
-          const updatedLessons = (m.lesson || []).map((l: any) =>
-            l.lesson_id === editLessonId ? { ...l, lesson_title: editLessonTitle.trim() } : l
-          );
-          return { ...m, lesson: updatedLessons };
-        }
-        return m;
-      });
-      setCourse({ ...course, module: updatedModules });
+      // 2. Refresh content_item (delete existing, then insert updated content_item)
+      await supabase.from("content_item").delete().eq("lesson_id", editLessonId);
 
-      showToast("Lesson updated successfully!");
+      if (editLessonType === "h5p_lumi" && editLumiInput.trim()) {
+        const isIframeTag = editLumiInput.trim().toLowerCase().startsWith("<iframe");
+        await supabase.from("content_item").insert({
+          lesson_id: editLessonId,
+          content_type: "h5p_lumi",
+          title: editLessonTitle.trim(),
+          sequence_no: 1,
+          body_text: isIframeTag ? editLumiInput.trim() : null,
+          embed_url: isIframeTag ? null : editLumiInput.trim(),
+        });
+      } else if (editLessonType === "video" && editVideoInput.trim()) {
+        await supabase.from("content_item").insert({
+          lesson_id: editLessonId,
+          content_type: "video",
+          title: editLessonTitle.trim(),
+          sequence_no: 1,
+          embed_url: editVideoInput.trim(),
+        });
+      } else {
+        await supabase.from("content_item").insert({
+          lesson_id: editLessonId,
+          content_type: "text",
+          title: editLessonTitle.trim(),
+          sequence_no: 1,
+          body_text: "Welcome to this lesson content.",
+        });
+      }
+
+      // 3. Query the latest course curriculum structure and update UI state
+      const { data: updatedCourse } = await supabase
+        .from("course")
+        .select(`
+          *,
+          module (
+            *,
+            lesson (
+              *,
+              content_item (
+                *
+              )
+            )
+          )
+        `)
+        .eq("course_id", courseId)
+        .single();
+
+      if (updatedCourse) {
+        setCourse(updatedCourse);
+      }
+
+      showToast("Lesson content updated successfully!");
       setIsEditLessonModalOpen(false);
     } catch (err: any) {
       console.error(err);
-      showToast(err.message || "Failed to update lesson.", "error");
+      showToast(err.message || "Failed to update lesson content.", "error");
     } finally {
       setEditLessonLoading(false);
     }
@@ -555,7 +621,7 @@ export function CourseBuilderClient({
                           {mod.description && <p className="text-xs text-text-muted mt-0.5">{mod.description}</p>}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-2">
                         <button
                           onClick={() => {
                             setEditModuleId(mod.module_id);
@@ -602,16 +668,11 @@ export function CourseBuilderClient({
                                   {les.lesson_type}
                                 </span>
                               </div>
-                              <div className="opacity-0 group-hover/lesson:opacity-100 transition-opacity flex items-center">
+                              <div className="flex items-center">
                                 <button
-                                  onClick={() => {
-                                    setEditLessonId(les.lesson_id);
-                                    setEditLessonModuleId(mod.module_id);
-                                    setEditLessonTitle(les.lesson_title);
-                                    setIsEditLessonModalOpen(true);
-                                  }}
+                                  onClick={() => handleOpenEditLesson(les, mod.module_id)}
                                   className="p-1.5 text-text-muted hover:text-primary rounded-lg hover:bg-primary/10 transition-colors"
-                                  title="Edit Lesson"
+                                  title="Edit Lesson Content"
                                 >
                                   <Settings className="w-3.5 h-3.5" />
                                 </button>
@@ -872,7 +933,8 @@ export function CourseBuilderClient({
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-40 animate-in fade-in duration-200">
           <form onSubmit={handleEditLessonSubmit} className="bg-surface border border-border rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-6 border-b border-border bg-bg-page/50">
-              <h3 className="text-lg font-bold text-text">Edit Lesson Title</h3>
+              <h3 className="text-lg font-bold text-text">Edit Lesson Content</h3>
+              <p className="text-xs text-text-muted mt-1">Modify title and content settings for this lesson block.</p>
             </div>
 
             <div className="p-6 space-y-4">
@@ -886,6 +948,47 @@ export function CourseBuilderClient({
                   className="w-full px-4 py-2.5 rounded-lg border border-border bg-bg-page focus:ring-2 focus:ring-accent focus:border-transparent outline-none text-text text-sm"
                 />
               </div>
+
+              <div>
+                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Content Type</label>
+                <select
+                  value={editLessonType}
+                  onChange={(e) => setEditLessonType(e.target.value as any)}
+                  className="w-full px-4 py-2.5 rounded-lg border border-border bg-bg-page focus:ring-2 focus:ring-accent focus:border-transparent outline-none text-text text-sm font-semibold"
+                >
+                  <option value="reading">📖 Reading / Slide Content</option>
+                  <option value="video">🎥 Video Embed Player</option>
+                  <option value="h5p_lumi">🧩 H5P / Lumi Interactive Activity</option>
+                </select>
+              </div>
+
+              {editLessonType === "h5p_lumi" && (
+                <div>
+                  <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Lumi Embed URL or Iframe Code</label>
+                  <textarea
+                    rows={3}
+                    required
+                    placeholder="Paste Lumi iframe code (e.g. <iframe src='...'></iframe>) or raw URL..."
+                    value={editLumiInput}
+                    onChange={(e) => setEditLumiInput(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border border-border bg-bg-page focus:ring-2 focus:ring-accent focus:border-transparent outline-none text-text text-sm"
+                  />
+                </div>
+              )}
+
+              {editLessonType === "video" && (
+                <div>
+                  <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Video Embed URL</label>
+                  <input
+                    type="url"
+                    required
+                    placeholder="https://www.youtube.com/embed/..."
+                    value={editVideoInput}
+                    onChange={(e) => setEditVideoInput(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border border-border bg-bg-page focus:ring-2 focus:ring-accent focus:border-transparent outline-none text-text text-sm"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="p-6 border-t border-border flex justify-end gap-3">

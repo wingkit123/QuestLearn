@@ -34,8 +34,8 @@ export function AdvisorFollowupsClient({ followups: initialFollowups, advisorPro
 
       <header className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-text mb-2">Advisory Follow-ups</h1>
-          <p className="text-text-muted">Log interventions and follow-up activities with advisees.</p>
+          <h1 className="text-2xl font-bold text-text mb-2">Follow-Up History</h1>
+          <p className="text-text-muted">Review logged advisory interventions, student alerts, and logged suggestions.</p>
         </div>
         <button
           onClick={() => showToast("Intervention log helper opened. You can add a new follow-up from My Advisees.")}
