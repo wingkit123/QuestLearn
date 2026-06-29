@@ -54,9 +54,16 @@ export function AdvisorFollowupsClient({ followups: initialFollowups, advisorPro
           followups.map((f) => (
             <div key={f.follow_up_id} className="p-6 hover:bg-bg-page/40 transition-colors flex justify-between items-start gap-4">
               <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm text-text font-bold">
-                  <User className="w-4 h-4 text-text-muted" /> {f.student_profile?.user?.full_name}
-                  <span className="text-xs text-text-muted font-normal">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-text font-bold">
+                  <span className="flex items-center gap-1">
+                    <User className="w-4 h-4 text-text-muted" /> {f.student_profile?.user?.full_name}
+                  </span>
+                  {f.instructor_profile && (
+                    <span className="text-xs font-semibold text-accent bg-bg-dark px-2 py-0.5 rounded border border-border">
+                      Instructor: {f.instructor_profile.user?.full_name}
+                    </span>
+                  )}
+                  <span className="text-xs text-text-muted font-normal text-right">
                     • {new Date(f.logged_at).toLocaleDateString()}
                   </span>
                 </div>

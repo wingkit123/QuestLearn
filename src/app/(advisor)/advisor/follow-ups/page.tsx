@@ -33,6 +33,13 @@ export default async function AdvisorFollowupsPage() {
           full_name,
           email
         )
+      ),
+      instructor_profile:instructor_profile_id (
+        instructor_profile_id,
+        staff_no,
+        user:user_id (
+          full_name
+        )
       )
     `)
     .eq("advisor_profile_id", advisorProfile.advisor_profile_id)

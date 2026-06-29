@@ -633,39 +633,6 @@ export function CourseBuilderClient({
       {/* Tab 2: Students & Enrollments */}
       {activeTab === "students" && (
         <div className="space-y-6">
-          {/* Enrollment form */}
-          <div className="bg-surface border border-border rounded-xl p-6 shadow-sm space-y-4">
-            <h2 className="text-lg font-bold text-text flex items-center gap-2">
-              <UserPlus className="w-5 h-5 text-primary" /> Enroll a Student
-            </h2>
-            <form onSubmit={handleEnrollStudent} className="flex flex-col sm:flex-row gap-4 items-end">
-              <div className="flex-1 space-y-2">
-                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider">
-                  Select Student
-                </label>
-                <select
-                  required
-                  value={selectedStudentId}
-                  onChange={(e) => setSelectedStudentId(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border border-border bg-bg-page focus:ring-2 focus:ring-accent focus:border-transparent outline-none text-text text-sm font-semibold"
-                >
-                  <option value="">-- Choose a student --</option>
-                  {unenrolledStudents.map((s) => (
-                    <option key={s.student_profile_id} value={s.student_profile_id}>
-                      {s.user?.full_name} ({s.user?.email}) - {s.student_no}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <button
-                type="submit"
-                disabled={enrollLoading || !selectedStudentId}
-                className="px-6 py-2.5 bg-primary hover:bg-primary-light disabled:opacity-60 text-white font-semibold text-sm rounded-lg transition-all shrink-0 h-[42px]"
-              >
-                {enrollLoading ? "Enrolling..." : "Enroll Student"}
-              </button>
-            </form>
-          </div>
 
           {/* Enrolled Students list */}
           <div className="bg-surface border border-border rounded-xl shadow-sm overflow-hidden">
@@ -676,7 +643,6 @@ export function CourseBuilderClient({
                   <th className="px-6 py-4 font-semibold">Student ID</th>
                   <th className="px-6 py-4 font-semibold">Email Address</th>
                   <th className="px-6 py-4 font-semibold text-center">Status</th>
-                  <th className="px-6 py-4 font-semibold text-center font-bold">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -698,14 +664,6 @@ export function CourseBuilderClient({
                           <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-bg/40 text-success">
                             {e.status}
                           </span>
-                        </td>
-                        <td className="px-6 py-4 text-center">
-                          <button
-                            onClick={() => handleRemoveEnrollment(e.enrollment_id)}
-                            className="p-2 text-text-muted hover:text-danger rounded-lg hover:bg-danger/10 transition-colors"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
                         </td>
                       </tr>
                     );

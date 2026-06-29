@@ -7,13 +7,15 @@ import { createClient } from "@/lib/supabase/client";
 interface Props {
   students: any[];
   advisorProfileId: number;
+  instructors: any[];
 }
 
-export function AdvisorStudentsClient({ students: initialStudents, advisorProfileId }: Props) {
+export function AdvisorStudentsClient({ students: initialStudents, advisorProfileId, instructors }: Props) {
   const [students, setStudents] = useState(initialStudents);
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [isFollowupOpen, setIsFollowupOpen] = useState(false);
   const [followupMessage, setFollowupMessage] = useState("");
+  const [selectedInstructorId, setSelectedInstructorId] = useState("");
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
@@ -68,12 +70,14 @@ export function AdvisorStudentsClient({ students: initialStudents, advisorProfil
           follow_up_type: "message",
           message: followupMessage,
           next_action: "Monitor student response",
+          instructor_profile_id: selectedInstructorId ? parseInt(selectedInstructorId) : null,
         });
 
       if (followupError) throw followupError;
 
       showToast("Follow-up advisory message sent successfully!");
       setFollowupMessage("");
+      setSelectedInstructorId("");
       setIsFollowupOpen(false);
     } catch (err: any) {
       console.error(err);
@@ -219,6 +223,22 @@ export function AdvisorStudentsClient({ students: initialStudents, advisorProfil
             </div>
 
             <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Link to Instructor (Optional)</label>
+                <select
+                  value={selectedInstructorId}
+                  onChange={(e) => setSelectedInstructorId(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border border-border bg-bg-page focus:ring-2 focus:ring-accent focus:border-transparent outline-none text-text text-sm font-semibold"
+                >
+                  <option value="">-- No linked instructor --</option>
+                  {instructors.map((ins) => (
+                    <option key={ins.instructor_profile_id} value={ins.instructor_profile_id}>
+                      {ins.user?.full_name} ({ins.staff_no})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div>
                 <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Intervention Message</label>
                 <textarea

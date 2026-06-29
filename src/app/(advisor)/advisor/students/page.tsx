@@ -40,6 +40,18 @@ export default async function AdvisorStudentsPage() {
     `)
     .eq("advisor_profile_id", advisorProfile.advisor_profile_id);
 
+  // Fetch all instructors
+  const { data: instructors } = await supabase
+    .from("instructor_profile")
+    .select(`
+      instructor_profile_id,
+      staff_no,
+      user:user_id (
+        full_name,
+        email
+      )
+    `);
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <header>
@@ -50,6 +62,7 @@ export default async function AdvisorStudentsPage() {
       <AdvisorStudentsClient 
         students={students || []} 
         advisorProfileId={advisorProfile.advisor_profile_id} 
+        instructors={instructors || []}
       />
     </div>
   );
