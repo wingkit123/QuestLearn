@@ -50,7 +50,9 @@ export function CourseBuilderClient({
   const [isLessonModalOpen, setIsLessonModalOpen] = useState(false);
   const [targetModuleId, setTargetModuleId] = useState<number | null>(null);
   const [lessonTitle, setLessonTitle] = useState("");
-  const [lessonType, setLessonType] = useState<"video" | "reading">("reading");
+  const [lessonType, setLessonType] = useState<"video" | "reading" | "h5p_lumi">("reading");
+  const [lumiInput, setLumiInput] = useState("");
+  const [videoInput, setVideoInput] = useState("");
   const [lessonLoading, setLessonLoading] = useState(false);
 
   // Enrollment dropdown state
@@ -159,12 +161,15 @@ export function CourseBuilderClient({
       const targetMod = (course.module || []).find((m: any) => m.module_id === targetModuleId);
       const nextSeq = ((targetMod?.lesson || []).length) + 1;
 
-      const { data: newLesson, error } = await supabase
+      // Determine lesson_type for database ('video', 'reading', 'mixed')
+      const dbLessonType = lessonType === "h5p_lumi" ? "mixed" : lessonType;
+
+      const { data: newLesson, error: lessonError } = await supabase
         .from("lesson")
         .insert({
           module_id: targetModuleId,
           lesson_title: lessonTitle.trim(),
-          lesson_type: lessonType,
+          lesson_type: dbLessonType,
           sequence_no: nextSeq,
           is_required: true,
           is_preview: false,
@@ -172,7 +177,46 @@ export function CourseBuilderClient({
         .select()
         .single();
 
-      if (error) throw error;
+      if (lessonError) throw lessonError;
+
+      // If h5p_lumi, insert content_item as well!
+      if (lessonType === "h5p_lumi" && lumiInput.trim()) {
+        const isIframeTag = lumiInput.trim().toLowerCase().startsWith("<iframe");
+        const { error: itemError } = await supabase
+          .from("content_item")
+          .insert({
+            lesson_id: newLesson.lesson_id,
+            content_type: "h5p_lumi",
+            title: lessonTitle.trim(),
+            sequence_no: 1,
+            body_text: isIframeTag ? lumiInput.trim() : null,
+            embed_url: isIframeTag ? null : lumiInput.trim(),
+          });
+
+        if (itemError) throw itemError;
+      } else if (lessonType === "video" && videoInput.trim()) {
+        // Also support creating video content item!
+        await supabase
+          .from("content_item")
+          .insert({
+            lesson_id: newLesson.lesson_id,
+            content_type: "video",
+            title: lessonTitle.trim(),
+            sequence_no: 1,
+            embed_url: videoInput.trim(),
+          });
+      } else {
+        // Default text content item
+        await supabase
+          .from("content_item")
+          .insert({
+            lesson_id: newLesson.lesson_id,
+            content_type: "text",
+            title: lessonTitle.trim(),
+            sequence_no: 1,
+            body_text: "Welcome to this lesson content.",
+          });
+      }
 
       // Update state
       const updatedModules = (course.module || []).map((m: any) => {
@@ -186,6 +230,8 @@ export function CourseBuilderClient({
 
       showToast("Lesson content added successfully!");
       setLessonTitle("");
+      setLumiInput("");
+      setVideoInput("");
       setIsLessonModalOpen(false);
       setTargetModuleId(null);
     } catch (err: any) {
@@ -655,13 +701,42 @@ export function CourseBuilderClient({
                 <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Content Type</label>
                 <select
                   value={lessonType}
-                  onChange={(e) => setLessonType(e.target.value as "video" | "reading")}
+                  onChange={(e) => setLessonType(e.target.value as any)}
                   className="w-full px-4 py-2.5 rounded-lg border border-border bg-bg-page focus:ring-2 focus:ring-accent focus:border-transparent outline-none text-text text-sm font-semibold"
                 >
                   <option value="reading">📖 Reading / Slide Content</option>
                   <option value="video">🎥 Video Embed Player</option>
+                  <option value="h5p_lumi">🧩 H5P / Lumi Interactive Activity</option>
                 </select>
               </div>
+
+              {lessonType === "h5p_lumi" && (
+                <div>
+                  <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Lumi Embed URL or Iframe Code</label>
+                  <textarea
+                    rows={3}
+                    required
+                    placeholder="Paste Lumi iframe code (e.g. <iframe src='...'></iframe>) or raw URL..."
+                    value={lumiInput}
+                    onChange={(e) => setLumiInput(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border border-border bg-bg-page focus:ring-2 focus:ring-accent focus:border-transparent outline-none text-text text-sm"
+                  />
+                </div>
+              )}
+
+              {lessonType === "video" && (
+                <div>
+                  <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Video Embed URL</label>
+                  <input
+                    type="url"
+                    required
+                    placeholder="https://www.youtube.com/embed/..."
+                    value={videoInput}
+                    onChange={(e) => setVideoInput(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border border-border bg-bg-page focus:ring-2 focus:ring-accent focus:border-transparent outline-none text-text text-sm"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="p-6 border-t border-border flex justify-end gap-3">
