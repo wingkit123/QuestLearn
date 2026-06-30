@@ -32,6 +32,8 @@ System name inside boundary:
 
 ### Instructor-facing
 
+- `Register Account`
+- `Log In`
 - `Manage Instructor Profile`
 - `Create Course`
 - `Create Module`
@@ -47,6 +49,7 @@ System name inside boundary:
 
 ### Academic Advisor-facing
 
+- `Log In`
 - `View Assigned Advisees`
 - `Review Student Progress Summary`
 - `Review Overdue Assignments`
@@ -54,6 +57,7 @@ System name inside boundary:
 
 ### Admin-facing
 
+- `Log In`
 - `Manage Users`
 - `Assign Roles`
 - `Approve Instructor/Advisor Accounts`
