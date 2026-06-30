@@ -41,19 +41,23 @@ System name inside boundary:
 - `Upload Learning Content`
 - `Create Quiz`
 - `Create Assignment`
+- `Grade Submissions`
 - `Configure Automated Feedback`
 - `Publish Learning Content`
 - `View Course Engagement Analytics`
 - `View Student Performance Analytics`
 - `Send Course Announcement`
+- `Receive Notifications`
 
 ### Academic Advisor-facing
 
 - `Log In`
+- `Manage Profile`
 - `View Assigned Advisees`
 - `Review Student Progress Summary`
 - `Review Overdue Assignments`
 - `Send Advisory Follow-Up`
+- `Receive Notifications`
 
 ### Admin-facing
 
@@ -65,6 +69,7 @@ System name inside boundary:
 - `Moderate Learning Content`
 - `Manage Announcements`
 - `View Platform Analytics`
+- `Receive Notifications`
 
 ## Correct UML Relationship Rules
 
@@ -103,18 +108,22 @@ Use `<<extend>>` only where optional behavior is triggered under conditions:
 - `Upload Learning Content`
 - `Create Quiz`
 - `Create Assignment`
+- `Grade Submissions`
 - `Configure Automated Feedback`
 - `Publish Learning Content`
 - `View Course Engagement Analytics`
 - `View Student Performance Analytics`
 - `Send Course Announcement`
+- `Receive Notifications`
 
 ### Academic Advisor
 - `Log In`
+- `Manage Profile`
 - `View Assigned Advisees`
 - `Review Student Progress Summary`
 - `Review Overdue Assignments`
 - `Send Advisory Follow-Up`
+- `Receive Notifications`
 
 ### Admin
 - `Log In`
@@ -125,3 +134,4 @@ Use `<<extend>>` only where optional behavior is triggered under conditions:
 - `Moderate Learning Content`
 - `Manage Announcements`
 - `View Platform Analytics`
+- `Receive Notifications`
