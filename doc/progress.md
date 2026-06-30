@@ -1,6 +1,10 @@
 # 项目进展文档
 
-## 最新进展 (2026-06-30)
+## 最新进展 (2026-07-01)
+- 启动了本地开发服务器。项目现已运行在 [http://localhost:3000](http://localhost:3000)。
+- 更新了管理员（Admin）角色 Soo Kian Rong 的个人报告（[Individual-Report-SooKianRong.md](file:///c:/Users/aziel/OneDrive/Desktop/SEF_P3/wing%20kit%20sef%20report/Individual-Report-SooKianRong.md)）：参考 Aziel 的报告，完成了 3.3 到 6 章节的编写与补充，包含管理员子系统架构、界面布局图解、组件结构映射与流程伪代码、状态转换、具体代码实现列表以及测试方案与测试结果，并移除了所有的 `TODO` 占位符。
+
+## 历史进展 (2026-06-30)
 - 修复了学术导师（Advisor）在跟进低分学生时因数据库表 notification 缺少 title 字段导致通知发送失败的 Bug。
 - 移除了顶栏（Topbar）的多余铃铛通知图标，统一收纳至侧边栏。
 - 在侧边栏（Sidebar）新增了全局「通知 (Notifications)」入口，并实现了基于 Supabase 实时订阅的红点提醒机制，未读通知时显示红点，进入页面后自动消除红点。
