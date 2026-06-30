@@ -625,12 +625,7 @@ The student layout utilizes structural CSS wrappers to deliver a premium, respon
 # 5 Testing
 
 ## 5.1 Test Data
-The following records are seeded to verify the student dashboard, progress tracking, and locking rules:
-* **Student User**: See Wing Kit (`student@example.com`, `STU-001`, academic level: `Year 1`, program: `Degree in Computer Science`).
-* **Active Enrollment**: Enrolled in course `QL-SEF101` (Software Engineering Fundamentals).
-* **Progress Scenarios**:
-  * **Scenario A (Pass)**: Logs 80% on Module 1 Quiz. Lesson 2 remains unlocked.
-  * **Scenario B (Fail)**: Logs 40% score on Quiz 1: Testing Strategies. Weak topic alert fires, recommendations appear, and subsequent lessons in Module 3 are locked.
+_<TO DO: Provide a detailed description of the test data used to verify the subsystem here.>_
 
 ## 5.2 Acceptance Testing
 Acceptance checklist executed on student workflow prototypes:
