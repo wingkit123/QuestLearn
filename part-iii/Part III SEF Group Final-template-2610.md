@@ -299,6 +299,70 @@ Logs follow-up interventions logged by advisors.
 | `instructor_profile_id`|`INT`| `FK` | `Yes`| `None` | References `instructor_profile`. |
 | `message` | `TEXT` | `None` | `No` | `None` | Follow-up feedback message. |
 
+### `instructor_profile`
+Contains academic details specific to instructor accounts.
+| Column | Type | Key | Nullable | Default | Description |
+| --- | --- | --- | --- | --- | --- |
+| `instructor_profile_id`| `INT` | `PK` | `No` | `SERIAL` | Instructor profile primary key. |
+| `user_id` | `INT` | `FK` | `No` | `None` | References `"user"(user_id)`. |
+| `staff_no` | `VARCHAR(30)` | `UQ` | `No` | `None` | Unique staff identifier. |
+| `specialization` | `VARCHAR(200)`| `None` | `Yes` | `None` | Academic specialty. |
+
+### `advisor_profile`
+Contains academic details specific to advisor accounts.
+| Column | Type | Key | Nullable | Default | Description |
+| --- | --- | --- | --- | --- | --- |
+| `advisor_profile_id`| `INT` | `PK` | `No` | `SERIAL` | Advisor profile primary key. |
+| `user_id` | `INT` | `FK` | `No` | `None` | References `"user"(user_id)`. |
+| `staff_no` | `VARCHAR(30)` | `UQ` | `No` | `None` | Unique staff identifier. |
+| `department` | `VARCHAR(100)`| `None` | `Yes` | `None` | Department assignment. |
+
+### `course`
+Represents a course created and managed by an instructor.
+| Column | Type | Key | Nullable | Default | Description |
+| --- | --- | --- | --- | --- | --- |
+| `course_id` | `INT` | `PK` | `No` | `SERIAL` | Unique course ID. |
+| `instructor_profile_id`| `INT` | `FK` | `No` | `None` | Course owner. |
+| `course_code` | `VARCHAR(20)` | `UQ` | `No` | `None` | Unique code (e.g. QL-101). |
+| `course_title` | `VARCHAR(200)`| `None` | `No` | `None` | Full title of the course. |
+| `status` | `VARCHAR(20)` | `None` | `No` | `'draft'` | Check: `'draft'`, `'published'`, etc. |
+
+### `module`
+Divides a course into smaller learning units.
+| Column | Type | Key | Nullable | Default | Description |
+| --- | --- | --- | --- | --- | --- |
+| `module_id` | `INT` | `PK` | `No` | `SERIAL` | Unique module ID. |
+| `course_id` | `INT` | `FK` | `No` | `None` | References `course`. |
+| `module_title` | `VARCHAR(200)`| `None` | `No` | `None` | Module title. |
+| `sequence_no` | `INT` | `None` | `No` | `None` | Ordering sequence. |
+
+### `advisor_student_assignment`
+Maps advisors to students for monitoring and early intervention.
+| Column | Type | Key | Nullable | Default | Description |
+| --- | --- | --- | --- | --- | --- |
+| `advisor_student_assignment_id`| `INT` | `PK` | `No` | `SERIAL` | Unique assignment ID. |
+| `advisor_profile_id`| `INT` | `FK` | `No` | `None` | References `advisor_profile`. |
+| `student_profile_id`| `INT` | `FK` | `No` | `None` | References `student_profile`. |
+| `status` | `VARCHAR(20)` | `None` | `No` | `'active'`| Check: `'active'`, `'inactive'`. |
+
+### `advisor_alert`
+Stores advisor-facing risk alerts generated from progress signals.
+| Column | Type | Key | Nullable | Default | Description |
+| --- | --- | --- | --- | --- | --- |
+| `advisor_alert_id`| `INT` | `PK` | `No` | `SERIAL` | Unique alert ID. |
+| `student_profile_id`| `INT` | `FK` | `No` | `None` | Student triggering the alert. |
+| `alert_type` | `VARCHAR(30)` | `None` | `No` | `None` | Check: `'low_quiz_score'`, etc. |
+| `status` | `VARCHAR(20)` | `None` | `No` | `'open'` | Check: `'open'`, `'resolved'`. |
+
+### `moderation_action`
+Records admin moderation decisions for accounts and content.
+| Column | Type | Key | Nullable | Default | Description |
+| --- | --- | --- | --- | --- | --- |
+| `moderation_action_id`| `INT`| `PK` | `No` | `SERIAL` | Unique log ID. |
+| `admin_user_id` | `INT` | `FK` | `No` | `None` | Admin performing the action. |
+| `target_type` | `VARCHAR(30)`| `None` | `No` | `None` | e.g., `'user'`. |
+| `action_type` | `VARCHAR(30)`| `None` | `No` | `None` | e.g., `'approve'`, `'reject'`. |
+
 ---
 
 ## 4.2 Software Architecture
@@ -370,8 +434,8 @@ stateDiagram
 ```mermaid
 stateDiagram
     [*] --> Active_Instructor
-    Active_Instructor --> Course_Draft : Clicks New Course
-    Course_Draft --> Course_Published : Adds content & publishes
+    Active_Instructor --> Course_Draft : Clicks New Course (status='draft')
+    Course_Draft --> Course_Published : Adds content & publishes (status='published')
     Course_Published --> Grading_Pending : Student submits assessment
     Grading_Pending --> Submission_Graded : Inputs score and saves
 ```
@@ -380,20 +444,23 @@ stateDiagram
 ```mermaid
 stateDiagram
     [*] --> Active_Advisor
-    Active_Advisor --> Review_Alerts : Inspects student list
-    Review_Alerts --> Write_Followup : Clicks Follow Up
-    Write_Followup --> Notification_Fired : Logs intervention
+    Active_Advisor --> Review_Alerts : Inspects assigned students (status='active')
+    Review_Alerts --> Write_Followup : Clicks Follow Up on alert (status='open')
+    Write_Followup --> Notification_Fired : Logs intervention & resolves alert (status='resolved')
 ```
 
 #### 4.6.3.4 Actor 4 State Transition Diagram (Admin)
 ```mermaid
 stateDiagram
     [*] --> Active_Admin
-    Active_Admin --> Review_Users : Inspects Registry
-    Review_Users --> User_Suspended : Clicks Suspend User
-    Review_Users --> User_Reactivated : Clicks Reactivate User
-    Review_Users --> User_Deleted : Clicks Delete User
+    Active_Admin --> Review_Pending_Users : Inspects Registry (account_status='pending')
+    Review_Pending_Users --> User_Active : Clicks Approve (account_status='active')
+    Review_Pending_Users --> User_Suspended : Clicks Decline (account_status='suspended')
+    User_Active --> User_Suspended : Clicks Suspend User
+    User_Suspended --> User_Active : Clicks Reactivate User
 ```
+
+
 
 ---
 
