@@ -161,127 +161,150 @@ Instructor --> UC_ViewCourseEngage
 
 The complete system schema mapping the Instructor Subsystem entities and their relations to the Student/Advisor/Admin subsystems is shown below:
 
-```mermaid
-erDiagram
-    ROLE ||--o{ USER : has
-    USER ||--o| INSTRUCTOR_PROFILE : extends
-    USER ||--o| STUDENT_PROFILE : extends
-    
-    INSTRUCTOR_PROFILE ||--o{ COURSE : teaches
-    COURSE ||--|{ MODULE : contains
-    MODULE ||--|{ LESSON : contains
-    LESSON ||--o{ CONTENT_ITEM : contains
-    LESSON ||--o{ QUIZ : contains
-    
-    MODULE ||--o{ MODULE : prerequisite
-    
-    COURSE ||--o{ ASSIGNMENT : contains
-    LESSON ||--o{ ASSIGNMENT : references
-    ASSIGNMENT ||--o{ ASSIGNMENT_SUBMISSION : has
-    STUDENT_PROFILE ||--o{ ASSIGNMENT_SUBMISSION : submits
+```plantuml
+@startuml QuestLearn ERD
+!theme plain
+hide circle
+skinparam linetype ortho
 
-    ROLE {
-        int role_id PK
-        string role_name
-    }
-    USER {
-        int user_id PK
-        uuid auth_user_id
-        int role_id FK
-        string full_name
-        string email
-        string account_status
-        timestamp created_at
-    }
-    INSTRUCTOR_PROFILE {
-        int instructor_profile_id PK
-        int user_id FK
-        string staff_no
-        string specialization
-        text subjects_taught
-        string office_hours
-    }
-    STUDENT_PROFILE {
-        int student_profile_id PK
-        int user_id FK
-        string student_no
-        string academic_level
-        string programme
-        string department
-        string learning_preference
-    }
-    COURSE {
-        int course_id PK
-        int instructor_profile_id FK
-        string course_code
-        string course_title
-        text description
-        string department
-        string status
-        timestamp created_at
-    }
-    MODULE {
-        int module_id PK
-        int course_id FK
-        string module_title
-        int sequence_no
-        text description
-        string publish_status
-        int prerequisite_module_id FK
-    }
-    LESSON {
-        int lesson_id PK
-        int module_id FK
-        string lesson_title
-        string lesson_type
-        text content_text
-        string video_url
-        int sequence_no
-        string publish_status
-    }
-    CONTENT_ITEM {
-        int content_item_id PK
-        int lesson_id FK
-        string content_type
-        string title
-        text body_text
-        string resource_url
-        string storage_path
-        string embed_url
-        int sequence_no
-        string publish_status
-        timestamp created_at
-    }
-    ASSIGNMENT {
-        int assignment_id PK
-        int course_id FK
-        int lesson_id FK
-        string assignment_title
-        text description
-        timestamp deadline
-        int total_marks
-        string publish_status
-        timestamp created_at
-    }
-    ASSIGNMENT_SUBMISSION {
-        int submission_id PK
-        int assignment_id FK
-        int student_profile_id FK
-        timestamp submitted_at
-        string submission_url
-        string status
-        numeric score
-        text feedback
-    }
-    QUIZ {
-        int quiz_id PK
-        int lesson_id FK
-        string quiz_title
-        int total_marks
-        int time_limit
-        boolean randomized
-        string publish_status
-    }
+entity "role" as role {
+  * role_id : SERIAL <<PK>>
+  --
+  role_name : VARCHAR(50)
+}
+
+entity "user" as user {
+  * user_id : SERIAL <<PK>>
+  --
+  * role_id : INT <<FK>>
+  auth_user_id : UUID
+  full_name : VARCHAR(150)
+  email : VARCHAR(255)
+  account_status : VARCHAR(20)
+  created_at : TIMESTAMP
+}
+
+entity "instructor_profile" as instructor_profile {
+  * instructor_profile_id : SERIAL <<PK>>
+  --
+  * user_id : INT <<FK>>
+  staff_no : VARCHAR(30)
+  specialization : VARCHAR(200)
+  subjects_taught : TEXT
+  office_hours : VARCHAR(200)
+}
+
+entity "student_profile" as student_profile {
+  * student_profile_id : SERIAL <<PK>>
+  --
+  * user_id : INT <<FK>>
+  student_no : VARCHAR(30)
+  academic_level : VARCHAR(50)
+  programme : VARCHAR(100)
+  department : VARCHAR(100)
+  learning_preference : VARCHAR(50)
+}
+
+entity "course" as course {
+  * course_id : SERIAL <<PK>>
+  --
+  * instructor_profile_id : INT <<FK>>
+  course_code : VARCHAR(20)
+  course_title : VARCHAR(200)
+  description : TEXT
+  department : VARCHAR(100)
+  status : VARCHAR(20)
+  created_at : TIMESTAMP
+}
+
+entity "module" as module {
+  * module_id : SERIAL <<PK>>
+  --
+  * course_id : INT <<FK>>
+  * prerequisite_module_id : INT <<FK>>
+  module_title : VARCHAR(200)
+  sequence_no : INT
+  description : TEXT
+  publish_status : VARCHAR(20)
+}
+
+entity "lesson" as lesson {
+  * lesson_id : SERIAL <<PK>>
+  --
+  * module_id : INT <<FK>>
+  lesson_title : VARCHAR(200)
+  lesson_type : VARCHAR(20)
+  content_text : TEXT
+  video_url : VARCHAR(500)
+  sequence_no : INT
+  publish_status : VARCHAR(20)
+}
+
+entity "content_item" as content_item {
+  * content_item_id : SERIAL <<PK>>
+  --
+  * lesson_id : INT <<FK>>
+  content_type : VARCHAR(20)
+  title : VARCHAR(200)
+  body_text : TEXT
+  resource_url : VARCHAR(500)
+  storage_path : VARCHAR(500)
+  embed_url : VARCHAR(500)
+  sequence_no : INT
+  publish_status : VARCHAR(20)
+  created_at : TIMESTAMP
+}
+
+entity "assignment" as assignment {
+  * assignment_id : SERIAL <<PK>>
+  --
+  * course_id : INT <<FK>>
+  * lesson_id : INT <<FK>>
+  assignment_title : VARCHAR(200)
+  description : TEXT
+  deadline : TIMESTAMP
+  total_marks : INT
+  publish_status : VARCHAR(20)
+  created_at : TIMESTAMP
+}
+
+entity "assignment_submission" as assignment_submission {
+  * submission_id : SERIAL <<PK>>
+  --
+  * assignment_id : INT <<FK>>
+  * student_profile_id : INT <<FK>>
+  submitted_at : TIMESTAMP
+  submission_url : VARCHAR(500)
+  status : VARCHAR(20)
+  score : NUMERIC
+  feedback : TEXT
+}
+
+entity "quiz" as quiz {
+  * quiz_id : SERIAL <<PK>>
+  --
+  * lesson_id : INT <<FK>>
+  quiz_title : VARCHAR(200)
+  total_marks : INT
+  time_limit : INT
+  randomized : BOOLEAN
+  publish_status : VARCHAR(20)
+}
+
+role ||--o{ user : "has"
+user ||--o| instructor_profile : "extends"
+user ||--o| student_profile : "extends"
+instructor_profile ||--o{ course : "teaches"
+course ||--|{ module : "contains"
+module ||--|{ lesson : "contains"
+lesson ||--o{ content_item : "contains"
+lesson ||--o{ quiz : "contains"
+module ||--o{ module : "prerequisite"
+course ||--o{ assignment : "contains"
+lesson ||--o{ assignment : "references"
+assignment ||--o{ assignment_submission : "has"
+student_profile ||--o{ assignment_submission : "submits"
+@enduml
 ```
 
 ---
