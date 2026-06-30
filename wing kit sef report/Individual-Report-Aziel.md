@@ -466,9 +466,43 @@ Below are the database tables defining the schema for the course creation and as
 ## 3.3 Subsystem Architecture
 The Instructor Subsystem leverages a model-view-controller paradigm built on the **Next.js 15 App Router** and **React 19**.
 
-* **Client Presentation Layer**: Responsive UI panels styling with custom Tailwind CSS v4. Heavy client interactions (interactive curriculum trees, inputs, modals, alerts toggling) are handled using React Client Components (annotated with `"use client"`).
-* **Controller / Integration Layer**: Actions are managed securely using **Next.js Server Actions**. This bridges client interactions and database writes safely, bypasses API routing overheads, and enforces user authentication states.
-* **Database Persistency Layer**: Powered by **Supabase PostgreSQL**. Transactions are checked at the server level, utilizing database foreign-key constraints to guarantee data integrity across nested tables.
+* **Client Presentation Layer**: Responsive UI panels styled with Tailwind CSS v4. Complex client interactions (such as interactive curriculum trees, dynamic modal inputs, real-time feedback alerts, and publish status toggling) are managed using React Client Components (annotated with `"use client"`).
+* **Controller / Integration Layer**: Actions are managed securely using **Next.js Server Actions**. This bridges client interactions and database writes safely, bypassing API routing overheads, and enforcing user session authentication states.
+* **Database Persistency Layer**: Powered by **Supabase PostgreSQL**. Row Level Security (RLS) policies are checked at the server level, utilizing database foreign-key constraints to guarantee data integrity across nested tables.
+
+### 3.3.1 Subsystem Architecture Diagram
+The physical and logical layers of the Instructor Subsystem and their relationships to the database and external resources are visualized below:
+
+```mermaid
+graph TD
+    subgraph Client_Presentation_Layer["Client Presentation Layer (React 19 / Tailwind CSS v4)"]
+        UI_Courses["Course Registry UI (/instructor/courses)"]
+        UI_Builder["Curriculum Builder UI (/instructor/courses/[id])"]
+        UI_Grading["Grading Inbox UI (/instructor)"]
+        UI_Eval["Grading Evaluation Form (/instructor/grading/[id])"]
+    end
+
+    subgraph Controller_Integration_Layer["Controller / Integration Layer (Next.js 15 Server Actions)"]
+        SA_Course["Course CRUD Actions"]
+        SA_Grade["submitGrade Action"]
+        SA_Auth["Auth Middleware & Helpers"]
+    end
+
+    subgraph Database_Persistency_Layer["Database Persistency Layer (Supabase PostgreSQL)"]
+        DB_Course[("course / module / lesson tables")]
+        DB_Content[("content_item / quiz tables")]
+        DB_Grade[("assignment_submission table")]
+        DB_Notif[("notification table")]
+    end
+
+    subgraph External_Integrations["External Integrations"]
+        Lumi_Quiz["H5P/Lumi Interactive Iframe Player"]
+    end
+
+    Client_Presentation_Layer -->|Triggers| Controller_Integration_Layer
+    Controller_Integration_Layer -->|SQL Query / Mutation| Database_Persistency_Layer
+    UI_Builder -->|Embeds| Lumi_Quiz
+```
 
 ---
 
@@ -479,26 +513,215 @@ The Instructor Subsystem leverages a model-view-controller paradigm built on the
 4. **Grading Evaluation Form (`/instructor/grading/[submissionId]`)**: Shows details of a student's submission URL and contains input boxes for the score and textual feedback.
 5. **Analytics Portal (`/instructor/analytics`)**: Visual summaries tracking advisees' performance scores and class metrics.
 
----
+### 3.4.1 Subsystem Interface Wireframes
 
-_<TO DO: Place the screen designs/wireframes for these subsystem interfaces here>_
+#### Course Curriculum Builder UI Layout
+```
++-------------------------------------------------------------------------------------------------+
+|  QuestLearn | Instructor Portal                             [Notifications]  [Aziel Tan (Log Out)] |
++-------------------------------------------------------------------------------------------------+
+|  < Back to Courses    Course: Software Engineering Fundamentals (QL-SEF101)        [Publish Course]|
+|                                                                                                 |
+|  +-------------------------------------+  +--------------------------------------------------+  |
+|  | Modules Tree                        |  | Module Details & Lesson Editor                   |  |
+|  |                                     |  |                                                  |  |
+|  | - Module 1: Requirements Analysis   |  | Module: Requirements Analysis                    |  |
+|  |   - Lesson 1.1: Use Cases           |  | Description: Intro to use cases and requirements |  |
+|  |   - Quiz 1: Use Case Design [Lumi]  |  |                                                  |  |
+|  |                                     |  | +----------------------------------------------+ |  |
+|  | - Module 2: Architecture & Design   |  | | Lesson 1.1: Use Cases                        | |  |
+|  |   - Lesson 2.1: Class Diagrams      |  | | Type: Reading                                | |  |
+|  |   [Add Lesson]                      |  | | Content: [ Rich text editor block... ]       | |  |
+|  |                                     |  | +----------------------------------------------+ |  |
+|  | [Add Module]                        |  |                                                  |  |
+|  +-------------------------------------+  +--------------------------------------------------+  |
++-------------------------------------------------------------------------------------------------+
+```
+
+#### Grading Evaluation Form UI Layout
+```
++-------------------------------------------------------------------------------------------------+
+|  QuestLearn | Instructor Portal                                              [Aziel Tan (Log Out)] |
++-------------------------------------------------------------------------------------------------+
+|  < Back to Grading Dashboard                                                                    |
+|                                                                                                 |
+|  Student: Demo Student (QL-STU-001)                                                             |
+|  Assignment: Individual Report Part III                                                         |
+|  Submitted At: 2026-06-30 14:00                                                                 |
+|  Submission URL: https://github.com/student/sef-project              [Open Submission Link]     |
+|                                                                                                 |
+|  +-------------------------------------------------------------------------------------------+  |
+|  | Grading Form                                                                              |  |
+|  |                                                                                           |  |
+|  | Score (out of 100):                                                                       |  |
+|  | [ 95 ]                                                                                    |  |
+|  |                                                                                           |  |
+|  | Feedback:                                                                                 |  |
+|  | [ Excellent database schema structure and detailed use case descriptions.               ] |  |
+|  | [                                                                                       ] |  |
+|  |                                                                                           |  |
+|  | [ Submit Grade ]                                                                          |  |
+|  +-------------------------------------------------------------------------------------------+  |
++-------------------------------------------------------------------------------------------------+
+```
+
+### 3.4.2 Sample Dashboard Screen (Instructor Analytics Portal)
+Below is the implemented analytics screen rendering adviser summaries, cohort metrics, and historical performance breakdowns:
+
+![Instructor Analytics Portal](../docs/evidence/part-iii/screen-instructor-analytics.png)
+
+---
 
 ## 3.5 Subsystem Components
 
-_<TO DO: Place the table mapping subsystem components to modules/classes/packages here>_
+Below is the mapping of the core subsystem components to their directory, module class name, and respective physical files:
+
+| Subsystem Component | Module / Class / Package | File Location | Purpose |
+| --- | --- | --- | --- |
+| **Curriculum Builder UI** | `CourseBuilderClient` (React Client Component) | `src/app/(instructor)/instructor/courses/[courseId]/CourseBuilderClient.tsx` | Renders nested modules, lessons, content items; handles modal inputs and updates state. |
+| **Grading Form UI** | `GradingForm` (React Client Component) | `src/app/(instructor)/instructor/grading/[submissionId]/GradingForm.tsx` | Captures student score and feedback with range validation. |
+| **Grade Submission Action** | `submitGrade` (Next.js Server Action) | `src/app/(instructor)/instructor/grading/[submissionId]/actions.ts` | Updates submission status to graded, records score/feedback, and triggers notifications. |
+| **Course Registry UI** | `InstructorCoursesPage` (React Server Component) | `src/app/(instructor)/instructor/courses/page.tsx` | Queries Supabase for instructor courses and enrollment metrics. |
+| **Instructor Dashboard UI** | `InstructorDashboard` (React Server Component) | `src/app/(instructor)/instructor/page.tsx` | Renders list of ungraded student submissions requiring attention. |
 
 ### 3.5.1 Component 1: Drag-and-Drop Curriculum Builder
-Implemented inside `CourseBuilderClient.tsx`, this component renders the nested modules, lessons, and content items tree. It allows instructors to build the entire curriculum, configure prerequisite modules, embed Lumi iframe URLs, and publish content asynchronously without full-page refreshes, sending batch modifications to Next.js Server Actions.
+Implemented inside `CourseBuilderClient.tsx`, this component renders the nested modules, lessons, and content items tree. It allows instructors to build the entire curriculum, configure prerequisite modules, embed Lumi iframe URLs, and publish content asynchronously without full-page refreshes, sending modifications to Next.js Server Actions.
+
+#### Processing Flowchart
+```mermaid
+graph TD
+    Start([Instructor opens Curriculum Builder]) --> RenderTree[Render Module, Lesson, Content Item Tree from State]
+    RenderTree --> ClickAddMod[Instructor clicks 'Add Module']
+    ClickAddMod --> ModalMod[Open Add Module Modal & Input Title/Desc]
+    ModalMod --> SubmitMod[Click 'Save']
+    SubmitMod --> ServerActionMod[Call Supabase Insert Module]
+    ServerActionMod --> UpdateStateMod[Append new Module to local course.module React State]
+    UpdateStateMod --> RenderTree
+    
+    RenderTree --> ClickAddLes[Instructor clicks 'Add Lesson']
+    ClickAddLes --> ModalLes[Open Add Lesson Modal & Input Title/Type/Embeds]
+    ModalLes --> SubmitLes[Click 'Save']
+    SubmitLes --> ServerActionLes[Call Supabase Insert Lesson & Content Item]
+    ServerActionLes --> UpdateStateLes[Append new Lesson to local React State]
+    UpdateStateLes --> RenderTree
+```
+
+#### Pseudocode Algorithm
+```typescript
+function handleAddLessonSubmit(e, targetModuleId, lessonTitle, lessonType, lumiInput, videoInput):
+    if lessonTitle is empty or targetModuleId is null:
+        return
+    
+    setLoading(true)
+    try:
+        // Calculate sequence number
+        targetModule = course.modules.find(m => m.id == targetModuleId)
+        nextSeq = targetModule.lessons.length + 1
+        dbLessonType = (lessonType == "h5p_lumi") ? "mixed" : lessonType
+        
+        // 1. Insert lesson container
+        newLesson = DB.insertInto("lesson", {
+            module_id: targetModuleId,
+            lesson_title: lessonTitle.trim(),
+            lesson_type: dbLessonType,
+            sequence_no: nextSeq
+        })
+        
+        // 2. Insert content items based on type
+        if lessonType == "h5p_lumi" and lumiInput is not empty:
+            isIframe = lumiInput.startsWith("<iframe")
+            DB.insertInto("content_item", {
+                lesson_id: newLesson.id,
+                content_type: "h5p_lumi",
+                title: lessonTitle,
+                sequence_no: 1,
+                body_text: isIframe ? lumiInput : null,
+                embed_url: isIframe ? null : lumiInput
+            })
+        else if lessonType == "video" and videoInput is not empty:
+            DB.insertInto("content_item", {
+                lesson_id: newLesson.id,
+                content_type: "video",
+                title: lessonTitle,
+                sequence_no: 1,
+                embed_url: videoInput
+            })
+            
+        // 3. Update Client React State
+        targetModule.lessons.append(newLesson)
+        closeModal()
+        showToast("Success")
+    catch error:
+        showToast(error.message)
+    finally:
+        setLoading(false)
+```
 
 ### 3.5.2 Component 2: Grading Server Action
 Implemented in `actions.ts`, this backend function runs inside a secure transaction wrapper. It updates the target student's `assignment_submission` row with the issued score and feedback remarks, and simultaneously inserts an active notification row inside the `notification` table to alert the student immediately.
+
+#### Processing Flowchart
+```mermaid
+graph TD
+    Start([Grading Form Submitted]) --> AuthCheck{Is Authenticated & Instructor?}
+    AuthCheck -->|No| Reject[Throw Error: Unauthorized]
+    AuthCheck -->|Yes| ValCheck{Is Score between 0 and maxScore?}
+    ValCheck -->|No| Fail[Return Range Error to Form]
+    ValCheck -->|Yes| DBUpdate[UPDATE assignment_submission SET score, feedback, status='graded' WHERE submission_id]
+    DBUpdate --> DbCheck{Database Update Successful?}
+    DbCheck -->|No| DBFail[Throw DB Error]
+    DbCheck -->|Yes| DBNotif[INSERT INTO notification FOR student_user_id]
+    DBNotif --> Reval[Revalidate Next.js cache paths]
+    Reval --> Success([Return Success State])
+```
+
+#### Pseudocode Algorithm
+```typescript
+async function submitGrade(submissionId, score, feedback):
+    // 1. Authenticate user
+    currentUser = getCurrentUser()
+    if currentUser is null or currentUser.role != "instructor":
+        throw Error("Unauthorized")
+        
+    // 2. Connect to Database Client
+    DB = createSupabaseClient()
+    
+    // 3. Update Submission Record
+    { data, error } = DB.update("assignment_submission")
+        .set({ score: score, feedback: feedback, status: "graded" })
+        .eq("submission_id", submissionId)
+        
+    if error is not null:
+        logError(error)
+        throw Error("Failed to update submission")
+        
+    // 4. Fetch student user_id for notification
+    submission = DB.from("assignment_submission")
+        .select("student_profile(user_id)")
+        .eq("submission_id", submissionId)
+        .single()
+        
+    // 5. Insert Notification
+    DB.insertInto("notification", {
+        user_id: submission.student_profile.user_id,
+        message: "Your assignment has been graded! Score: " + score,
+        is_read: false,
+        sent_at: currentTime()
+    })
+    
+    // 6. Refresh path caches
+    revalidatePath("/instructor")
+    revalidatePath(`/instructor/grading/${submissionId}`)
+    
+    return { success: true }
+```
 
 ---
 
 ## 3.6 Actor State Transition Diagrams
 
 ### 3.6.1 Assignment Submission State Transitions
-Represents the state lifecycle of an Assignment Submission:
+This state transition diagram represents the complete lifecycle of a student's assignment submission, tracking the record from its creation to its evaluation by the instructor.
 
 ```mermaid
 stateDiagram-v2
@@ -507,8 +730,20 @@ stateDiagram-v2
     Graded --> [*]
 ```
 
+#### Detailed State Lifecycle Description:
+* **Initial State (`[*]`)**: The student is assigned a coursework task within an active course lesson.
+* **State 1: `Submitted`**:
+  - **Description**: The student has successfully recorded their homework deliverable (a URL referencing their work).
+  - **Event/Trigger**: Student clicks the "Submit" button on their assignment viewer.
+  - **Transition Condition**: The submission URL must be non-empty, and the deadline must not have passed (unless late submissions are permitted).
+* **State 2: `Graded`**:
+  - **Description**: The submission has been marked and feedback has been recorded.
+  - **Event/Trigger**: Instructor completes the `GradingForm` scoring inputs and executes the `submitGrade` server action.
+  - **Transition Condition**: Enforces that the grading score is numeric and falls within the `0` to `maxScore` range.
+* **Final State (`[*]`)**: The graded status is written to the database, notifying the student and closing the feedback loop.
+
 ### 3.6.2 Instructor Course Lifecycle State Transitions
-Tracks the visibility and status updates of courses managed by the instructor:
+Tracks the logical visibility statuses, content updates, and grading tasks associated with courses managed by the instructor:
 
 ```mermaid
 stateDiagram-v2
@@ -518,6 +753,27 @@ stateDiagram-v2
     Course_Published --> Grading_Pending : Student submits assignment
     Grading_Pending --> Submission_Graded : Instructor grades submission
 ```
+
+#### Detailed State Lifecycle Description:
+* **Initial State (`[*]`)**: An educator registers an instructor account in QuestLearn.
+* **State 1: `Active_Instructor`**:
+  - **Description**: The instructor's profile is fully approved by the system Admin and authenticated via Supabase.
+* **State 2: `Course_Draft`**:
+  - **Description**: A course shell is created. The curriculum (modules, lessons) is being actively built but is hidden from students.
+  - **Event/Trigger**: Instructor clicks "Create Course" in `/instructor/courses/new`.
+  - **Transition Condition**: Default DB field `status` is set to `'draft'`.
+* **State 3: `Course_Published`**:
+  - **Description**: The course content is made active and public. Enrolled students can now view modules, lessons, and attempt quizzes.
+  - **Event/Trigger**: Instructor toggles the publication switch inside the Course Curriculum Builder.
+  - **Transition Condition**: Next.js route updates the target row's `status` column to `'active'` in Supabase.
+* **State 4: `Grading_Pending`**:
+  - **Description**: The course is active, and student deliverables are incoming, requiring instructor manual grading attention.
+  - **Event/Trigger**: Student uploads an assignment URL deliverable.
+  - **Transition Condition**: Transitions automatically when `assignment_submission.status` is set to `'submitted'`.
+* **State 5: `Submission_Graded`**:
+  - **Description**: Submissions are evaluated. Score metrics are written to the database.
+  - **Event/Trigger**: Instructor logs into their dashboard grading inbox, opens the grading panel, and saves the score.
+  - **Transition Condition**: Updates database and successfully broadcasts an in-app notification row to the student's inbox.
 
 ---
 
