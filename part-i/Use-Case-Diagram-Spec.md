@@ -1,6 +1,6 @@
 # QuestLearn UML Use Case Diagram Specification
 
-This file gives a draw-ready structure for the final UML use case diagram so the team can redraw it cleanly without deciding the logic again.
+This file gives a draw-ready structure for the final UML use case diagram, updated to match the final Next.js/Supabase implementation constraints and correct UML modeling rules.
 
 ## System Boundary
 
@@ -47,7 +47,7 @@ System name inside boundary:
 
 ### Academic Advisor-facing
 
-- `View Department Students`
+- `View Assigned Advisees`
 - `Review Student Progress Summary`
 - `Review Overdue Assignments`
 - `Send Advisory Follow-Up`
@@ -56,32 +56,29 @@ System name inside boundary:
 
 - `Manage Users`
 - `Assign Roles`
-- `Approve Instructor Accounts`
+- `Approve Instructor/Advisor Accounts`
 - `Reset User Password`
 - `Moderate Learning Content`
 - `Manage Announcements`
 - `View Platform Analytics`
 
-## Suggested Include Relationships
+## Correct UML Relationship Rules
 
-Use `<<include>>` where the sub-process is always required:
+To prevent UML syntax errors in the final diagram:
 
-- `Attempt Quiz` -> `Configure Automated Feedback` should not be used because that is instructor-side setup, not student execution
-- `Send Course Announcement` -> `Receive Notifications`
-- `Manage Announcements` -> `Receive Notifications`
+### 1. `<<include>>` Relationships (Mandatory Sub-steps)
+Use `<<include>>` only between use cases owned by the **same actor** where one behavior directly runs the other:
+- `Send Course Announcement` (Instructor) -> `Manage Announcements` (System/Admin) is NOT a direct include. Keep them separate.
+- `Manage Announcements` (Admin) and `Send Course Announcement` (Instructor) do NOT directly include `Receive Notifications`. Since notifications are triggered automatically in the background by system-level actions (e.g. database triggers), they should not be linked with dependency arrows across student/instructor actor boundaries. Both should remain standalone use cases associated with their respective actors.
 
-## Suggested Extend Relationships
-
-Use `<<extend>>` only where optional behavior is triggered:
-
-- `View Recommended Next Steps` extends `Attempt Quiz`
-- `Send Advisory Follow-Up` extends `Review Student Progress Summary`
-- `Receive Notifications` may extend multiple core events in narrative explanation, but do not overload the diagram with too many extend lines if readability suffers
+### 2. `<<extend>>` Relationships (Optional Sub-steps)
+Use `<<extend>>` only where optional behavior is triggered under conditions:
+- `View Recommended Next Steps` `<<extend>>` `Attempt Quiz` (Trigger condition: student scores < 50% on a quiz). Arrow points from `View Recommended Next Steps` to `Attempt Quiz`.
+- `Send Advisory Follow-Up` `<<extend>>` `Review Student Progress Summary` (Trigger condition: student flags an advisor alert). Arrow points from `Send Advisory Follow-Up` to `Review Student Progress Summary`.
 
 ## Actor Associations
 
 ### Student
-
 - `Register Account`
 - `Log In`
 - `Manage Profile`
@@ -90,11 +87,9 @@ Use `<<extend>>` only where optional behavior is triggered:
 - `Attempt Quiz`
 - `Submit Assignment`
 - `View Progress`
-- `View Recommended Next Steps`
 - `Receive Notifications`
 
 ### Instructor
-
 - `Register Account`
 - `Log In`
 - `Manage Instructor Profile`
@@ -111,29 +106,18 @@ Use `<<extend>>` only where optional behavior is triggered:
 - `Send Course Announcement`
 
 ### Academic Advisor
-
 - `Log In`
-- `View Department Students`
+- `View Assigned Advisees`
 - `Review Student Progress Summary`
 - `Review Overdue Assignments`
 - `Send Advisory Follow-Up`
 
 ### Admin
-
 - `Log In`
 - `Manage Users`
 - `Assign Roles`
-- `Approve Instructor Accounts`
+- `Approve Instructor/Advisor Accounts`
 - `Reset User Password`
 - `Moderate Learning Content`
 - `Manage Announcements`
 - `View Platform Analytics`
-
-## Drawing Rules
-
-- Do not use flowchart notation for the final diagram.
-- Draw actors outside the system boundary.
-- Use oval use cases inside the boundary.
-- Keep labels short and consistent with the terminology sheet.
-- Avoid merging `Register` and `Log In` into one oval unless the lecturer specifically accepts high-level abstraction.
-- If the diagram becomes crowded, use one main use case diagram and one supporting diagram for admin/instructor detail.
