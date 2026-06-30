@@ -24,6 +24,8 @@
   - [1.1 Team Members](#11-team-members)
   - [1.2 Problem Statement](#12-problem-statement)
   - [1.3 Project Plan](#13-project-plan)
+  - [1.4 Part III Work Allocation and Code SOP](#14-part-iii-work-allocation-and-code-sop)
+  - [1.5 Part III Execution Plan](#15-part-iii-execution-plan)
 - [2 System Overview](#2-system-overview)
   - [2.1 Description](#21-description)
   - [2.2 Actors](#22-actors)
@@ -34,19 +36,10 @@
 - [4 Design](#4-design)
   - [4.1 Data Dictionary](#41-data-dictionary)
   - [4.2 Software Architecture](#42-software-architecture)
-    - [4.2.1 Subsystem 1 (Core Application Modules)](#421-subsystem-1-core-application-modules)
-    - [4.2.2 Subsystem 2 (Data Persistence \& Security Engines)](#422-subsystem-2-data-persistence--security-engines)
   - [4.3 Main Screens](#43-main-screens)
   - [4.4 Subsystem 1 Screens](#44-subsystem-1-screens)
   - [4.5 Subsystem 2 Screens](#45-subsystem-2-screens)
   - [4.6 Main Components](#46-main-components)
-    - [4.6.1 Component 1](#461-component-1)
-    - [4.6.2 Component 2](#462-component-2)
-    - [4.6.3 Behavioral Modeling](#463-behavioral-modeling)
-      - [4.6.3.1 Actor 1 State Transition Diagram](#4631-actor-1-state-transition-diagram)
-      - [4.6.3.2 Actor 2 State Transition Diagram](#4632-actor-2-state-transition-diagram)
-      - [4.6.3.3 Actor 3 State Transition Diagram](#4633-actor-3-state-transition-diagram)
-      - [4.6.3.4 Actor 4 State Transition Diagram](#4634-actor-4-state-transition-diagram)
   - [4.7 Deployment Diagram](#47-deployment-diagram)
 - [5 Implementation](#5-implementation)
   - [5.1 Development Environment](#51-development-environment)
@@ -58,8 +51,6 @@
   - [6.3 Acceptance Testing](#63-acceptance-testing)
 - [7 Sample Screens](#7-sample-screens)
   - [7.1 Main Screen](#71-main-screen)
-    - [7.1.1 Subsystem 1 Screens](#711-subsystem-1-screens)
-    - [7.1.2 Subsystem 2 Screens](#712-subsystem-2-screens)
 - [8 Conclusion](#8-conclusion)
 - [9 User Guide](#9-user-guide)
 - [References](#references)
@@ -70,9 +61,9 @@
 
 | Version | Primary Author(s) | Description of Version | Date Completed |
 | --- | --- | --- | --- |
-| 1.0 | All Members | SRS Baseline - Requirements & Use Cases | 01/05/2026 |
-| 2.0 | All Members | SDS Baseline - Architecture & DB Design | 05/06/2026 |
-| 3.0 | All Members | Final System Documentation - Code & Testing | 30/06/2026 |
+| 1.0 | All members | SRS — Part I (Project Planning / Requirements Analysis) | 01/05/2026 |
+| 2.0 | All members | SDS — Part II (Design / Architecture / Interfaces / Database) | 05/06/2026 |
+| 3.0 | All members | System Documentation — Part III (Development / Testing / Final Implementation) | 30/06/2026 |
 
 ---
 
@@ -80,37 +71,52 @@
 
 ## 1.1 Team Members
 
-The work breakdown structure and subsystem ownership roles are distributed as follows:
+| Name | Actor / Process Ownership |
+| --- | --- |
+| See Wing Kit | **Student Subsystem** (H5P content, progress, locking algorithm, auto-grading, recommendations) & Backend integration |
+| Aziel Tan Zheng Chuan | **Instructor Subsystem** (course management, modules/lessons builder, custom Lumi iframe quiz creator, grading) |
+| Vincent Lock Chun Kit | **Academic Advisor Subsystem** (advisees list, advisor follow-ups, follow-up history, linked instructor alerts) |
+| Soo Kian Rong | **Admin Subsystem** (user registry CRUD - approve, suspend, kick; course enrollments manager panel, announcements) |
 
-| Name | Actor / Subsystem Responsibility | Assigned Process |
-| --- | --- | --- |
-| **See Wing Kit** | Student Actor & Core Integration | Course views, interactive content rendering, quiz attempts, and recommendations. |
-| **Aziel Tan Zheng Chuan** | Instructor Actor | Course builder curriculum controls, assignment creations, and student monitoring portals. |
-| **Vincent Lock Chun Kit** | Academic Advisor Actor | Alert reviews, student logs, and intervention follow-up messaging. |
-| **Soo Kian Rong** | Admin Actor & System Oversight | User registration approval, role mapping, account suspensions, and platform auditing. |
+## 1.2 Problem Statement
 
-## 1.2 Problem statement
+Current university learning systems are often effective for storing notes, slides, videos, quizzes, and announcements, but they are less effective at actively guiding students through the learning process. Students may complete lessons or assessments without receiving enough immediate feedback about weak topics, recommended next steps, or the seriousness of falling behind. As a result, learning problems may only become visible after grades have already declined.
 
-Digital learning platforms in higher education frequently operate as static file stores for lecture material. As a result, critical gaps emerge in the learning loop:
-1. **Lack of Immediate Feedback:** Students submit assessments and wait days for grades, missing opportunities to correct conceptual misunderstandings.
-2. **Disconnected Roles:** Instructors upload course structures but lack automated tracking. Advisors only receive alerts after students have failed midterms.
-3. **No Adaptive Guidance:** Failed assessments do not guide students toward remedial study paths.
+Existing platforms also separate content delivery, formative assessment, engagement tracking, and advisor follow-up into disconnected workflows. Instructors can upload materials without seeing a clear picture of student engagement, students can complete quizzes without targeted improvement guidance, and academic advisors may only notice struggling learners after major assessment results are released. These gaps reduce the usefulness of digital learning systems as early academic support tools.
 
-**QuestLearn** resolves this by introducing rule-based course locking and weakness recommendation logic. The system integrates H5P/Lumi interactive iframe players, automated quiz checks, real-time advisor notification loops, and admin user status management.
+**QuestLearn** resolves this by combining short lesson-based learning, interactive lesson content, automated quiz feedback, activity-based analytics, notifications, and advisor monitoring in one coherent prototype. 
 
 ## 1.3 Project Plan
 
-The project was executed over 15 weeks, tracking through requirements collection, database configuration, interface building, and final acceptance testing.
+The project is organised into three major phases that align with the course deliverables.
 
-```
-Week: 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15
-      [SRS collection] [SDS Design] [Development] [Testing & Packaging]
-```
+| Phase | Planned Output | Actual / Part III Status | Evidence to Attach |
+| --- | --- | --- | --- |
+| Part I: Requirements Analysis | Problem statement, objectives, scope, actors, use cases, ERD draft | Completed as the SRS baseline for QuestLearn | Final Part I report, use case diagram, activity diagrams |
+| Part II: System Design | Data design, architecture, interface design, state diagrams | Completed as the SDS baseline for implementation | Part II design report, database schema, architecture and deployment diagrams |
+| Part III: Development and Testing | Prototype implementation, database setup, test execution, screenshots | Completed; this document records the implementation | IDE/terminal screenshots, Supabase tables, test outputs, browser screenshots |
 
-Detailed milestones:
-* **Part I (Weeks 1-5):** Requirements analysis, Use Case descriptions, and draft ERD layouts.
-* **Part II (Weeks 6-12):** UI/UX mockups, data dictionary setups, state transitions, and deploy plans.
-* **Part III (Weeks 13-15):** Next.js 15 App router building, Supabase cloud configuration, Vitest checks, and deployment verification.
+## 1.4 Part III Work Allocation and Code SOP
+
+Part III was split by subsystem ownership, with a single code lead and a single review gate so implementation stayed aligned with Part II design.
+
+| Area | Primary Owner | Secondary Support | Output |
+| --- | --- | --- | --- |
+| Architecture, auth, integration | See Wing Kit | Aziel Tan Zheng Chuan | Shared code structure, protected routes, Supabase auth flow, final merge review |
+| Database, course, assessment | Aziel Tan Zheng Chuan | See Wing Kit | Schema, seed data, server actions, course and assessment workflows |
+| UI, dashboard, analytics screens | Vincent Lock Chun Kit | See Wing Kit | Student/instructor views, responsive screens, dashboard widgets |
+| Testing, notifications, advisor/admin | Soo Kian Rong | See Wing Kit | Test cases, notification flow, advisor/admin features, acceptance evidence |
+
+## 1.5 Part III Execution Plan
+
+The Part III work followed a fixed sequence so the team did not build UI or tests on top of unstable data contracts.
+
+| Phase | Main Owner | Focus | Output | Exit Check |
+| --- | --- | --- | --- | --- |
+| Phase 1: Foundation | See Wing Kit + Aziel Tan Zheng Chuan | Project setup, auth, schema, seed data, shared contracts | Next.js project scaffold, Supabase integration, database tables, initial demo data | Login works, schema applies cleanly, seed data loads without errors |
+| Phase 2: Core Features | Aziel Tan Zheng Chuan + Vincent Lock Chun Kit | Course, assessment, dashboard, and content flows | Working course management, lesson/quiz screens, role-based navigation | Student and instructor flows work end-to-end in local testing |
+| Phase 3: Support Features | Soo Kian Rong + See Wing Kit | Notifications, advisor/admin functions, RLS checks, hardening | Notification flow, advisor/admin features, access control validation | Restricted actions fail correctly and allowed actions succeed |
+| Phase 4: Testing and Evidence | Soo Kian Rong + all members | Unit, integration, functional, security, acceptance evidence | Test results, screenshots, SQL outputs, final documentation evidence | All required Part III artifacts are captured and linked |
 
 ---
 
@@ -345,15 +351,6 @@ Maps advisors to students for monitoring and early intervention.
 | `student_profile_id`| `INT` | `FK` | `No` | `None` | References `student_profile`. |
 | `status` | `VARCHAR(20)` | `None` | `No` | `'active'`| Check: `'active'`, `'inactive'`. |
 
-### `advisor_alert`
-Stores advisor-facing risk alerts generated from progress signals.
-| Column | Type | Key | Nullable | Default | Description |
-| --- | --- | --- | --- | --- | --- |
-| `advisor_alert_id`| `INT` | `PK` | `No` | `SERIAL` | Unique alert ID. |
-| `student_profile_id`| `INT` | `FK` | `No` | `None` | Student triggering the alert. |
-| `alert_type` | `VARCHAR(30)` | `None` | `No` | `None` | Check: `'low_quiz_score'`, etc. |
-| `status` | `VARCHAR(20)` | `None` | `No` | `'open'` | Check: `'open'`, `'resolved'`. |
-
 ### `moderation_action`
 Records admin moderation decisions for accounts and content.
 | Column | Type | Key | Nullable | Default | Description |
@@ -362,8 +359,6 @@ Records admin moderation decisions for accounts and content.
 | `admin_user_id` | `INT` | `FK` | `No` | `None` | Admin performing the action. |
 | `target_type` | `VARCHAR(30)`| `None` | `No` | `None` | e.g., `'user'`. |
 | `action_type` | `VARCHAR(30)`| `None` | `No` | `None` | e.g., `'approve'`, `'reject'`. |
-
----
 
 ## 4.2 Software Architecture
 
@@ -380,8 +375,6 @@ This subsystem coordinates background processing and database transactions:
 * **advisor_alert & Notification Engine:** Triggers alerts when quiz scores drop below 50%, sending logs to students and advisors.
 * **Admin Registry Controls:** Manages user roles and handles suspensions.
 
----
-
 ## 4.3 Main Screens
 
 1. **Dashboard Portal:** Standard layout with routing based on the logged-in user's role.
@@ -397,8 +390,6 @@ This subsystem coordinates background processing and database transactions:
 
 1. **Advisor Student Monitoring Portal (`/advisor/students`):** Department list showing advisor follow-up controls and linked instructor selectors.
 2. **Admin User Registry Control (`/admin/users`):** Displays tables with approval, suspend, and delete actions.
-
----
 
 ## 4.6 Main Components
 
@@ -460,10 +451,6 @@ stateDiagram
     User_Suspended --> User_Active : Clicks Reactivate User
 ```
 
-
-
----
-
 ## 4.7 Deployment Diagram
 
 The cloud deployment topology for QuestLearn:
@@ -487,8 +474,6 @@ graph TD
 * **Database:** Supabase PostgreSQL 17.6
 * **Styling:** Tailwind CSS v4
 
----
-
 ## 5.2 Software Integration
 
 QuestLearn integrates its subsystems using role-based routing and shared API models:
@@ -500,8 +485,6 @@ QuestLearn integrates its subsystems using role-based routing and shared API mod
 | `src/app/(instructor)/instructor/courses/`| Subsystem 1 | Provides course builder forms and content editors. |
 | `src/app/(advisor)/advisor/students/` | Subsystem 2 | Processes student status reviews and logs advisor follow-ups. |
 | `src/app/(admin)/admin/users/` | Subsystem 2 | Handles user approvals, suspensions, and deletes. |
-
----
 
 ## 5.3 Database
 
@@ -527,8 +510,6 @@ We implemented the relational database in Supabase and seeded it with core demo 
 * **Instructor Account:** `instructor@example.com` (assigned to QL-SEF101).
 * **Advisor Account:** `advisor@example.com`.
 * **Admin Account:** `admin@example.com`.
-
----
 
 ## 6.3 Acceptance Testing
 
@@ -560,10 +541,6 @@ Acceptance criteria checks for the implemented prototype:
 # 8 Conclusion
 
 The QuestLearn prototype implements interactive education workflows for Students, Instructors, Advisors, and Admins. By utilizing Next.js Server Components, PostgreSQL, and Supabase client hooks, we created an adaptive interface. The H5P/Lumi player integrates smoothly with our database structure, and the rule-based recommendation logic behaves as designed under test conditions.
-
-Future enhancements will include:
-1. **Dynamic H5P State Saving:** Saving student inputs inside the iframe container.
-2. **AI-driven Recommendations:** Automating personalized review plans based on student performance history.
 
 ---
 
