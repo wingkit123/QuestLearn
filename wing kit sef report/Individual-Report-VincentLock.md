@@ -109,37 +109,37 @@ usecaseDiagram
 ## 2.2 Class Diagrams / ERD
 
 ```mermaid
-classDiagram
-    class AdvisorProfile {
-        +int advisor_profile_id (PK)
-        +int user_id (FK)
-        +string staff_no
+erDiagram
+    ADVISOR_PROFILE ||--|{ ADVISOR_STUDENT_ASSIGNMENT : mapped_to
+    STUDENT_PROFILE ||--|{ ADVISOR_STUDENT_ASSIGNMENT : mapped_to
+    STUDENT_PROFILE ||--|{ ADVISOR_ALERT : generates
+    ADVISOR_ALERT ||--|{ ADVISOR_FOLLOW_UP : resolved_by
+
+    ADVISOR_PROFILE {
+        int advisor_profile_id PK
+        int user_id FK
+        string staff_no
     }
-    class StudentProfile {
-        +int student_profile_id (PK)
+    STUDENT_PROFILE {
+        int student_profile_id PK
     }
-    class AdvisorStudentAssignment {
-        +int assignment_id (PK)
-        +int advisor_profile_id (FK)
-        +int student_profile_id (FK)
+    ADVISOR_STUDENT_ASSIGNMENT {
+        int assignment_id PK
+        int advisor_profile_id FK
+        int student_profile_id FK
     }
-    class AdvisorAlert {
-        +int advisor_alert_id (PK)
-        +int student_profile_id (FK)
-        +int advisor_profile_id (FK)
-        +string alert_type
-        +string status
+    ADVISOR_ALERT {
+        int advisor_alert_id PK
+        int student_profile_id FK
+        int advisor_profile_id FK
+        string alert_type
+        string status
     }
-    class AdvisorFollowUp {
-        +int follow_up_id (PK)
-        +int advisor_alert_id (FK)
-        +text message
+    ADVISOR_FOLLOW_UP {
+        int follow_up_id PK
+        int advisor_alert_id FK
+        text message
     }
-    
-    AdvisorProfile "1" -- "*" AdvisorStudentAssignment : mapped_to
-    StudentProfile "1" -- "*" AdvisorStudentAssignment : mapped_to
-    StudentProfile "1" -- "*" AdvisorAlert : generates
-    AdvisorAlert "1" -- "*" AdvisorFollowUp : resolved_by
 ```
 
 ---

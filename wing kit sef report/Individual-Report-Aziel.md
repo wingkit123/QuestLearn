@@ -109,38 +109,38 @@ usecaseDiagram
 ## 2.2 Class Diagrams / ERD
 
 ```mermaid
-classDiagram
-    class Course {
-        +int course_id (PK)
-        +int instructor_profile_id (FK)
-        +string course_title
+erDiagram
+    COURSE ||--|{ MODULE : contains
+    MODULE ||--|{ LESSON : contains
+    LESSON ||--|{ CONTENT_ITEM : contains
+    COURSE ||--|{ ASSIGNMENT_SUBMISSION : owns
+
+    COURSE {
+        int course_id PK
+        int instructor_profile_id FK
+        string course_title
     }
-    class Module {
-        +int module_id (PK)
-        +int course_id (FK)
-        +string module_title
+    MODULE {
+        int module_id PK
+        int course_id FK
+        string module_title
     }
-    class Lesson {
-        +int lesson_id (PK)
-        +int module_id (FK)
-        +string lesson_type
+    LESSON {
+        int lesson_id PK
+        int module_id FK
+        string lesson_type
     }
-    class ContentItem {
-        +int content_item_id (PK)
-        +int lesson_id (FK)
-        +string embed_url
+    CONTENT_ITEM {
+        int content_item_id PK
+        int lesson_id FK
+        string embed_url
     }
-    class AssignmentSubmission {
-        +int submission_id (PK)
-        +numeric score
-        +string feedback
-        +string status
+    ASSIGNMENT_SUBMISSION {
+        int submission_id PK
+        numeric score
+        string feedback
+        string status
     }
-    
-    Course "1" -- "*" Module : contains
-    Module "1" -- "*" Lesson : contains
-    Lesson "1" -- "*" ContentItem : contains
-    Course "1" -- "*" AssignmentSubmission : owns
 ```
 
 ---

@@ -127,90 +127,90 @@ usecaseDiagram
 ## 2.2 Class Diagrams / ERD
 
 ```mermaid
-classDiagram
-    class User {
-        +int user_id (PK)
-        +uuid auth_user_id
-        +string full_name
-        +string email
-        +string account_status
-    }
-    class StudentProfile {
-        +int student_profile_id (PK)
-        +int user_id (FK)
-        +string student_no
-        +string academic_level
-        +string programme
-        +string department
-        +string learning_preference
-    }
-    class Enrollment {
-        +int enrollment_id (PK)
-        +int student_profile_id (FK)
-        +int course_id (FK)
-        +timestamp enrolled_at
-        +string status
-    }
-    class Course {
-        +int course_id (PK)
-        +string course_code
-        +string course_title
-        +string status
-    }
-    class Module {
-        +int module_id (PK)
-        +int course_id (FK)
-        +string module_title
-        +int sequence_no
-    }
-    class Lesson {
-        +int lesson_id (PK)
-        +int module_id (FK)
-        +string lesson_title
-        +string lesson_type
-        +int sequence_no
-    }
-    class ContentItem {
-        +int content_item_id (PK)
-        +int lesson_id (FK)
-        +string content_type
-        +string embed_url
-        +text body_text
-        +int sequence_no
-    }
-    class ProgressRecord {
-        +int progress_record_id (PK)
-        +int student_profile_id (FK)
-        +int lesson_id (FK)
-        +int percentage
-        +string completion_status
-    }
-    class QuizAttempt {
-        +int attempt_id (PK)
-        +int quiz_id (FK)
-        +int student_profile_id (FK)
-        +numeric score
-        +int max_score
-        +timestamp submitted_at
-    }
-    class Notification {
-        +int notification_id (PK)
-        +int user_id (FK)
-        +text message
-        +boolean is_read
-        +timestamp sent_at
-    }
+erDiagram
+    USER ||--|| STUDENT_PROFILE : has
+    STUDENT_PROFILE ||--|{ ENROLLMENT : joins
+    COURSE ||--|{ ENROLLMENT : has
+    COURSE ||--|{ MODULE : contains
+    MODULE ||--|{ LESSON : contains
+    LESSON ||--|{ CONTENT_ITEM : contains
+    STUDENT_PROFILE ||--|{ PROGRESS_RECORD : logs
+    LESSON ||--|{ PROGRESS_RECORD : maps
+    STUDENT_PROFILE ||--|{ QUIZ_ATTEMPT : attempts
+    USER ||--|{ NOTIFICATION : receives
 
-    User "1" -- "1" StudentProfile : has
-    StudentProfile "1" -- "*" Enrollment : joins
-    Course "1" -- "*" Enrollment : has
-    Course "1" -- "*" Module : contains
-    Module "1" -- "*" Lesson : contains
-    Lesson "1" -- "*" ContentItem : contains
-    StudentProfile "1" -- "*" ProgressRecord : logs
-    Lesson "1" -- "*" ProgressRecord : maps
-    StudentProfile "1" -- "*" QuizAttempt : attempts
-    User "1" -- "*" Notification : receives
+    USER {
+        int user_id PK
+        uuid auth_user_id
+        string full_name
+        string email
+        string account_status
+    }
+    STUDENT_PROFILE {
+        int student_profile_id PK
+        int user_id FK
+        string student_no
+        string academic_level
+        string programme
+        string department
+        string learning_preference
+    }
+    ENROLLMENT {
+        int enrollment_id PK
+        int student_profile_id FK
+        int course_id FK
+        timestamp enrolled_at
+        string status
+    }
+    COURSE {
+        int course_id PK
+        string course_code
+        string course_title
+        string status
+    }
+    MODULE {
+        int module_id PK
+        int course_id FK
+        string module_title
+        int sequence_no
+    }
+    LESSON {
+        int lesson_id PK
+        int module_id FK
+        string lesson_title
+        string lesson_type
+        int sequence_no
+    }
+    CONTENT_ITEM {
+        int content_item_id PK
+        int lesson_id FK
+        string content_type
+        string embed_url
+        text body_text
+        int sequence_no
+    }
+    PROGRESS_RECORD {
+        int progress_record_id PK
+        int student_profile_id FK
+        int lesson_id FK
+        int percentage
+        string completion_status
+    }
+    QUIZ_ATTEMPT {
+        int attempt_id PK
+        int quiz_id FK
+        int student_profile_id FK
+        numeric score
+        int max_score
+        timestamp submitted_at
+    }
+    NOTIFICATION {
+        int notification_id PK
+        int user_id FK
+        text message
+        boolean is_read
+        timestamp sent_at
+    }
 ```
 
 ---

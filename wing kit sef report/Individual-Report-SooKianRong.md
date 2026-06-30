@@ -111,34 +111,34 @@ usecaseDiagram
 ## 2.2 Class Diagrams / ERD
 
 ```mermaid
-classDiagram
-    class User {
-        +int user_id (PK)
-        +int role_id (FK)
-        +string full_name
-        +string email
-        +string account_status
+erDiagram
+    USER }|--|| ROLE : holds
+    USER ||--|{ ANNOUNCEMENT : broadcasts
+    ANNOUNCEMENT ||--|{ NOTIFICATION : triggers
+
+    USER {
+        int user_id PK
+        int role_id FK
+        string full_name
+        string email
+        string account_status
     }
-    class Role {
-        +int role_id (PK)
-        +string role_name
+    ROLE {
+        int role_id PK
+        string role_name
     }
-    class Announcement {
-        +int announcement_id (PK)
-        +int admin_user_id (FK)
-        +string title
-        +text content
-        +timestamp broadcast_date
+    ANNOUNCEMENT {
+        int announcement_id PK
+        int admin_user_id FK
+        string title
+        text content
+        timestamp broadcast_date
     }
-    class Notification {
-        +int notification_id (PK)
-        +int user_id (FK)
-        +text message
+    NOTIFICATION {
+        int notification_id PK
+        int user_id FK
+        text message
     }
-    
-    User "*" -- "1" Role : holds
-    User "1" -- "*" Announcement : broadcasts
-    Announcement "1" -- "*" Notification : triggers
 ```
 
 ---
