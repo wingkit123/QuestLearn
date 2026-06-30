@@ -297,13 +297,13 @@ These are the main use cases to prioritize in the final UML use case diagram:
 **Precondition:** The advisor is logged in and has students in their department.  
 **Main Flow:**
 
-1. The advisor opens the advisor dashboard.
-2. The system displays students in the advisor's department with progress summaries, quiz scores, overdue work, and engagement indicators.
-3. The advisor selects a student.
-4. The system displays the student's progress history, quiz performance, and overdue assignments.
-5. The advisor reviews the student's performance data.
-6. The advisor sends a follow-up advisory message.
-7. The system records the follow-up status.
+1. The advisor opens the advisor dashboard (`/advisor/students`).
+2. The system queries the `advisor_student_assignment` table to fetch only the students directly assigned to this advisor.
+3. The system displays these students along with progress summaries, quiz scores, overdue work, and active `advisor_alert` signals.
+4. The advisor selects an at-risk student.
+5. The advisor reviews the student's performance data and alert triggers.
+6. The advisor authors a follow-up advisory message, optionally linking an `instructor_profile_id`.
+7. The system records the message in `advisor_follow_up` and updates the alert status to resolved.
 
 **Alternate Flow:**
 
@@ -318,11 +318,11 @@ These are the main use cases to prioritize in the final UML use case diagram:
 **Precondition:** The admin is logged in.  
 **Main Flow:**
 
-1. The admin reviews flagged or managed platform content.
-2. The admin approves, updates, or removes content where necessary.
-3. The admin creates or updates a system or course-related announcement.
-4. The system distributes announcements or stores them for notification delivery.
-5. The system records the moderation or announcement action for oversight purposes.
+1. The admin opens the Admin Dashboard (`/admin/users`).
+2. The system queries the `user` table for accounts with `account_status = 'pending'`.
+3. The admin reviews the pending Instructor or Advisor registrations.
+4. The admin clicks "Approve" (updating status to `active`) or "Decline" (removing or suspending the account).
+5. The system records this oversight operation in the `moderation_action` table.
 
 **Alternate Flow:**
 
@@ -390,22 +390,22 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A[Advisor Login] --> B[View Department Students]
-    B --> C[Review Progress and Overdue Work]
-    C --> D[Select Student]
-    D --> E[Send Advisory Follow-Up]
-    E --> F[Record Follow-Up Status]
+    A[Advisor Login] --> B[Fetch Assigned Advisees]
+    B --> C[Review Alerts and Progress]
+    C --> D[Select At-Risk Student]
+    D --> E[Link Instructor & Send Follow-Up]
+    E --> F[Record in advisor_follow_up]
 ```
 
 ### 5.6 Admin Moderation and Announcement Flow
 
 ```mermaid
 flowchart TD
-    A[Admin Login] --> B[Review Managed Content]
-    B --> C[Approve or Update Content]
-    C --> D[Create or Update Announcement]
-    D --> E[Trigger Notification Delivery]
-    E --> F[Store Admin Action Log]
+    A[Admin Login] --> B[View Pending Registrations]
+    B --> C[Review Instructor/Advisor Accounts]
+    C --> D[Approve or Decline]
+    D --> E[Update User account_status]
+    E --> F[Store moderation_action Log]
 ```
 
 ## 6. Activity Diagrams for Formal Use Cases
@@ -537,36 +537,32 @@ flowchart TD
 ```mermaid
 flowchart TD
     A((Start)) --> B[Open advisor dashboard]
-    B --> C[View students with progress and performance data]
-    C --> D{Students need attention?}
-    D -- No --> E[Review student progress summaries]
-    E --> Z((End))
-    D -- Yes --> F[Select student]
-    F --> G[View progress history and quiz performance]
-    G --> H[Review overdue assignments]
-    H --> I[Send follow-up message]
-    I --> J[Record follow-up status]
-    J --> Z((End))
+    B --> C[Query advisor_student_assignment]
+    C --> D[Display assigned students & alerts]
+    D --> E{Alerts active?}
+    E -- No --> F[Review progress summaries]
+    F --> Z((End))
+    E -- Yes --> G[Select at-risk student]
+    G --> H[Review quiz performance & alerts]
+    H --> I[Write follow-up message & link instructor]
+    I --> J[Insert into advisor_follow_up]
+    J --> Z
 ```
 
 ### UC-09 Moderate Content and Manage Announcements
 
 ```mermaid
 flowchart TD
-    A((Start)) --> B[Open moderation or announcement function]
-    B --> C[Review flagged or managed content]
-    C --> D{Action needed?}
-    D -- No --> E[Close review without modification]
+    A((Start)) --> B[Open Admin Dashboard]
+    B --> C[Query users where account_status = 'pending']
+    C --> D{Pending users exist?}
+    D -- No --> E[Display empty state]
     E --> Z((End))
-    D -- Yes --> F[Approve, update, or remove content]
-    F --> G[Create or update announcement]
-    G --> H[Store or distribute announcement]
-    H --> I[Record moderation or announcement action]
-    I --> Z
-    B --> J{Password reset requested?}
-    J -- No --> C
-    J -- Yes --> K[Select user account]
-    K --> L[Reset password to temporary default]
-    L --> M[Record password reset action]
-    M --> Z
+    D -- Yes --> F[Review registration details]
+    F --> G{Decision?}
+    G -- Approve --> H[Update status to 'active']
+    G -- Decline --> I[Update status to 'suspended']
+    H --> J[Insert moderation_action record]
+    I --> J
+    J --> Z
 ```
