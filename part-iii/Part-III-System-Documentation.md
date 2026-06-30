@@ -579,35 +579,134 @@ We implemented the relational database in Supabase and seeded it with core demo 
 
 ## 6.1 Testing Strategy
 
-1. **Unit Testing:** Validates data actions and helper functions.
-2. **Integration Testing:** Checks authorization flows and role-based route access.
-3. **Acceptance Testing:** Evaluates end-to-end scenarios against requirements.
+The QuestLearn prototype follows an evidence-driven testing lifecycle consisting of four distinct test layers. Every verified feature is backed by corresponding logs, screenshots, or database outputs stored under the `docs/evidence/part-iii/` path.
 
-## 6.2 Test Data
+### 6.1.1 Unit Testing
+Unit tests validate isolated TypeScript helper functions, business logic helpers, and score calculator helpers before interfacing with Supabase DB client services.
 
-* **Student Account:** `student@example.com` (enrolled in QL-SEF101).
-* **Instructor Account:** `instructor@example.com` (assigned to QL-SEF101).
-* **Advisor Account:** `advisor@example.com`.
-* **Admin Account:** `admin@example.com`.
+| Test ID | Test Category | Target Component | Test Case Description | Expected Result | Verified Evidence |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **UT-01** | Auth Helpers | `src/lib/auth/helpers.ts` | Route resolution for roles (Student, Instructor, Advisor, Admin) | Resolves to the correct dashboard path | `tests-vitest-output.txt` |
+| **UT-02** | Auth Helpers | `src/lib/auth/helpers.ts` | Lookup without active user session | Returns a protected route/denied response | `tests-vitest-output.txt` |
+| **UT-03** | Course Helpers | `src/app/student/courses/` | Order lessons within module outline | Sorted sequentially by `sequence_no` | `tests-vitest-output.txt` |
+| **UT-04** | Course Helpers | `src/app/instructor/courses/` | Hide draft course lessons | Draft items do not render in student list | `tests-vitest-output.txt` |
+| **UT-05** | Grading Logic | `src/app/student/quizzes/` | Automated scoring calculations | Correctly sums earned marks and total marks | `tests-vitest-output.txt` |
+| **UT-06** | Grading Logic | `src/app/student/quizzes/` | Weak-topic evaluation | Scores under 50% trigger recommendation flags | `tests-vitest-output.txt` |
+| **UT-07** | Notification | `src/components/notifications/` | Toggle read/unread notification states | Correctly flips `is_read` boolean flag | `tests-vitest-output.txt` |
+| **UT-08** | Date Formatting | `src/lib/utils.ts` | User-friendly local date formatter | Converts timestamp string to 'DD MMM YYYY' format | `tests-vitest-output.txt` |
+| **UT-09** | Advisor Helpers | `src/app/advisor/students/` | Search/filter query filter | Correctly narrows active student list by name or ID | `tests-vitest-output.txt` |
+| **UT-10** | UI Layout | `src/components/layout/` | Sidebar navigation active route highlight | Correctly matches current pathname to highlight state | `tests-vitest-output.txt` |
+| **UT-11** | Progress Calc | `src/components/ui/` | Course percentage completion math | Computes correct ratio from completed vs total lessons | `tests-vitest-output.txt` |
+| **UT-12** | Form Validation | `src/lib/validation/` | Email parameter regex validation | Rejects malformed email inputs with validation error | `tests-vitest-output.txt` |
+
+### 6.1.2 Integration Testing
+Integration tests verify data transactions between the Next.js server actions / route handlers and the Supabase API endpoints.
+
+| Test ID | Integration Flow | Trigger Source | Expected Database Result | Verified Evidence |
+| :--- | :--- | :--- | :--- | :--- |
+| **IT-01** | User Profile Link | Register Screen | New row created in Supabase Auth joined to custom `"user"` table | `supabase-seed-data-samples.png` |
+| **IT-02** | Curriculum Assembly | Course Builder | Writes to `course`, `module`, `lesson`, and `content_item` tables | `supabase-schema-table-list.png` |
+| **IT-03** | Quiz Grade Post | Quiz Attempt Iframe | Adds rows to `quiz_attempt` and triggers alert if grade < 50% | `screen-prototype-dashboard-desktop.png` |
+| **IT-04** | Assignment Upload | Lesson Page | Writes path to `assignment_submission` bucket with 'submitted' status | `supabase-seed-data-samples.png` |
+| **IT-05** | Advisor Alert | Advisor Intervention | Inserts log into `advisor_follow_up` and updates `advisor_alert.status` | `screen-advisor-dashboard.png` |
+| **IT-06** | Admin Audits | User Panel | Writes action log details into `moderation_action` and `audit_log` | `screen-admin-content-announcements.png` |
+| **IT-07** | Enrollment Register | Course Page | Creates active row in `enrollment` table mapping student to course | `supabase-seed-data-samples.png` |
+| **IT-08** | Announcement Broadcast| Admin Control Panel | Pushes notification records to all active platform users | `screen-admin-content-announcements.png` |
+| **IT-09** | Course Publish Sync | Instructor Panel | Updates `course.status` to 'active' and triggers sync script | `supabase-schema-table-list.png` |
+| **IT-10** | RLS Access Rejection | Client-side Fetch | Returns 403 Forbidden when fetching unauthorized course materials | `tests-unit-integration-output.png` |
+| **IT-11** | Quiz Mapping | Quiz Builder | Adds linked question rows to `quiz_question` join table | `supabase-schema-table-list.png` |
+| **IT-12** | Profile Sync | Settings Screen | Updates name and preferences in `student_profile` table | `supabase-seed-data-samples.png` |
+
+### 6.1.3 Functional Testing (Browser Workflows)
+Functional testing uses browser automation and manual walkthroughs to validate end-to-end actor workflows on the UI.
+
+| Test ID | Primary Actor | Tested User Flow | Expected UI Behavior | Verified Evidence |
+| :--- | :--- | :--- | :--- | :--- |
+| **FT-01** | Student | View learning path modules | Enrolled courses render; content load is verified | `screen-prototype-dashboard-desktop.png` |
+| **FT-02** | Student | Practice quiz submission | Immediate score gauge and recommendation banner render | `screen-prototype-dashboard-desktop.png` |
+| **FT-03** | Instructor | Create course curriculum | Form inserts new modules and lessons instantly | `screen-instructor-analytics.png` |
+| **FT-04** | Instructor | Embed Lumi H5P module | Interactive Iframe successfully embeds inside lesson player | `screen-instructor-analytics.png` |
+| **FT-05** | Advisor | Student Risk Flags | Dashboard highlights struggling students; follow-up opens | `screen-advisor-dashboard.png` |
+| **FT-06** | Admin | Moderation Controls | Suspension buttons instantly update account status flags | `screen-admin-content-announcements.png` |
+| **FT-07** | All Roles | Notification Inbox | Unread counts decrease when items are read | `screen-prototype-dashboard-desktop-full.png` |
+
+### 6.1.4 Security & Access Control Testing
+Security testing evaluates row-level security (RLS) policies and middleware access controls.
+
+| Test ID | Security Check | Target | Expected Enforcement | Verified Evidence |
+| :--- | :--- | :--- | :--- | :--- |
+| **ST-01** | Middleware Auth | App Dashboard | Logged-out users are redirected to `/login` | `tests-unit-integration-output.png` |
+| **ST-02** | Progress Isolation | `progress_record` | Students cannot read other students' progress rows | `tests-unit-integration-output.png` |
+| **ST-03** | Owner Isolation | `course` | Instructors cannot modify courses owned by other staff | `tests-unit-integration-output.png` |
+| **ST-04** | Advisor Permissions | `advisor_alert` | Advisors can only monitor assigned student records | `tests-unit-integration-output.png` |
+| **ST-05** | Role Restrictions | `moderation_action` | Direct API inserts fail for non-admin accounts | `tests-unit-integration-output.png` |
+| **ST-06** | Masked Secrets | `.env.local` | Public configurations exclude the `service_role` key | `environment-variables-masked.png` |
+
+---
+
+## 6.2 Test Data Report
+
+To validate the prototype, the local database was seeded with a minimum testing dataset. All test accounts utilize the default password `123456`.
+
+### 6.2.1 Seeded Test Accounts
+| Role | Email | Name | Profile ID / Reference | Account Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **Student** | `student@example.com` | Demo Student | `QL-STU-001` (Year 2) | Active |
+| **Student** | `student2@example.com` | Alice Johnson | `STU-8821` (Year 2) | Active |
+| **Student** | `student3@example.com` | Bob Smith | `STU-9391` (Year 1) | Active |
+| **Instructor** | `instructor@example.com` | Demo Instructor | `QL-INS-001` (SE specialization)| Active |
+| **Instructor** | `pending_instructor@example.com`| Pending Instructor | `QL-INS-PND` (HCI specialization)| Pending |
+| **Academic Advisor**| `advisor@example.com` | Demo Advisor | `QL-ADV-001` (Comp Science) | Active |
+| **Admin** | `admin@example.com` | Demo Admin | Internal user ID | Active |
+
+### 6.2.2 Course and Curriculum Structure
+The database was populated with course `QL-SEF101` (Software Engineering Fundamentals) containing the following structure:
+* **Module 1: Requirements and Use Cases** (Sequence 1)
+  * *Lesson 1:* Writing Effective Use Cases (Type: Mixed, Includes Youtube Video Embed)
+  * *Lesson 2:* Activity Diagrams for Workflows (Type: Reading)
+* **Module 2: Design and Architecture** (Sequence 2)
+  * *Lesson 3:* Layered Architecture Basics (Type: Mixed, Includes Youtube Video Embed)
+* **Module 3: Interactive Practice Quizzes** (Sequence 3)
+  * *Lesson 4:* Quiz 1: Testing Strategies (Type: H5P/Lumi interactive iframe)
+  * *Lesson 5:* Quiz 2: Software Design (Type: H5P/Lumi interactive iframe)
+  * *Lesson 6:* Quiz 3: Project Management (Type: H5P/Lumi interactive iframe)
+  * *Lesson 7:* Quiz 4: Requirements Analysis (Type: H5P/Lumi interactive iframe)
+  * *Lesson 8:* Quiz 5: Quality Assurance (Type: H5P/Lumi interactive iframe)
+
+### 6.2.3 Pre-configured Test Scenarios
+1. **Low Quiz Score / Alert Trigger:** Student `student@example.com` attempted Quiz 1 and scored **40%**. This automatically triggered a high-severity alert (`overdue_assignment` flag) assigned to Advisor `advisor@example.com`.
+2. **Advisor Follow-up:** Advisor logged a follow-up intervention: *"Please review the architecture lesson and submit the overdue sketch by Friday."*
+3. **Overdue Assignment:** Student `student@example.com` has one overdue assignment: `Architecture Sketch`.
+4. **Graded Assignment:** Student `student@example.com` submitted `Use Case Reflection` and received a score of **17/20** with instructor feedback: *"Good explanation of actor, trigger, and alternate flow."*
+
+---
 
 ## 6.3 Acceptance Testing
 
-Acceptance criteria checks for the implemented prototype:
+The final acceptance testing phase validates the prototype against the requirements documented in Part I (SRS) and Part II (SDS).
 
-| Criteria | Fulfilled | Remarks |
-| -------- | --------- | ------- |
-| User Register & Login - Accounts log in and redirect. | Yes | Tests passed without session drop. |
-| Module Locking - Failing Quiz 1 locks subsequent lessons. | Yes | RLS and server action correctly flag lesson status. |
-| Advisor Intervention - Logging follow-up sends notifications. | Yes | Successfully inserted into notification table. |
-| Admin User Registry - Suspend or delete user profiles. | Yes | Admin action revokes login ability correctly. |
+| Requirement ID | Requirement Description | Primary Actor | Execution Steps | Expected Result | Pass / Fail | Remarks |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **QA-AUTH-01** | Multi-Role Authentication | All | Log in with Student, Instructor, Advisor, and Admin credentials. | User successfully logs in and redirects to correct dashboard. | **Pass** | Verified for all roles. (Ref: `screen-prototype-dashboard-desktop.png`) |
+| **QA-STU-01** | Enrolled Learning Path | Student | Navigate to `/student/courses` and launch course `QL-SEF101`. | Accesses course details with modules, lessons, and content outline. | **Pass** | Lessons load properly. (Ref: `screen-prototype-dashboard-desktop.png`) |
+| **QA-STU-02** | Interactive H5P Player | Student | Select Quiz 1 from Module 3 and launch player. | Interactive Lumi iframe loads and allows user to input answers. | **Pass** | Checked with Lumi hosted quiz API. (Ref: `screen-prototype-dashboard-mobile-full.png`) |
+| **QA-STU-03** | Auto-Grading & Review | Student | Submit quiz attempt and check results page. | Instantly calculates percentage, marks correct/incorrect, and recommends lessons. | **Pass** | Verified. Recommended reading cards render on score < 50%. |
+| **QA-INS-01** | Curriculum Assembly | Instructor | Navigate to `/instructor/courses`, add module, and add lesson. | New items write to Supabase and update outline on course page. | **Pass** | Changes reflect instantly in database. (Ref: `screen-instructor-analytics.png`) |
+| **QA-ADV-01** | Early Alert Overview | Advisor | Access advisor monitoring panel. | Assigned students showing academic risk flags appear on list. | **Pass** | Struggling students are highlighted correctly. (Ref: `screen-advisor-dashboard.png`) |
+| **QA-ADV-02** | Log Interventions | Advisor | Click 'Follow Up' on at-risk student, type message, select instructor, and save. | Creates follow-up record and pushes notification alerts. | **Pass** | Notification is successfully written to DB. (Ref: `screen-advisor-dashboard.png`) |
+| **QA-ADM-01** | User Registry controls | Admin | Navigate to admin registry page and click 'Suspend' on test user. | Account status updates to 'suspended'; logins are rejected. | **Pass** | Admin status controls enforce access boundaries. (Ref: `screen-admin-content-announcements.png`) |
+| **QA-SEC-01** | RLS Access Enforcement | All | Attempt direct URL access to pages of other roles. | System intercepts access and redirects to landing or blocks queries. | **Pass** | RLS blocks cross-profile queries at database level. (Ref: `tests-unit-integration-output.png`) |
 
-_Date tested : _**_30 June 2026_**_
+_Date tested: _**_30 June 2026_**_
 
-_% Complete : _**_100%_**_
+_Progress: _**_100% Completed_**_
 
-_Tested by : _**_Soo Kian Rong_**_
+_Tested by: _**_Soo Kian Rong_**_
 
-_Verified by :_**_See Wing Kit_**_
+_Verified by: _**_See Wing Kit_**_
+
+---
+
 
 ---
 
