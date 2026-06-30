@@ -288,7 +288,11 @@ The subsystem uses interactive React Client Components for state-heavy features 
 2. **Grading Dashboard (`/instructor/grading`)**: A unified inbox showing ungraded and graded assignments from across all courses taught by the instructor.
 3. **Analytics Portal (`/instructor/analytics`)**: Visual summaries of class participation and average quiz scores.
 
+_<TO DO: Place the screen designs/wireframes for these subsystem interfaces here>_
+
 ## 3.5 Subsystem Components
+
+_<TO DO: Place the table mapping subsystem components to modules/classes/packages here>_
 
 ### 3.5.1 Component 1: Drag-and-Drop Curriculum Builder
 A nested React component tree that manages local state before pushing to the server, allowing for rapid creation of the nested `module -> lesson -> content_item` hierarchy without full page reloads.
@@ -313,6 +317,8 @@ stateDiagram
 ## 4.1 Development Environment
 * **Platform Stack**: Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS v4.
 * **Database Engine**: PostgreSQL 17.6 hosted on Supabase Cloud.
+
+_<TO DO: Place relevant images that show the development environment/IDE here>_
 
 ## 4.2 Main Program Codes
 
@@ -345,7 +351,18 @@ stateDiagram
 ## 5.3 Test Results
 All CRUD operations in the `CourseBuilderClient.tsx` successfully executed SQL INSERTS for `module`, `lesson`, and `content_item`. The grading actions successfully updated the `assignment_submission` table.
 
+_<TO DO: Place the subsystem/application test result screens and SQL output screenshots here>_
+
 ---
 
 # 6 Conclusion
 The Instructor subsystem effectively provides the foundational architecture needed for course administration. By separating the curriculum into the module-lesson-content tree, the platform maintains extreme flexibility for future extensions, such as drag-and-drop reordering. The grading loop successfully integrates with the student's notification inbox, closing the assessment feedback loop.
+
+### Software Quality Assurance
+_<TO DO: Include details of software quality assurance practices here>_
+
+### Group Collaboration
+_<TO DO: Include details of group collaboration and teamwork here>_
+
+### Problems Encountered
+_<TO DO: Include details of problems encountered during the project and how they were resolved here>_

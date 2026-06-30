@@ -245,7 +245,11 @@ The subsystem uses Next.js Client Components (e.g., `AdvisorStudentsClient.tsx`)
 1. **Dashboard (`/advisor`)**: Overview metrics showing total assigned students and aggregate alert counts.
 2. **Advisee Registry (`/advisor/students`)**: A detailed table of students, showing academic information and highlighting those with active risk alerts.
 
+_<TO DO: Place the screen designs/wireframes for these subsystem interfaces here>_
+
 ## 3.5 Subsystem Components
+
+_<TO DO: Place the table mapping subsystem components to modules/classes/packages here>_
 
 ### 3.5.1 Component 1: Alert Aggregation Query
 A complex Server-side query that joins the mapping table to the alert table, returning a structured JSON object to the Client Component to render warning icons next to specific student names.
@@ -271,6 +275,8 @@ stateDiagram
 ## 4.1 Development Environment
 * **Platform Stack**: Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS v4.
 * **Database Engine**: PostgreSQL 17.6 hosted on Supabase Cloud.
+
+_<TO DO: Place relevant images that show the development environment/IDE here>_
 
 ## 4.2 Main Program Codes
 
@@ -303,7 +309,18 @@ stateDiagram
 ## 5.3 Test Results
 Confirmed that the `advisor_follow_up` table properly logged the message, and the `notification` table received the insert via the client-side Supabase query execution.
 
+_<TO DO: Place the subsystem/application test result screens and SQL output screenshots here>_
+
 ---
 
 # 6 Conclusion
 The Advisor subsystem successfully translates raw student struggle (failed quizzes) into a human intervention workflow. By surfacing these alerts automatically, the system prevents students from falling through the cracks. Future iterations could integrate automated email delivery for follow-ups alongside the in-app notifications.
+
+### Software Quality Assurance
+_<TO DO: Include details of software quality assurance practices here>_
+
+### Group Collaboration
+_<TO DO: Include details of group collaboration and teamwork here>_
+
+### Problems Encountered
+_<TO DO: Include details of problems encountered during the project and how they were resolved here>_

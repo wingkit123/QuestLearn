@@ -113,6 +113,17 @@ export async function submitQuizAttempt({
       percentage: percentage,
       updated_at: new Date().toISOString(),
     }, { onConflict: "student_profile_id, lesson_id" });
+
+    // 6. Trigger Advisor Alert if score is below 50%
+    if (percentage < 50) {
+      await supabase.from("advisor_alert").insert({
+        student_profile_id: studentProfileId,
+        alert_type: "low_quiz_score",
+        severity: "high",
+        message: `Student scored ${percentage}% on Quiz ID ${quizId}.`,
+        status: "open",
+      });
+    }
   }
 
   revalidatePath("/student", "layout");

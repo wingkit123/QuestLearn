@@ -236,7 +236,11 @@ The Admin subsystem relies on secure Next.js Server Components. The architecture
 2. **User Registry (`/admin/users`)**: A master table displaying all platform users, their roles, and their active/suspended states.
 3. **Platform Announcements (`/admin/announcements`)**: A broadcast portal to type and send messages.
 
+_<TO DO: Place the screen designs/wireframes for these subsystem interfaces here>_
+
 ## 3.5 Subsystem Components
+
+_<TO DO: Place the table mapping subsystem components to modules/classes/packages here>_
 
 ### 3.5.1 Component 1: Approval Workflow
 Server action (`approveUser`) that locates the target user ID and updates their `account_status` to `'active'`, thus permitting their JWT session to bypass the middleware on their next login.
@@ -271,6 +275,8 @@ stateDiagram
 * **Platform Stack**: Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS v4, Bun Package Manager.
 * **Database Engine**: PostgreSQL 17.6 hosted on Supabase Cloud.
 
+_<TO DO: Place relevant images that show the development environment/IDE here>_
+
 ## 4.2 Main Program Codes
 
 | Application | Files |
@@ -301,7 +307,18 @@ stateDiagram
 ## 5.3 Test Results
 Confirmed via Supabase dashboard that `account_status` updates successfully and no regular student can access the `/admin` route (Middleware correctly triggers 403 or redirect).
 
+_<TO DO: Place the subsystem/application test result screens and SQL output screenshots here>_
+
 ---
 
 # 6 Conclusion
 The Admin subsystem provides secure and necessary oversight capabilities. The integration with Next.js Middleware guarantees that role-based boundaries are respected. Future upgrades could include detailed audit logs for every administrative action taken.
+
+### Software Quality Assurance
+_<TO DO: Include details of software quality assurance practices here>_
+
+### Group Collaboration
+_<TO DO: Include details of group collaboration and teamwork here>_
+
+### Problems Encountered
+_<TO DO: Include details of problems encountered during the project and how they were resolved here>_
