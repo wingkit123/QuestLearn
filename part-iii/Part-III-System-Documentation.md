@@ -552,26 +552,560 @@ The system was developed using VS Code on Windows, leveraging the Next.js 15 App
 
 ## 5.2 Software Integration
 
-Our strategy to integrate Subsystem 1 and Subsystem 2 was to rely on Next.js Server Components securely fetching from the shared Supabase PostgreSQL database using Row Level Security (RLS) policies. Role-based route protection acts as the integration gateway between the Subsystems.
+Our strategy to integrate Subsystem 1 (Presentation & Client Logic) and Subsystem 2 (Data Persistence & Security Engines) is to rely on Next.js Server Components fetching from the shared Supabase PostgreSQL instance under strict Row Level Security (RLS) enforcement. 
 
-<!-- [Insert architecture snapshot showing data transactions between Next.js client pages and Supabase database] -->
-![Integration Strategy Architecture](./images/integration_strategy.png)
+To bridge the subsystems, role-based route protection acts as the **Integration Gateway**. When a user logs in, the authentication handler queries Supabase Auth, and the Next.js routing middleware intercepts the navigation path, joins the session to the local PostgreSQL `"user"` and `role` records, and redirects the user to the correct role dashboard directory (`/student`, `/instructor`, `/advisor`, `/admin`).
 
-| File | Description |
-| ---- | ----------- |
-| `src/app/(auth)/login/page.tsx` | Authenticates user credentials via Supabase Auth and routes to respective Subsystems based on role. |
-| `src/app/(student)/student/courses/page.tsx` | Implements course outline rendering and locking checks, pulling data created by Subsystem 1. |
-| `src/app/(instructor)/instructor/courses/page.tsx` | Provides course builder forms and content editors, saving directly to the shared Supabase instance. |
-| `src/app/(advisor)/advisor/students/page.tsx` | Processes student status reviews and logs advisor follow-ups, reacting to Subsystem 1's assessment triggers. |
-| `src/app/(admin)/admin/users/page.tsx` | Handles user approvals, suspensions, and deletes affecting all Subsystem user pools. |
+### 5.2.1 Integration Gateway Source Code (`src/middleware.ts`)
+Below is the complete implementation of the middleware gateway. It extracts the session from Supabase, performs lightweight role lookups, manages pending instructor approvals, and isolates routes to prevent unauthorized cross-role access:
+
+```typescript
+import { type NextRequest, NextResponse } from "next/server";
+import { updateSession } from "@/lib/supabase/middleware";
+import {
+  PUBLIC_ROUTES,
+  PROTECTED_PREFIXES,
+  ROLE_DASHBOARD_PATH,
+  ROLE_MAP,
+  type RoleId,
+} from "@/lib/constants";
+
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Skip Next.js internals and static files
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api/auth") ||
+    pathname.includes(".")
+  ) {
+    return NextResponse.next();
+  }
+
+  // Refresh the Supabase session
+  const { supabase, user, supabaseResponse } = await updateSession(request);
+
+  // ── Public routes ────────────────────────────────────
+  const isPublicRoute = PUBLIC_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(route + "/")
+  );
+
+  if (isPublicRoute) {
+    // If already logged in and visiting login/register, redirect to dashboard
+    if (user && (pathname === "/login" || pathname === "/register")) {
+      const roleData = await getUserRole(supabase, user.id);
+      if (roleData) {
+        const dashboardUrl = ROLE_DASHBOARD_PATH[roleData.role];
+        return NextResponse.redirect(new URL(dashboardUrl, request.url));
+      }
+    }
+    return supabaseResponse;
+  }
+
+  // ── Protected routes — require auth ──────────────────
+  if (!user) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("redirectTo", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // ── Role-based access control ────────────────────────
+  const roleData = await getUserRole(supabase, user.id);
+
+  if (!roleData) {
+    // User exists in auth but not in our user table — send to login
+    await supabase.auth.signOut();
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  // Instructors with pending status go to /pending
+  if (roleData.accountStatus === "pending") {
+    if (pathname !== "/pending") {
+      return NextResponse.redirect(new URL("/pending", request.url));
+    }
+    return supabaseResponse;
+  }
+
+  // Check if user is accessing a protected role prefix
+  const accessedPrefix = PROTECTED_PREFIXES.find(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + "/")
+  );
+
+  if (accessedPrefix) {
+    const expectedPrefix = ROLE_DASHBOARD_PATH[roleData.role];
+    if (accessedPrefix !== expectedPrefix) {
+      // Wrong role — redirect to their own dashboard
+      return NextResponse.redirect(new URL(expectedPrefix, request.url));
+    }
+  }
+
+  // Root path — redirect to role dashboard
+  if (pathname === "/") {
+    return NextResponse.redirect(
+      new URL(ROLE_DASHBOARD_PATH[roleData.role], request.url)
+    );
+  }
+
+  return supabaseResponse;
+}
+
+async function getUserRole(
+  supabase: Awaited<ReturnType<typeof updateSession>>["supabase"],
+  authUserId: string
+): Promise<{ role: RoleId; accountStatus: string } | null> {
+  const { data } = await supabase
+    .from("user")
+    .select(
+      `
+      account_status,
+      role:role_id (
+        role_name
+      )
+    `
+    )
+    .eq("auth_user_id", authUserId)
+    .single();
+
+  if (!data) return null;
+
+  const role = data.role as unknown as { role_name: string };
+  const roleId = ROLE_MAP[role.role_name as keyof typeof ROLE_MAP];
+
+  return {
+    role: roleId,
+    accountStatus: data.account_status,
+  };
+}
+
+export const config = {
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
+};
+```
+
+### 5.2.2 Authenticated Session Controller Snippet (`src/app/(auth)/login/page.tsx`)
+The client component handles user interactions and sends credentials directly to the authentication provider. On success, it triggers page routing redirection:
+
+```typescript
+// Submits client credentials to Supabase Auth provider
+const supabase = createClient();
+const { error: authError } = await supabase.auth.signInWithPassword({
+  email,
+  password,
+});
+
+if (authError) {
+  setError(authError.message);
+  setLoading(false);
+  return;
+}
+
+// Redirects to root path where Next.js middleware completes role-based routing
+router.push("/");
+router.refresh();
+```
+
+---
+
+### 5.2.3 Subsystem Integration Implementation Source Code
+
+Below is the complete implementation source code for each of the primary integration components executing the data bridge between the user interfaces and database queries:
+
+#### 5.2.3.1 Student Course Outline Loader (`src/app/(student)/student/courses/page.tsx`)
+This page fetches the authenticated student's profile, retrieves all active and past course enrollments, aggregates progress record percentages, and maps them to client UI components:
+
+```typescript
+import { getCurrentUser } from "@/lib/auth/helpers";
+import { createClient } from "@/lib/supabase/server";
+import { CourseCard } from "@/components/student/CourseCard";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { BookOpen } from "lucide-react";
+import type { EnrolledCourse } from "@/types/database";
+
+export default async function StudentCoursesPage() {
+  const user = await getCurrentUser();
+  if (!user) return null;
+
+  const supabase = await createClient();
+
+  // Fetch student profile
+  const { data: profile } = await supabase
+    .from("student_profile")
+    .select("student_profile_id")
+    .eq("user_id", user.userId)
+    .single();
+
+  if (!profile) return null;
+
+  // Fetch all enrollments
+  const { data: enrollments } = await supabase
+    .from("enrollment")
+    .select(
+      `
+      *,
+      course:course_id (
+        *,
+        instructor_profile:instructor_profile_id (
+          *,
+          user:user_id ( full_name )
+        )
+      )
+    `
+    )
+    .eq("student_profile_id", profile.student_profile_id)
+    .returns<EnrolledCourse[]>();
+
+  // Fetch progress
+  const { data: progressRecords } = await supabase
+    .from("progress_record")
+    .select(
+      `
+      percentage,
+      lesson:lesson_id (
+        module:module_id ( course_id )
+      )
+    `
+    )
+    .eq("student_profile_id", profile.student_profile_id);
+
+  const courseProgressMap = new Map<number, { total: number; count: number }>();
+  if (progressRecords) {
+    progressRecords.forEach((record: any) => {
+      const courseId = record.lesson?.module?.course_id;
+      if (courseId) {
+        const current = courseProgressMap.get(courseId) || { total: 0, count: 0 };
+        courseProgressMap.set(courseId, {
+          total: current.total + record.percentage,
+          count: current.count + 1,
+        });
+      }
+    });
+  }
+
+  const allCourses = enrollments || [];
+  const activeCourses = allCourses.filter((c) => c.status === "active");
+  const pastCourses = allCourses.filter((c) => c.status !== "active");
+
+  return (
+    <div className="space-y-10 animate-in fade-in duration-500">
+      <header>
+        <h1 className="text-2xl font-bold text-text mb-2">My Courses</h1>
+        <p className="text-text-muted">
+          View all your current and past enrolled courses.
+        </p>
+      </header>
+
+      <section>
+        <h2 className="text-lg font-bold text-text mb-4">Active Courses</h2>
+        {activeCourses.length === 0 ? (
+          <EmptyState
+            title="No Active Courses"
+            description="You are not currently taking any courses."
+          />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {activeCourses.map((enrollment) => {
+              const cp = courseProgressMap.get(enrollment.course_id);
+              const progressPercentage =
+                cp && cp.count > 0 ? Math.round(cp.total / cp.count) : 0;
+              return (
+                <CourseCard
+                  key={enrollment.enrollment_id}
+                  enrollment={enrollment}
+                  progressPercentage={progressPercentage}
+                />
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {pastCourses.length > 0 && (
+        <section>
+          <h2 className="text-lg font-bold text-text mb-4">Past Courses</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 opacity-75 grayscale-[20%]">
+            {pastCourses.map((enrollment) => {
+              const cp = courseProgressMap.get(enrollment.course_id);
+              const progressPercentage =
+                cp && cp.count > 0 ? Math.round(cp.total / cp.count) : 0;
+              return (
+                <CourseCard
+                  key={enrollment.enrollment_id}
+                  enrollment={enrollment}
+                  progressPercentage={progressPercentage}
+                />
+              );
+            })}
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}
+```
+
+#### 5.2.3.2 Instructor Course Registry (`src/app/(instructor)/instructor/courses/page.tsx`)
+This page resolves the instructor's staff profile and renders all created courses, joining enrollment counts directly from aggregated database tables:
+
+```typescript
+import { getCurrentUser } from "@/lib/auth/helpers";
+import { createClient } from "@/lib/supabase/server";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+import { Plus, BookOpen, Users, MoreVertical } from "lucide-react";
+import Link from "next/link";
+
+export default async function InstructorCoursesPage() {
+  const user = await getCurrentUser();
+  if (!user) return null;
+
+  const supabase = await createClient();
+
+  const { data: profile } = await supabase
+    .from("instructor_profile")
+    .select("instructor_profile_id")
+    .eq("user_id", user.userId)
+    .single();
+
+  if (!profile) return null;
+
+  // Fetch all owned courses
+  const { data: courses } = await supabase
+    .from("course")
+    .select("*, enrollment(count)")
+    .eq("instructor_profile_id", profile.instructor_profile_id)
+    .order("created_at", { ascending: false });
+
+  const courseList = courses || [];
+
+  return (
+    <div className="animate-in fade-in duration-500">
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-text mb-2">Course Management</h1>
+          <p className="text-text-muted">
+            Create and manage your courses, modules, and lessons.
+          </p>
+        </div>
+        <Link
+          href="/instructor/courses/new"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-white font-medium text-sm hover:bg-primary-light transition-colors"
+        >
+          <Plus className="w-4 h-4" /> Create Course
+        </Link>
+      </header>
+
+      {courseList.length === 0 ? (
+        <EmptyState
+          title="No courses found"
+          description="You haven't created any courses yet. Click 'Create Course' to get started."
+          icon={<BookOpen className="w-8 h-8 text-primary" />}
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {courseList.map((course: any) => (
+            <div
+              key={course.course_id}
+              className="bg-surface rounded-xl border border-border overflow-hidden shadow-sm group hover:border-primary/50 transition-colors flex flex-col"
+            >
+              <div className="p-5 border-b border-border flex-1">
+                <div className="flex items-start justify-between mb-3">
+                  <span className="text-xs font-bold text-accent bg-bg-dark px-2 py-1 rounded-md tracking-wide">
+                    {course.course_code}
+                  </span>
+                  <StatusBadge status={course.status} />
+                </div>
+                <h3 className="font-bold text-lg text-text mb-2 line-clamp-1">
+                  {course.course_title}
+                </h3>
+                <p className="text-sm text-text-muted line-clamp-2 min-h-[2.5rem]">
+                  {course.description || "No description provided."}
+                </p>
+              </div>
+              <div className="p-4 bg-bg-page/50 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-sm text-text-muted font-medium">
+                  <Users className="w-4 h-4" />
+                  {/* @ts-ignore */}
+                  {course.enrollment[0]?.count || 0} Students
+                </div>
+                <Link
+                  href={`/instructor/courses/${course.course_id}`}
+                  className="text-sm text-primary font-medium hover:underline px-2 py-1"
+                >
+                  Edit Course &rarr;
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+#### 5.2.3.3 Advisor Advisees Portal (`src/app/(advisor)/advisor/students/page.tsx`)
+This page retrieves department advisees assigned to the advisor and lists all registered instructors to enable alerts routing and follow-up logging:
+
+```typescript
+import { getCurrentUser } from "@/lib/auth/helpers";
+import { createClient } from "@/lib/supabase/server";
+import { AdvisorStudentsClient } from "./AdvisorStudentsClient";
+
+export default async function AdvisorStudentsPage() {
+  const user = await getCurrentUser();
+  if (!user) return null;
+
+  const supabase = await createClient();
+
+  const { data: advisorProfile } = await supabase
+    .from("advisor_profile")
+    .select("advisor_profile_id")
+    .eq("user_id", user.userId)
+    .single();
+
+  if (!advisorProfile) {
+    return (
+      <div className="p-8 text-center bg-surface border border-border rounded-xl">
+        <p className="text-danger font-medium">Advisor profile not found.</p>
+      </div>
+    );
+  }
+
+  // Fetch assigned students
+  const { data: students } = await supabase
+    .from("advisor_student_assignment")
+    .select(`
+      *,
+      student_profile:student_profile_id (
+        student_profile_id,
+        student_no,
+        academic_level,
+        programme,
+        user:user_id (
+          full_name,
+          email
+        )
+      )
+    `)
+    .eq("advisor_profile_id", advisorProfile.advisor_profile_id);
+
+  // Fetch all instructors
+  const { data: instructors } = await supabase
+    .from("instructor_profile")
+    .select(`
+      instructor_profile_id,
+      staff_no,
+      user:user_id (
+        full_name,
+        email
+      )
+    `);
+
+  return (
+    <div className="space-y-8 animate-in fade-in duration-500">
+      <header>
+        <h1 className="text-2xl font-bold text-text mb-2">My Advisees</h1>
+        <p className="text-text-muted">Overview of all students assigned to your department.</p>
+      </header>
+
+      <AdvisorStudentsClient 
+        students={students || []} 
+        advisorProfileId={advisorProfile.advisor_profile_id} 
+        instructors={instructors || []}
+      />
+    </div>
+  );
+}
+```
+
+#### 5.2.3.4 Admin User Management Console (`src/app/(admin)/admin/users/page.tsx`)
+This page retrieves all system accounts sorted alphabetically by name to allow the administrator to approve registrations or toggle active/suspended statuses:
+
+```typescript
+import { getCurrentUser } from "@/lib/auth/helpers";
+import { createClient } from "@/lib/supabase/server";
+import { AdminUsersClient } from "./AdminUsersClient";
+
+export default async function AdminUsersPage() {
+  const user = await getCurrentUser();
+  if (!user) return null;
+
+  const supabase = await createClient();
+  const { data: users } = await supabase
+    .from("user")
+    .select(`
+      user_id,
+      full_name,
+      email,
+      account_status,
+      role:role_id (
+        role_name
+      )
+    `)
+    .order("full_name", { ascending: true });
+
+  return (
+    <AdminUsersClient users={users || []} />
+  );
+}
+```
+
+---
+
+### 5.2.4 Subsystem Integration Files Summary
+
+| File Name | Subsystem Integration Purpose |
+| :--- | :--- |
+| **[login/page.tsx](file:///c:/Users/Vincent Lock/Desktop/SEF_P3/src/app/(auth)/login/page.tsx)** | Authenticates user credentials via Supabase Auth and routes to respective Subsystems based on role. |
+| **[courses/page.tsx](file:///c:/Users/Vincent Lock/Desktop/SEF_P3/src/app/(student)/student/courses/page.tsx)** | Implements course outline rendering and locking checks, pulling data created by Subsystem 1. |
+| **[courses/page.tsx](file:///c:/Users/Vincent Lock/Desktop/SEF_P3/src/app/(instructor)/instructor/courses/page.tsx)** | Provides course builder forms and content editors, saving directly to the shared Supabase instance. |
+| **[students/page.tsx](file:///c:/Users/Vincent Lock/Desktop/SEF_P3/src/app/(advisor)/advisor/students/page.tsx)** | Processes student status reviews and logs advisor follow-ups, reacting to Subsystem 1's assessment triggers. |
+| **[users/page.tsx](file:///c:/Users/Vincent Lock/Desktop/SEF_P3/src/app/(admin)/admin/users/page.tsx)** | Handles user approvals, suspensions, and deletes affecting all Subsystem user pools. |
+
+---
 
 ## 5.3 Database
 
-We implemented the relational database in Supabase and seeded it with core demo records. The primary tables include:
-1. `user` and `role` mapping.
-2. `student_profile`, `instructor_profile`, and `advisor_profile`.
-3. `course`, `module`, `lesson`, and `content_item` hierarchies.
-4. `progress_record` and `advisor_follow_up`.
+The database is implemented using **Supabase PostgreSQL**, a cloud-hosted relational database, following our entity relationship model in **Section 3**. To ensure strict data integrity and type safety across our server components and client pages, each database table is represented as a **TypeScript Interface** in our frontend application. 
+
+Data transactions are managed securely using the `@supabase/supabase-js` client library, joined via foreign key relations and protected at the database engine level by **Row Level Security (RLS)** policies.
+
+### SQL Database DDL (PostgreSQL)
+Below is the SQL table definition for the central `"user"` table, illustrating the constraints, data types, and primary/foreign key connections defined in [Database-Schema.sql](file:///c:/Users/Vincent Lock/Desktop/SEF_P3/part-ii/Database-Schema.sql):
+
+```sql
+-- Stores the shared login and identity details for all platform users.
+CREATE TABLE "user" (
+    user_id        SERIAL PRIMARY KEY,
+    auth_user_id   UUID UNIQUE,
+    role_id        INT NOT NULL REFERENCES role(role_id),
+    full_name      VARCHAR(150) NOT NULL,
+    email          VARCHAR(255) NOT NULL UNIQUE,
+    account_status VARCHAR(20) NOT NULL DEFAULT 'pending'
+        CHECK (account_status IN ('pending', 'active', 'suspended', 'deactivated')),
+    created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### TypeScript Interface Mapping
+Below is the matching TypeScript model from [database.ts](file:///c:/Users/Vincent Lock/Desktop/SEF_P3/src/types/database.ts) that mirrors this database table structure to enable type checks during build time:
+
+```typescript
+// Maps to the custom "user" table in Supabase PostgreSQL
+export type User = {
+  user_id: number;
+  auth_user_id: string; // UUID from Supabase Auth
+  role_id: number;
+  full_name: string;
+  email: string;
+  account_status: "pending" | "active" | "suspended" | "deactivated";
+  created_at: string;
+};
+```
+
+---
 
 ---
 
