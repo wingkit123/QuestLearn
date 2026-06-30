@@ -321,25 +321,25 @@ These are the main use cases to prioritize in the final UML use case diagram:
 
 **Postcondition:** The advisor has current information for follow-up and the follow-up action is recorded.
 
-### UC-09 Moderate Content and Manage Announcements
+### UC-09 Manage User Registry and Announcements
 
 **Primary Actor:** Admin  
-**Trigger:** The admin opens a moderation or announcement function.  
+**Trigger:** The admin opens the registry or announcement function.  
 **Precondition:** The admin is logged in.  
 **Main Flow:**
 
-1. The admin opens the Admin Dashboard (`/admin/users`).
-2. The system queries the `user` table for accounts with `account_status = 'pending'`.
-3. The admin reviews the pending Instructor or Advisor registrations.
-4. The admin clicks "Approve" (updating status to `active`) or "Decline" (removing or suspending the account).
-5. The system records this oversight operation in the `moderation_action` table.
+1. The admin opens the User Registry (`/admin/users`).
+2. The system queries all `user` accounts.
+3. The admin clicks "Suspend" or "Reactivate" to toggle user access, or "Kick" to permanently delete an account.
+4. The system directly updates the `user` table state or cascades deletion.
+5. The admin opens the Announcements dashboard (`/admin/announcements`).
+6. The admin drafts a broadcast message and publishes it, storing it in the `announcement` table.
 
 **Alternate Flow:**
 
-1. If content does not require moderation changes, the admin closes the review without modification.
-2. If a user requests a password reset, the admin selects the user, resets the password to a temporary default value, and the user must change their password upon next login.
+1. The admin manually creates a new credentialed user by inputting Name, Email, and selecting a Role, instantly generating a profile without public registration.
 
-**Postcondition:** Moderation, announcement, and password reset actions are stored and can affect user notifications, content availability, or account access.
+**Postcondition:** User access states are dynamically changed and platform-wide announcements are made available to all users.
 
 ## 5. Process-Flow Drafts
 
@@ -411,11 +411,13 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A[Admin Login] --> B[View Pending Registrations]
-    B --> C[Review Instructor/Advisor Accounts]
-    C --> D[Approve or Decline]
-    D --> E[Update User account_status]
-    E --> F[Store moderation_action Log]
+    A[Admin Login] --> B[View User Registry]
+    B --> C[Suspend / Reactivate User]
+    B --> D[Manually Add User]
+    B --> E[Kick / Delete User]
+    A --> F[Open Announcements]
+    F --> G[Draft and Broadcast]
+    G --> H[Store in announcement table]
 ```
 
 ## 6. Activity Diagrams for Formal Use Cases
@@ -560,20 +562,18 @@ flowchart TD
     J --> Z
 ```
 
-### UC-09 Moderate Content and Manage Announcements
+### UC-09 Manage User Registry and Announcements
 
 ```mermaid
 flowchart TD
-    A((Start)) --> B[Open Admin Dashboard]
-    B --> C[Query users where account_status = 'pending']
-    C --> D{Pending users exist?}
-    D -- No --> E[Display empty state]
+    A((Start)) --> B[Open User Registry]
+    B --> C[View All Accounts]
+    C --> D{Decision?}
+    D -- Toggle Access --> E[Update status to active or suspended]
+    D -- Add User --> F[Create User and Profile]
+    D -- Broadcast --> G[Open Announcements Dashboard]
+    G --> H[Publish message to announcement table]
     E --> Z((End))
-    D -- Yes --> F[Review registration details]
-    F --> G{Decision?}
-    G -- Approve --> H[Update status to 'active']
-    G -- Decline --> I[Update status to 'suspended']
-    H --> J[Insert moderation_action record]
-    I --> J
-    J --> Z
+    F --> Z
+    H --> Z
 ```
