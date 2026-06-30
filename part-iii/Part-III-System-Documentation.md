@@ -1182,36 +1182,112 @@ Security testing evaluates row-level security (RLS) policies and middleware acce
 
 To validate the prototype, the local database was seeded with a minimum testing dataset. All test accounts utilize the default password `123456`.
 
-### 6.2.1 Seeded Test Accounts
-| Role | Email | Name | Profile ID / Reference | Account Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **Student** | `student@example.com` | Demo Student | `QL-STU-001` (Year 2) | Active |
-| **Student** | `student2@example.com` | Alice Johnson | `STU-8821` (Year 2) | Active |
-| **Student** | `student3@example.com` | Bob Smith | `STU-9391` (Year 1) | Active |
-| **Instructor** | `instructor@example.com` | Demo Instructor | `QL-INS-001` (SE specialization)| Active |
-| **Instructor** | `pending_instructor@example.com`| Pending Instructor | `QL-INS-PND` (HCI specialization)| Pending |
-| **Academic Advisor**| `advisor@example.com` | Demo Advisor | `QL-ADV-001` (Comp Science) | Active |
-| **Admin** | `admin@example.com` | Demo Admin | Internal user ID | Active |
+### 6.2.1 Student Subsystem
 
-### 6.2.2 Course and Curriculum Structure
-The database was populated with course `QL-SEF101` (Software Engineering Fundamentals) containing the following structure:
-* **Module 1: Requirements and Use Cases** (Sequence 1)
-  * *Lesson 1:* Writing Effective Use Cases (Type: Mixed, Includes Youtube Video Embed)
-  * *Lesson 2:* Activity Diagrams for Workflows (Type: Reading)
-* **Module 2: Design and Architecture** (Sequence 2)
-  * *Lesson 3:* Layered Architecture Basics (Type: Mixed, Includes Youtube Video Embed)
-* **Module 3: Interactive Practice Quizzes** (Sequence 3)
-  * *Lesson 4:* Quiz 1: Testing Strategies (Type: H5P/Lumi interactive iframe)
-  * *Lesson 5:* Quiz 2: Software Design (Type: H5P/Lumi interactive iframe)
-  * *Lesson 6:* Quiz 3: Project Management (Type: H5P/Lumi interactive iframe)
-  * *Lesson 7:* Quiz 4: Requirements Analysis (Type: H5P/Lumi interactive iframe)
-  * *Lesson 8:* Quiz 5: Quality Assurance (Type: H5P/Lumi interactive iframe)
+#### 6.2.1.1 Login
+This test data is used to verify that the student can log into the system by entering the required credentials.
 
-### 6.2.3 Pre-configured Test Scenarios
-1. **Low Quiz Score / Alert Trigger:** Student `student@example.com` attempted Quiz 1 and scored **40%**. This automatically triggered a high-severity alert (`overdue_assignment` flag) assigned to Advisor `advisor@example.com`.
-2. **Advisor Follow-up:** Advisor logged a follow-up intervention: *"Please review the architecture lesson and submit the overdue sketch by Friday."*
-3. **Overdue Assignment:** Student `student@example.com` has one overdue assignment: `Architecture Sketch`.
-4. **Graded Assignment:** Student `student@example.com` submitted `Use Case Reflection` and received a score of **17/20** with instructor feedback: *"Good explanation of actor, trigger, and alternate flow."*
+| Use Case | Test Data |
+| :--- | :--- |
+| **Login** | **User email:** `student@example.com`<br>**Password:** `123456` |
+
+#### 6.2.1.2 Start Lesson
+This test data is used to verify that the student can select an enrolled course and begin learning activities.
+
+| Use Case | Test Data |
+| :--- | :--- |
+| **Start Lesson** | **Step 1: Course Selection Page**<br>• Enrolled Course: `QL-SEF101` (Software Engineering Fundamentals)<br>• Active Enrollment ID: `1`<br><br>**Step 2: Module Selection**<br>• Module: `Requirements and Use Cases` (Sequence 1)<br><br>**Step 3: Lesson Selection**<br>• Selected Lesson: `Writing Effective Use Cases` (Sequence 1)<br>• Content Type: `Reading` & `Video Embed`<br>• Video URL: `https://www.youtube.com/embed/dQw4w9WgXcQ` |
+
+#### 6.2.1.3 Attempt Quiz and Receive Automated Feedback
+This test data is used to verify that a student's quiz attempt is auto-graded and provides weakness recommendations on failure.
+
+| Use Case | Test Data |
+| :--- | :--- |
+| **Attempt Quiz** | **Step 1: Quiz Attempt Page**<br>• Selected Quiz: `Quiz 1: Testing Strategies` (H5P/Lumi embed)<br>• Student Profile ID: `QL-STU-001`<br><br>**Step 2: Submission and Grading**<br>• Submitted Answers: `{"q1": "incorrect_choice", "q2": "incorrect_choice"}`<br>• Calculated Score: **40%** (Failed, threshold < 50%)<br><br>**Step 3: Results & Feedback**<br>• Auto-Grading Feedback: *"You might want to review the lesson material again."*<br>• Recommendation Card triggered: Link to `Writing Effective Use Cases` lesson.<br>• System Actions: Triggers `low_quiz_score` alert flags in database. |
+
+#### 6.2.1.4 Submit Assignment
+This test data is used to verify that a student can upload submission files to complete an active assignment.
+
+| Use Case | Test Data |
+| :--- | :--- |
+| **Submit Assignment** | **Step 1: Assignment Selection Page**<br>• Assignment: `Use Case Reflection` (Due in 7 days)<br>• Total Marks: `20`<br><br>**Step 2: File Upload**<br>• Uploaded File: `use-case-reflection.pdf`<br>• Storage Bucket Path: `https://example.com/submissions/use-case-reflection.pdf`<br>• Database Row Created: `assignment_submission` status set to `'submitted'`. |
+
+---
+
+### 6.2.2 Instructor Subsystem
+
+#### 6.2.2.1 Login
+This test data is used to verify that the instructor can log into the system by entering the required credentials.
+
+| Use Case | Test Data |
+| :--- | :--- |
+| **Login** | **User email:** `instructor@example.com`<br>**Password:** `123456` |
+
+#### 6.2.2.2 Create Course and Learning Structure
+This test data is used by instructors to define new courses and sequential modules.
+
+| Use Case | Test Data |
+| :--- | :--- |
+| **Create Course** | **Step 1: Course Info Page**<br>• Course Code: `QL-SEF101`<br>• Course Title: `Software Engineering Fundamentals`<br>• Status: `'active'`<br><br>**Step 2: Add Module**<br>• Module Title: `Requirements and Use Cases` (Sequence 1)<br><br>**Step 3: Add Lesson**<br>• Lesson Title: `Writing Effective Use Cases`<br>• Lesson Type: `mixed` (Reading & Video) |
+
+#### 6.2.2.3 Publish Lesson Content and Interactive Material
+This test data is used to add content items and publish lessons to make them visible to students.
+
+| Use Case | Test Data |
+| :--- | :--- |
+| **Publish Lesson** | **Step 1: Content Setup Page**<br>• Target Lesson: `Quiz 1: Testing Strategies`<br>• Content Type: `h5p_lumi`<br>• Embed URL: `<iframe src="https://app.lumi.education/api/v1/run/GVsXA0/embed"...></iframe>`<br><br>**Step 2: State Toggle**<br>• Action: Publish Lesson<br>• Status: Syncs `publish_status` to `'published'` in database. |
+
+#### 6.2.2.4 Create Assessment and Configure Feedback
+This test data is used to create quizzes with custom questions and automated feedback.
+
+| Use Case | Test Data |
+| :--- | :--- |
+| **Create Assessment** | **Step 1: Quiz Configuration Page**<br>• Quiz Title: `Use Case and Architecture Check`<br>• Total Marks: `15`<br>• Time Limit: `15 minutes`<br><br>**Step 2: Add Question**<br>• Question Type: `mcq`<br>• Prompt: *"Which artifact describes actor goals and system responses?"*<br>• Correct Answer: *"Use case"*<br><br>**Step 3: Auto-Feedback Template**<br>• Trigger Condition: Score >= 80%<br>• Message: *"Excellent work! You have a strong grasp of the material."* |
+
+---
+
+### 6.2.3 Academic Advisor Subsystem
+
+#### 6.2.3.1 Login
+This test data is used to verify that the academic advisor can log into the system by entering the required credentials.
+
+| Use Case | Test Data |
+| :--- | :--- |
+| **Login** | **User email:** `advisor@example.com`<br>**Password:** `123456` |
+
+#### 6.2.3.2 View Advisor Alert Dashboard and Follow Up
+This test data is used by advisors to check flagging alerts and log advisory follow-ups.
+
+| Use Case | Test Data |
+| :--- | :--- |
+| **Advisor Follow-up** | **Step 1: Advisor Alert Panel**<br>• Advisee Flagged: `Demo Student` (student_no: `QL-STU-001`) showing `'At Risk'` status.<br>• Target Alert: `overdue_assignment` (Architecture Sketch)<br>• Severity: `high`<br><br>**Step 2: Intervention Modal**<br>• Selected Instructor: `Demo Instructor`<br>• Intervention Message: *"Please review the architecture lesson and submit the overdue sketch by Friday."*<br>• Next Action: *"Check submission status in 3 days"*<br><br>**Step 3: Save Action**<br>• Database updates: Inserts row to `advisor_follow_up`; sets `advisor_alert.status` to `'reviewed'`. |
+
+---
+
+### 6.2.4 Admin Subsystem
+
+#### 6.2.4.1 Login
+This test data is used to verify that the administrator can log into the system by entering the required credentials.
+
+| Use Case | Test Data |
+| :--- | :--- |
+| **Login** | **User email:** `admin@example.com`<br>**Password:** `123456` |
+
+#### 6.2.4.2 User Registry Controls
+This test data is used by administrators to manage account approval states and toggle user suspension.
+
+| Use Case | Test Data |
+| :--- | :--- |
+| **User Registry** | **Step 1: User Approval Page**<br>• Target User: `Pending Instructor` (`pending_instructor@example.com`) showing `'pending'` status.<br>• Action: Click 'Approve'<br>• Database Sync: Syncs status to `'active'` in database.<br><br>**Step 2: Suspend Account**<br>• Target User: `Bob Smith` (`student3@example.com`) showing `'active'` status.<br>• Action: Click 'Suspend'<br>• Database Sync: Syncs status to `'suspended'` in database; revokes user login authorization. |
+
+#### 6.2.4.3 Moderate Content
+This test data is used by administrators to review and moderate uploaded learning materials.
+
+| Use Case | Test Data |
+| :--- | :--- |
+| **Moderate Content** | **Step 1: Content Moderation Queue**<br>• Target Content: `Architecture Layer Matching Activity` (content_item)<br>• Action: Click 'Approve'<br><br>**Step 2: Audit Trail Logging**<br>• Action Type: `'content_item.approve'`<br>• Logged Row: Creates `moderation_action` and `audit_log` rows tracking the admin decision. |
+
+---
 
 ---
 
