@@ -163,22 +163,22 @@ The complete system schema mapping the Instructor Subsystem entities and their r
 
 ```mermaid
 erDiagram
-    ROLE ||--o{ USER : "has"
-    USER ||--o| INSTRUCTOR_PROFILE : "extends"
-    USER ||--o| STUDENT_PROFILE : "extends"
+    ROLE ||--o{ USER : has
+    USER ||--o| INSTRUCTOR_PROFILE : extends
+    USER ||--o| STUDENT_PROFILE : extends
     
-    INSTRUCTOR_PROFILE ||--o{ COURSE : "teaches"
-    COURSE ||--|{ MODULE : "contains"
-    MODULE ||--|{ LESSON : "contains"
-    LESSON ||--o{ CONTENT_ITEM : "contains"
-    LESSON ||--o{ QUIZ : "contains"
+    INSTRUCTOR_PROFILE ||--o{ COURSE : teaches
+    COURSE ||--|{ MODULE : contains
+    MODULE ||--|{ LESSON : contains
+    LESSON ||--o{ CONTENT_ITEM : contains
+    LESSON ||--o{ QUIZ : contains
     
-    MODULE ||--o{ MODULE : "depends on (prerequisite_module_id)"
+    MODULE ||--o{ MODULE : prerequisite
     
-    COURSE ||--o{ ASSIGNMENT : "contains"
-    LESSON ||--o{ ASSIGNMENT : "references"
-    ASSIGNMENT ||--o{ ASSIGNMENT_SUBMISSION : "has"
-    STUDENT_PROFILE ||--o{ ASSIGNMENT_SUBMISSION : "submits"
+    COURSE ||--o{ ASSIGNMENT : contains
+    LESSON ||--o{ ASSIGNMENT : references
+    ASSIGNMENT ||--o{ ASSIGNMENT_SUBMISSION : has
+    STUDENT_PROFILE ||--o{ ASSIGNMENT_SUBMISSION : submits
 
     ROLE {
         int role_id PK
