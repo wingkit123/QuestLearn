@@ -261,10 +261,10 @@ Represents the core credential mapping to Supabase Auth.
 | Column | Type | Key | Nullable | Default | Description |
 | --- | --- | --- | --- | --- | --- |
 | `user_id` | `INT` | `PK` | `No` | `SERIAL` | Unique internal reference ID. |
-| `auth_user_id` | `UUID` | `None` | `Yes` | `None` | Maps to `auth.users.id`. |
+| `auth_user_id` | `UUID` | `UQ` | `Yes` | `None` | Maps to Supabase `auth.users.id`. |
 | `role_id` | `INT` | `FK` | `No` | `None` | References `role(role_id)`. |
-| `full_name` | `VARCHAR(150)` | `None` | `No` | `None` | Real name. |
-| `email` | `VARCHAR(255)` | `None` | `No` | `None` | Unique email string. |
+| `full_name` | `VARCHAR(150)` | `None` | `No` | `None` | User's real name. |
+| `email` | `VARCHAR(255)` | `UQ` | `No` | `None` | Unique email string. |
 | `account_status`| `VARCHAR(20)` | `None` | `No` | `'pending'` | Check: `'pending'`, `'active'`, `'suspended'`. |
 
 ### `student_profile`
@@ -273,18 +273,30 @@ Contains academic details specific to student accounts.
 | --- | --- | --- | --- | --- | --- |
 | `student_profile_id`| `INT` | `PK` | `No` | `SERIAL` | Student profile primary key. |
 | `user_id` | `INT` | `FK` | `No` | `None` | References `"user"(user_id)` ON DELETE CASCADE. |
-| `student_no` | `VARCHAR(30)` | `None` | `No` | `None` | Unique registration identifier. |
-| `academic_level` | `VARCHAR(50)` | `None` | `Yes` | `None` | Year level. |
-| `programme` | `VARCHAR(100)`| `None` | `Yes` | `None` | Specialization program. |
+| `student_no` | `VARCHAR(30)` | `UQ` | `No` | `None` | Unique registration identifier. |
+| `department` | `VARCHAR(100)`| `None` | `Yes` | `None` | Enrolled academic department. |
+| `learning_preference`| `VARCHAR(50)`| `None` | `Yes` | `None` | E.g., 'visual', 'auditory'. |
+
+### `quiz_attempt`
+Stores student attempt details and dynamically calculated score.
+| Column | Type | Key | Nullable | Default | Description |
+| --- | --- | --- | --- | --- | --- |
+| `attempt_id` | `INT` | `PK` | `No` | `SERIAL` | Attempt primary key. |
+| `quiz_id` | `INT` | `FK` | `No` | `None` | References `quiz`. |
+| `student_profile_id`| `INT` | `FK` | `No` | `None` | References `student_profile`. |
+| `score` | `NUMERIC(5,2)`| `None` | `Yes` | `None` | Points earned. |
+| `max_score` | `INT` | `None` | `Yes` | `None` | Total possible points for % calc. |
+| `submitted_at`| `TIMESTAMP` | `None` | `No` | `CURRENT_TIMESTAMP` | Time of completion. |
 
 ### `advisor_follow_up`
 Logs follow-up interventions logged by advisors.
 | Column | Type | Key | Nullable | Default | Description |
 | --- | --- | --- | --- | --- | --- |
 | `advisor_follow_up_id`| `INT` | `PK` | `No` | `SERIAL` | Unique primary key. |
+| `advisor_alert_id` | `INT` | `FK` | `Yes` | `None` | Optional alert reference. |
 | `advisor_profile_id` | `INT` | `FK` | `No` | `None` | References `advisor_profile`. |
 | `student_profile_id` | `INT` | `FK` | `No` | `None` | References `student_profile`. |
-| `instructor_profile_id`|`INT`| `FK` | `Yes`| `None` | References `instructor_profile` (nullable). |
+| `instructor_profile_id`|`INT`| `FK` | `Yes`| `None` | References `instructor_profile`. |
 | `message` | `TEXT` | `None` | `No` | `None` | Follow-up feedback message. |
 
 ---

@@ -175,17 +175,19 @@ These are the main use cases to prioritize in the final UML use case diagram:
 **Main Flow:**
 
 1. The student opens a course.
-2. The student selects a module.
-3. The student selects a lesson.
-4. The system displays lesson content, which may include reading material and embedded video.
-5. The system records page visits, video interactions, and lesson access in the activity tracking log.
-6. The system updates lesson progress status.
+2. The system evaluates module locking status; if the previous lesson's quiz score is >= 50%, the current lesson is unlocked.
+3. The student selects an available lesson.
+4. The system initializes a `progress_record` row with `completion_status = 'in_progress'` and a baseline percentage.
+5. The system displays lesson content, which may include reading material, YouTube embeds, or H5P/Lumi iframes.
+6. The student clicks the "Mark Complete" toggle.
+7. The system updates the `progress_record` status to `completed` and percentage to `100`.
 
 **Alternate Flow:**
 
-1. If the lesson is unpublished or unavailable, the system informs the student that access is not currently available.
+1. If the lesson falls sequentially after a quiz where the student scored < 50%, the system disables the lesson link, applies a locked style, and prevents access.
+2. If the lesson is unpublished, the system informs the student that access is not currently available.
 
-**Postcondition:** The lesson access event is stored for progress tracking and analytics.
+**Postcondition:** The lesson access event is stored in `progress_record` for tracking and analytics.
 
 ### UC-03 Attempt Quiz and Receive Automated Feedback
 
@@ -195,18 +197,17 @@ These are the main use cases to prioritize in the final UML use case diagram:
 **Main Flow:**
 
 1. The student starts the quiz.
-2. The system displays quiz questions, including randomized items if configured.
+2. The system fetches and sorts the questions by `sequence_no`.
 3. The student submits answers.
-4. The system auto-grades objective question types.
-5. The system stores the attempt score, answer details, and activity record.
-6. The system displays automated feedback, identifies weak topics, and shows recommended next steps.
+4. The system auto-grades the attempt, calculating `score` and `max_score`, and saves it to the `quiz_attempt` table.
+5. The system calculates the percentage. If the percentage is < 50%, the system flags the module as containing a Weak Topic, restricts access to subsequent lessons, and renders a "Weak Topic Detected" recommendation alert banner.
+6. If the score is >= 50%, the system unlocks the next module sequences.
 
 **Alternate Flow:**
 
-1. If the quiz includes subjective questions, the system stores those answers for later review while still grading objective items automatically.
-2. If the quiz submission is incomplete, the system warns the student before final submission.
+1. If the quiz submission is incomplete, the system warns the student before final submission.
 
-**Postcondition:** The attempt result is saved for performance analysis, feedback, and recommendation generation.
+**Postcondition:** The attempt result is saved for performance analysis, and the course module locking state is dynamically updated based on the score.
 
 ### UC-04 Submit Assignment
 
@@ -348,13 +349,17 @@ flowchart TD
 ```mermaid
 flowchart TD
     A[Login] --> B[View Enrolled Course]
-    B --> C[Open Module]
-    C --> D[Start Lesson]
-    D --> E[Watch Video or Read Material]
-    E --> F[Activity Tracking Updated]
-    F --> G[Attempt Quiz]
-    G --> H[Auto-Grading and Feedback]
-    H --> I[View Progress and Recommended Next Steps]
+    B --> C[Check Lock Status]
+    C --> D{Is Lesson Locked?}
+    D -- Yes --> E[Show Locked Badge]
+    D -- No --> F[Start Lesson]
+    F --> G[Init Progress Record]
+    G --> H[View Content & Mark Complete]
+    H --> I[Attempt Quiz]
+    I --> J[Auto-Grade Attempt]
+    J --> K{Score >= 50%?}
+    K -- No --> L[Lock Next Lessons & Show Weak Topic Alert]
+    K -- Yes --> M[Unlock Next Lessons]
 ```
 
 ### 5.3 Assignment Submission Flow
@@ -428,15 +433,15 @@ flowchart TD
 ```mermaid
 flowchart TD
     A((Start)) --> B[Open course]
-    B --> C[Select module]
-    C --> D[Select lesson]
-    D --> E{Lesson available?}
-    E -- No --> F[Inform student lesson is unavailable]
-    F --> Z((End))
-    E -- Yes --> G[Display lesson content]
-    G --> H[Track page visits and interactions]
-    H --> I[Update lesson progress]
-    I --> Z((End))
+    B --> C[Evaluate lock status]
+    C --> D{Lesson locked?}
+    D -- Yes --> E[Apply locked style and disable link]
+    E --> Z((End))
+    D -- No --> F[Display lesson content]
+    F --> G[Initialize progress record to in_progress]
+    G --> H[Student clicks Mark Complete]
+    H --> I[Update progress to completed]
+    I --> Z
 ```
 
 ### UC-03 Attempt Quiz and Receive Automated Feedback
@@ -444,17 +449,19 @@ flowchart TD
 ```mermaid
 flowchart TD
     A((Start)) --> B[Open available quiz]
-    B --> C[Display quiz questions]
-    C --> D[Student answers questions]
+    B --> C[Fetch and sort questions]
+    C --> D[Student submits answers]
     D --> E{Submission complete?}
     E -- No --> F[Warn student before final submission]
     F --> D
-    E -- Yes --> G[Submit quiz]
-    G --> H[Auto-grade objective questions]
-    H --> I[Store score and attempt details]
-    I --> J[Generate feedback and weak topics]
-    J --> K[Show recommended next steps]
+    E -- Yes --> G[Auto-grade calculating score and max_score]
+    G --> H[Save to quiz_attempt table]
+    H --> I{Score < 50%?}
+    I -- Yes --> J[Lock subsequent lessons]
+    J --> K[Render Weak Topic recommendation alert]
     K --> L((End))
+    I -- No --> M[Unlock subsequent lessons]
+    M --> L
 ```
 
 ### UC-04 Submit Assignment

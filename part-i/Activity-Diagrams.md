@@ -25,15 +25,15 @@ flowchart TD
 ```mermaid
 flowchart TD
     A((Start)) --> B[Open course]
-    B --> C[Select module]
-    C --> D[Select lesson]
-    D --> E{Lesson available?}
-    E -- No --> F[Inform student lesson is unavailable]
-    F --> Z((End))
-    E -- Yes --> G[Display lesson content]
-    G --> H[Track page visits and interactions]
-    H --> I[Update lesson progress]
-    I --> Z((End))
+    B --> C[Evaluate lock status]
+    C --> D{Lesson locked?}
+    D -- Yes --> E[Apply locked style and disable link]
+    E --> Z((End))
+    D -- No --> F[Display lesson content]
+    F --> G[Initialize progress record to in_progress]
+    G --> H[Student clicks Mark Complete]
+    H --> I[Update progress to completed]
+    I --> Z
 ```
 
 ## UC-03 Attempt Quiz and Receive Automated Feedback
@@ -41,17 +41,19 @@ flowchart TD
 ```mermaid
 flowchart TD
     A((Start)) --> B[Open available quiz]
-    B --> C[Display quiz questions]
-    C --> D[Student answers questions]
+    B --> C[Fetch and sort questions]
+    C --> D[Student submits answers]
     D --> E{Submission complete?}
     E -- No --> F[Warn student before final submission]
     F --> D
-    E -- Yes --> G[Submit quiz]
-    G --> H[Auto-grade objective questions]
-    H --> I[Store score and attempt details]
-    I --> J[Generate feedback and weak topics]
-    J --> K[Show recommended next steps]
+    E -- Yes --> G[Auto-grade calculating score and max_score]
+    G --> H[Save to quiz_attempt table]
+    H --> I{Score < 50%?}
+    I -- Yes --> J[Lock subsequent lessons]
+    J --> K[Render Weak Topic recommendation alert]
     K --> L((End))
+    I -- No --> M[Unlock subsequent lessons]
+    M --> L
 ```
 
 ## UC-04 Submit Assignment
