@@ -364,22 +364,125 @@ Source reference: [../part-ii/State-Diagrams.md](../part-ii/State-Diagrams.md)
 
 ## 5.1 Data Dictionary
 
-The implementation data dictionary follows Part II Section 3.2. Any schema change made during Part III must be reflected both in [../part-ii/Database-Schema.sql](../part-ii/Database-Schema.sql) and in the final table below.
+The data dictionary below represents the implemented schema of the QuestLearn relational database engine on Supabase. This dictionary is synchronized with `part-ii/Database-Schema.sql` and includes the new `instructor_profile_id` relation inside the `advisor_follow_up` table.
 
-| Entity | Key Attributes | Type | Purpose |
-| --- | --- | --- | --- |
-| `role` | `role_id`, `role_name` | Lookup | Stores the four system roles |
-| `user` | `user_id`, `auth_user_id`, `role_id`, `email`, `account_status` | Core | Application profile linked to Supabase Auth |
-| `student_profile` | `student_profile_id`, `user_id`, `academic_level`, `programme`, `department` | Profile | Student academic information |
-| `instructor_profile` | `instructor_profile_id`, `user_id`, `specialization`, `subjects_taught`, `office_hours` | Profile | Instructor teaching information |
-| `advisor_profile` | `advisor_profile_id`, `user_id`, `department`, `office_hours` | Profile | Advisor details |
-| `course`, `module`, `lesson`, `content_item`, `enrollment` | Course hierarchy and enrollment fields | Learning | Course structure, content, and student access |
-| `quiz`, `assignment`, `question_bank`, `question`, `quiz_question` | Assessment setup fields | Assessment | Quiz, assignment, and question bank configuration |
-| `quiz_attempt`, `attempt_answer`, `assignment_submission`, `progress_record` | Attempt, answer, submission, and progress fields | Performance | Scores, feedback, submissions, and lesson progress |
-| `activity_log` | `activity_log_id`, `user_id`, `activity_type`, `target_type`, `duration_seconds`, `metadata` | Analytics | Records user engagement events |
-| `advisor_alert`, `advisor_follow_up`, `advisor_student_assignment` | Advisor alert and assignment fields | Support | Advisor monitoring and intervention workflow |
-| `announcement`, `notification` | Announcement and message fields | Communication | Platform messages and user notifications |
-| `moderation_action`, `audit_log` | Actor, target, action, reason, summary | Audit | Admin moderation and sensitive action history |
+### 1. `role` (Role Type Lookup)
+| Attribute | Data Type | Key | Null | Default | Description |
+| --------- | --------- | --- | ---- | ------- | ----------- |
+| `role_id` | `INT` | `PK` | `No` | `SERIAL` | Unique role identifier. |
+| `role_name` | `VARCHAR(30)` | `None` | `No` | `None` | E.g., 'Student', 'Instructor', 'Advisor', 'Admin'. |
+
+### 2. `user` (Core User Identity)
+| Attribute | Data Type | Key | Null | Default | Description |
+| --------- | --------- | --- | ---- | ------- | ----------- |
+| `user_id` | `INT` | `PK` | `No` | `SERIAL` | Unique internal user reference ID. |
+| `auth_user_id` | `UUID` | `None` | `Yes` | `None` | References `auth.users(id)` from Supabase Auth. |
+| `role_id` | `INT` | `FK` | `No` | `None` | References `role(role_id)`. |
+| `full_name` | `VARCHAR(150)` | `None` | `No` | `None` | The user's full name. |
+| `email` | `VARCHAR(255)` | `None` | `No` | `None` | The user's unique login email address. |
+| `account_status` | `VARCHAR(20)` | `None` | `No` | `'pending'` | Check: `'pending'`, `'active'`, `'suspended'`, `'deactivated'`. |
+
+### 3. `student_profile` (Student Information Profile)
+| Attribute | Data Type | Key | Null | Default | Description |
+| --------- | --------- | --- | ---- | ------- | ----------- |
+| `student_profile_id` | `INT` | `PK` | `No` | `SERIAL` | Unique student profile identifier. |
+| `user_id` | `INT` | `FK` | `No` | `None` | References `"user"(user_id)` ON DELETE CASCADE. |
+| `student_no` | `VARCHAR(30)` | `None` | `No` | `None` | Unique Student Registration Number. |
+| `academic_level` | `VARCHAR(50)` | `None` | `Yes` | `None` | Year level of the student (e.g. 'Year 1'). |
+| `programme` | `VARCHAR(100)` | `None` | `Yes` | `None` | Enrolled specialization course program. |
+| `department` | `VARCHAR(100)` | `None` | `Yes` | `None` | E.g. 'School of Computing'. |
+| `learning_preference` | `VARCHAR(50)` | `None` | `Yes` | `None` | Preferred mode: `'visual'`, `'auditory'`, `'reading'`, `'kinesthetic'`. |
+
+### 4. `instructor_profile` (Instructor Information Profile)
+| Attribute | Data Type | Key | Null | Default | Description |
+| --------- | --------- | --- | ---- | ------- | ----------- |
+| `instructor_profile_id`| `INT` | `PK` | `No` | `SERIAL` | Unique instructor profile identifier. |
+| `user_id` | `INT` | `FK` | `No` | `None` | References `"user"(user_id)` ON DELETE CASCADE. |
+| `specialization` | `VARCHAR(100)`| `None` | `Yes` | `None` | Instructor area of expertise. |
+| `subjects_taught` | `TEXT` | `None` | `Yes` | `None` | List of subject titles taught. |
+| `office_hours` | `VARCHAR(100)`| `None` | `Yes` | `None` | Available consulting office hours details. |
+
+### 5. `advisor_profile` (Advisor Information Profile)
+| Attribute | Data Type | Key | Null | Default | Description |
+| --------- | --------- | --- | ---- | ------- | ----------- |
+| `advisor_profile_id` | `INT` | `PK` | `No` | `SERIAL` | Unique advisor profile identifier. |
+| `user_id` | `INT` | `FK` | `No` | `None` | References `"user"(user_id)` ON DELETE CASCADE. |
+| `department` | `VARCHAR(100)` | `None` | `Yes` | `None` | Host academic department. |
+| `office_hours` | `VARCHAR(100)` | `None` | `Yes` | `None` | Consulting times. |
+
+### 6. `course` (Course Record)
+| Attribute | Data Type | Key | Null | Default | Description |
+| --------- | --------- | --- | ---- | ------- | ----------- |
+| `course_id` | `INT` | `PK` | `No` | `SERIAL` | Unique course identifier. |
+| `instructor_profile_id`| `INT` | `FK` | `No` | `None` | References `instructor_profile(instructor_profile_id)`. |
+| `course_code` | `VARCHAR(20)` | `None` | `No` | `None` | E.g. 'QL-SEF101'. |
+| `course_title` | `VARCHAR(150)`| `None` | `No` | `None` | E.g. 'Software Engineering Fundamentals'. |
+| `description` | `TEXT` | `None` | `Yes` | `None` | Detailed course overview text. |
+| `status` | `VARCHAR(20)` | `None` | `No` | `'draft'` | Check: `'draft'`, `'published'`, `'archived'`. |
+
+### 7. `module` (Course Curriculum Module)
+| Attribute | Data Type | Key | Null | Default | Description |
+| --------- | --------- | --- | ---- | ------- | ----------- |
+| `module_id` | `INT` | `PK` | `No` | `SERIAL` | Unique module identifier. |
+| `course_id` | `INT` | `FK` | `No` | `None` | References `course(course_id)` ON DELETE CASCADE. |
+| `module_title` | `VARCHAR(150)`| `None` | `No` | `None` | Module title text. |
+| `sequence_no` | `INT` | `None` | `No` | `1` | Sequence ordering index. |
+
+### 8. `lesson` (Lesson Content Node)
+| Attribute | Data Type | Key | Null | Default | Description |
+| --------- | --------- | --- | ---- | ------- | ----------- |
+| `lesson_id` | `INT` | `PK` | `No` | `SERIAL` | Unique lesson identifier. |
+| `module_id` | `INT` | `FK` | `No` | `None` | References `module(module_id)` ON DELETE CASCADE. |
+| `lesson_title` | `VARCHAR(150)`| `None` | `No` | `None` | E.g. 'Introduction to UML Diagrams'. |
+| `lesson_type` | `VARCHAR(30)` | `None` | `No` | `'reading'` | E.g. `'reading'`, `'video'`, `'h5p_lumi'`, `'mixed'`. |
+| `sequence_no` | `INT` | `None` | `No` | `1` | Sequence ordering index within module. |
+
+### 9. `content_item` (Lesson Media Embeds)
+| Attribute | Data Type | Key | Null | Default | Description |
+| --------- | --------- | --- | ---- | ------- | ----------- |
+| `content_item_id` | `INT` | `PK` | `No` | `SERIAL` | Unique content item identifier. |
+| `lesson_id` | `INT` | `FK` | `No` | `None` | References `lesson(lesson_id)` ON DELETE CASCADE. |
+| `content_type` | `VARCHAR(30)` | `None` | `No` | `'reading'` | Check: `'reading'`, `'video'`, `'h5p_lumi'`. |
+| `embed_url` | `VARCHAR(500)`| `None` | `Yes` | `None` | Reference URL for Lumi Cloud or YouTube players. |
+| `body_text` | `TEXT` | `None` | `Yes` | `None` | Inline reading Markdown/HTML content. |
+
+### 10. `enrollment` (Student Enrolled Courses)
+| Attribute | Data Type | Key | Null | Default | Description |
+| --------- | --------- | --- | ---- | ------- | ----------- |
+| `enrollment_id` | `INT` | `PK` | `No` | `SERIAL` | Unique enrollment identifier. |
+| `student_profile_id`| `INT` | `FK` | `No` | `None` | References `student_profile(student_profile_id)`. |
+| `course_id` | `INT` | `FK` | `No` | `None` | References `course(course_id)`. |
+| `status` | `VARCHAR(20)` | `None` | `No` | `'active'` | Check: `'active'`, `'completed'`, `'withdrawn'`. |
+
+### 11. `progress_record` (Lesson Node Metrics)
+| Attribute | Data Type | Key | Null | Default | Description |
+| --------- | --------- | --- | ---- | ------- | ----------- |
+| `progress_record_id`| `INT` | `PK` | `No` | `SERIAL` | Unique progress logging key. |
+| `student_profile_id`| `INT` | `FK` | `No` | `None` | References `student_profile(student_profile_id)`. |
+| `lesson_id` | `INT` | `FK` | `No` | `None` | References `lesson(lesson_id)`. |
+| `completion_status` | `VARCHAR(20)` | `None` | `No` | `'not_started'`| Check: `'not_started'`, `'in_progress'`, `'completed'`. |
+| `percentage` | `INT` | `None` | `No` | `0` | Quiz attempt score percentage (0-100). |
+
+### 12. `advisor_follow_up` (Advisor Interventions Logs)
+| Attribute | Data Type | Key | Null | Default | Description |
+| --------- | --------- | --- | ---- | ------- | ----------- |
+| `advisor_follow_up_id`| `INT` | `PK` | `No` | `SERIAL` | Unique follow-up primary key. |
+| `advisor_profile_id` | `INT` | `FK` | `No` | `None` | References `advisor_profile(advisor_profile_id)`. |
+| `student_profile_id` | `INT` | `FK` | `No` | `None` | References `student_profile(student_profile_id)`. |
+| `instructor_profile_id`| `INT`| `FK` | `Yes`| `None` | References `instructor_profile(instructor_profile_id)`. |
+| `follow_up_type` | `VARCHAR(30)` | `None` | `No` | `'message'` | Check: `'message'`, `'meeting'`, `'email'`, `'call'`. |
+| `message` | `TEXT` | `None` | `No` | `None` | Intervention message body. |
+| `next_action` | `TEXT` | `None` | `Yes` | `None` | Action plan suggestions details. |
+
+### 13. `notification` (System & Role In-App Alerts)
+| Attribute | Data Type | Key | Null | Default | Description |
+| --------- | --------- | --- | ---- | ------- | ----------- |
+| `notification_id` | `INT` | `PK` | `No` | `SERIAL` | Unique notification identifier. |
+| `user_id` | `INT` | `FK` | `No` | `None` | References `"user"(user_id)` ON DELETE CASCADE. |
+| `title` | `VARCHAR(150)`| `None` | `No` | `None` | Notification summary heading. |
+| `message` | `TEXT` | `None` | `No` | `None` | Core message body content. |
+| `is_read` | `BOOLEAN` | `None` | `No` | `FALSE` | Read status tracking indicator. |
+| `sent_at` | `TIMESTAMP` | `None` | `No` | `CURRENT_TIMESTAMP` | Date sent. |
 
 The full attribute-level dictionary is maintained in [../part-ii/Database-Design.md](../part-ii/Database-Design.md).
 
