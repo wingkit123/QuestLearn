@@ -87,8 +87,7 @@ export function AdvisorStudentsClient({ students: initialStudents, advisorProfil
           .from("notification")
           .insert({
             user_id: studentData.user_id,
-            title: "Academic Advisory Note",
-            message: `Your Academic Advisor has logged a follow-up intervention suggestion: "${followupMessage.trim()}"`,
+            message: `[Academic Advisory Note] Your Academic Advisor has logged a follow-up intervention suggestion: "${followupMessage.trim()}"`,
             is_read: false,
           });
       }
@@ -106,8 +105,7 @@ export function AdvisorStudentsClient({ students: initialStudents, advisorProfil
             .from("notification")
             .insert({
               user_id: instructorData.user_id,
-              title: "Advisor Intervention Logged",
-              message: `Advisor logged an intervention follow-up for student ${selectedStudent.user.full_name}: "${followupMessage.trim()}"`,
+              message: `[Advisor Intervention Logged] Advisor logged an intervention follow-up for student ${selectedStudent.user.full_name}: "${followupMessage.trim()}"`,
               is_read: false,
             });
         }

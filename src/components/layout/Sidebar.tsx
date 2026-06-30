@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ROLE_NAV, type RoleId } from "@/lib/constants";
@@ -8,10 +9,56 @@ import { LogOut } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
-export function Sidebar({ role }: { role: RoleId }) {
+export function Sidebar({ role, userId }: { role: RoleId; userId?: number }) {
   const pathname = usePathname();
   const navItems = ROLE_NAV[role];
   const router = useRouter();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const supabase = createClient();
+
+    async function fetchUnreadCount() {
+      const { count, error } = await supabase
+        .from("notification")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", userId)
+        .eq("is_read", false);
+
+      if (!error && count !== null) {
+        setUnreadCount(count);
+      }
+    }
+
+    fetchUnreadCount();
+
+    // Subscribe to realtime notification updates
+    const channel = supabase
+      .channel(`notification_updates_${userId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "notification",
+          filter: `user_id=eq.${userId}`,
+        },
+        () => {
+          fetchUnreadCount();
+        }
+      )
+      .subscribe();
+
+    // Check periodically as a fallback
+    const interval = setInterval(fetchUnreadCount, 15000);
+
+    return () => {
+      clearInterval(interval);
+      supabase.removeChannel(channel);
+    };
+  }, [userId]);
 
   async function handleLogout() {
     const supabase = createClient();
@@ -45,14 +92,19 @@ export function Sidebar({ role }: { role: RoleId }) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 isActive
                   ? "bg-primary/20 text-accent"
                   : "hover:bg-primary/10 hover:text-white"
               }`}
             >
-              <IconComponent className="w-5 h-5" />
-              {item.label}
+              <div className="flex items-center gap-3">
+                <IconComponent className="w-5 h-5" />
+                <span>{item.label}</span>
+              </div>
+              {item.label === "Notifications" && unreadCount > 0 && (
+                <span className="w-2 h-2 rounded-full bg-danger animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+              )}
             </Link>
           );
         })}

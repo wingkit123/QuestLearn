@@ -16,7 +16,7 @@ export default async function AdminLayout({
 
   return (
     <div className="min-h-screen bg-bg-page pl-[var(--spacing-sidebar)]">
-      <Sidebar role="admin" />
+      <Sidebar role="admin" userId={user.userId} />
       <div className="flex flex-col min-h-screen">
         <Topbar user={user} />
         <main className="flex-1 p-6 md:p-8">{children}</main>

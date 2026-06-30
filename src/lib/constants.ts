@@ -41,12 +41,14 @@ export const ROLE_NAV: Record<RoleId, NavItem[]> = {
     { label: "Dashboard", href: "/instructor", icon: "LayoutDashboard" },
     { label: "My Courses", href: "/instructor/courses", icon: "BookOpen" },
     { label: "Analytics", href: "/instructor/analytics", icon: "ChartNoAxesColumnIncreasing" },
+    { label: "Notifications", href: "/instructor/notifications", icon: "Bell" },
     { label: "Profile", href: "/instructor/profile", icon: "UserCog" },
   ],
   advisor: [
     { label: "Dashboard", href: "/advisor", icon: "LayoutDashboard" },
     { label: "My Students", href: "/advisor/students", icon: "UsersRound" },
     { label: "Follow-Up History", href: "/advisor/follow-ups", icon: "History" },
+    { label: "Notifications", href: "/advisor/notifications", icon: "Bell" },
     { label: "Profile", href: "/advisor/profile", icon: "UserCog" },
   ],
   admin: [
@@ -55,6 +57,7 @@ export const ROLE_NAV: Record<RoleId, NavItem[]> = {
     { label: "Courses", href: "/admin/courses", icon: "BookOpen" },
     { label: "Announcements", href: "/admin/announcements", icon: "Megaphone" },
     { label: "Analytics", href: "/admin/analytics", icon: "ChartNoAxesColumnIncreasing" },
+    { label: "Notifications", href: "/admin/notifications", icon: "Bell" },
   ],
 };
 
