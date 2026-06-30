@@ -47,22 +47,25 @@ This document provides the use case reference for QuestLearn. It is written to s
 15. Publish lesson
 16. Publish module
 17. Update course content
-18. Review assignment submissions
+18. Grade submissions
 19. View student attempts
 20. View class performance analytics
 21. View course engagement analytics
 22. Send course announcements
+23. Receive notifications
 
 ### 1.3 Academic Advisor Use Cases
 
 1. Log in
-2. View department students
-3. View student progress summary
-4. View quiz performance trends
-5. View overdue assignments
-6. View student learning history summary
-7. Send advisory message
-8. Monitor follow-up status
+2. Manage profile
+3. View assigned advisees
+4. View student progress summary
+5. View quiz performance trends
+6. View overdue assignments
+7. View student learning history summary
+8. Send advisory follow-up
+9. Monitor follow-up status
+10. Receive notifications
 
 ### 1.4 Admin Use Cases
 
@@ -77,6 +80,7 @@ This document provides the use case reference for QuestLearn. It is written to s
 9. Deactivate account
 10. Reactivate account
 11. Reset user password
+12. Receive notifications
 
 ## 2. Core Use Cases for the Main Diagram
 
@@ -118,31 +122,40 @@ These are the main use cases to prioritize in the final UML use case diagram:
 - Log in
 - Manage instructor profile
 - Create course
+- Create module
 - Create lesson
 - Upload learning content
 - Create quiz
 - Create assignment
+- Grade submissions
 - Configure automated feedback
-- View analytics
-- Send course announcements
+- Publish learning content
+- View course engagement analytics
+- View student performance analytics
+- Send course announcement
+- Receive notifications
 
 ### Academic Advisor
 
-- Log in
-- View department students
-- View progress summary
+- Log In
+- Manage profile
+- View assigned advisees
+- Review student progress summary
 - Review overdue assignments
-- Send advisory message
+- Send advisory follow-up
+- Receive notifications
 
 ### Admin
 
-- Log in
+- Log In
 - Manage users
 - Assign roles
-- Approve instructor accounts
+- Approve instructor/advisor accounts
+- Reset user password
 - Moderate learning content
 - Manage announcements
-- Reset user password
+- View platform analytics
+- Receive notifications
 
 ## 4. Formal Use Case Descriptions
 
