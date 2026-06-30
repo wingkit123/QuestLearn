@@ -88,7 +88,9 @@ Existing platforms also separate content delivery, formative assessment, engagem
 
 ## 1.3 Project Plan
 
-The project is organised into three major phases that align with the course deliverables.
+The project is organised into three major phases that align with the course deliverables. 
+
+![Project Gantt Chart](./images/gantt_chart.png)
 
 | Phase | Planned Output | Actual / Part III Status | Evidence to Attach |
 | --- | --- | --- | --- |
@@ -124,11 +126,14 @@ The Part III work followed a fixed sequence so the team did not build UI or test
 
 ## 2.1 Description
 
-QuestLearn is an adaptive learning portal. It enables:
+QuestLearn is an adaptive learning portal. The major functions and processes the product performs are categorized by the primary actors:
 1. **Instructors** to construct courses, embed videos, compile quiz questionnaires, publish grades, and monitor students.
 2. **Students** to access curriculum paths, view interactive H5P modules, submit attempts, track grades, and receive weak-topic warnings.
 3. **Academic Advisors** to review risk flags, document follow-ups, and send intervention logs to instructors.
 4. **Admins** to oversee platform users, modify roles, suspend or kick users, and publish site announcements.
+
+**Top-Level Data Flow / Object Class Diagram**
+![Top Level Diagram](./images/top_level_diagram.png)
 
 ## 2.2 Actors
 
@@ -364,12 +369,25 @@ Records admin moderation decisions for accounts and content.
 
 QuestLearn uses a four-layer cloud-backed architecture based on Next.js and Supabase.
 
+![Software Architecture Diagram](./images/architecture_diagram.png)
+
+| Subsystem | Team members |
+| --------- | ------------ |
+| Subsystem 1 (Core Application Modules) | See Wing Kit, Aziel Tan Zheng Chuan |
+| Subsystem 2 (Data Persistence & Security Engines) | Vincent Lock Chun Kit, Soo Kian Rong |
+
 ### 4.2.1 Subsystem 1 (Core Application Modules)
+
+![Subsystem 1 Architecture](./images/subsystem1_arch.png)
+
 This subsystem handles presentation logic and user interaction:
 * **Student Module:** Dashboard cards, course outlines, progress bars, and iframe player containers.
 * **Instructor Module:** Course builders, curriculum managers, and grading interfaces.
 
 ### 4.2.2 Subsystem 2 (Data Persistence & Security Engines)
+
+![Subsystem 2 Architecture](./images/subsystem2_arch.png)
+
 This subsystem coordinates background processing and database transactions:
 * **Supabase Auth Engine:** Validates sessions and handles password resets.
 * **advisor_alert & Notification Engine:** Triggers alerts when quiz scores drop below 50%, sending logs to students and advisors.
@@ -378,32 +396,71 @@ This subsystem coordinates background processing and database transactions:
 ## 4.3 Main Screens
 
 1. **Dashboard Portal:** Standard layout with routing based on the logged-in user's role.
+![Main Dashboard Screen](./images/main_dashboard.png)
 2. **Profile Settings Screen:** Allows updating contact information and learning preferences.
+![Profile Settings Screen](./images/profile_settings.png)
 
 ## 4.4 Subsystem 1 Screens
 
 1. **Student Dashboard (`/student`):** Displays active courses and overall progress.
+![Student Dashboard](./images/student_dashboard.png)
 2. **Course details (`/student/courses/[id]`):** Shows modules, completed checkmarks, and locked items.
+![Course Details](./images/course_details.png)
 3. **Instructor Curriculum Builder (`/instructor/courses/[id]`):** Contains lesson forms, video input tools, and H5P iframe embed inputs.
+![Instructor Curriculum Builder](./images/instructor_builder.png)
 
 ## 4.5 Subsystem 2 Screens
 
 1. **Advisor Student Monitoring Portal (`/advisor/students`):** Department list showing advisor follow-up controls and linked instructor selectors.
+![Advisor Portal](./images/advisor_portal.png)
 2. **Admin User Registry Control (`/admin/users`):** Displays tables with approval, suspend, and delete actions.
+![Admin Registry](./images/admin_registry.png)
 
 ## 4.6 Main Components
 
+| Component | Related Subsystems |
+| --------- | ------------------ |
+| Quiz Auto-Grading & Alert Trigger | Subsystem 1, Subsystem 2 |
+| Rule-Based Module Locking Logic | Subsystem 1 |
+
 ### 4.6.1 Component 1: Quiz Auto-Grading & Alert Trigger
-A Server Action that evaluates submitted answers and logs scores:
-```
-[Submit Quiz] -> [Calculate points] -> [Record attempt] -> Score < 50% ?
-                                                             ├── YES ──► Insert advisor_alert
-                                                             └── NO  ──► Save progress only
+
+**Processing Flowchart**
+![Quiz Auto-Grading Flowchart](./images/comp1_flowchart.png)
+
+**Pseudocode Algorithm**
+```text
+FUNCTION submitQuiz(studentId, quizId, answers)
+    score = calculatePoints(quizId, answers)
+    INSERT INTO quiz_attempt (studentId, quizId, score)
+    IF score < 50% THEN
+        INSERT INTO advisor_alert (studentId, 'low_quiz_score')
+        TRIGGER email_notification(studentId, advisorId)
+    END IF
+    RETURN score
+END FUNCTION
 ```
 
 ### 4.6.2 Component 2: Rule-Based Module Locking Logic
-Iterates through course modules to enforce sequential access:
-* If a student fails a quiz lesson (`score < 50%`), all subsequent lessons in that module are flagged as locked (`lockedLessonIds.add(lesson_id)`).
+
+**Processing Flowchart**
+![Module Locking Flowchart](./images/comp2_flowchart.png)
+
+**Pseudocode Algorithm**
+```text
+FUNCTION getCourseModules(studentId, courseId)
+    modules = FETCH modules FOR courseId
+    lockedLessonIds = []
+    FOR EACH module IN modules
+        FOR EACH lesson IN module
+            IF previous_lesson.score < 50% THEN
+                lockedLessonIds.add(lesson.id)
+            END IF
+        END FOR
+    END FOR
+    RETURN (modules, lockedLessonIds)
+END FUNCTION
+```
 
 ### 4.6.3 Behavioral Modeling
 
@@ -469,6 +526,10 @@ graph TD
 
 ## 5.1 Development Environment
 
+The system was developed using VS Code on Windows, leveraging the Next.js 15 App Router architecture with Turbopack for local compilation. 
+
+![VS Code Environment](./images/ide_environment.png)
+
 * **Framework:** Next.js 15 (App Router, React 19)
 * **Language:** TypeScript
 * **Database:** Supabase PostgreSQL 17.6
@@ -476,15 +537,17 @@ graph TD
 
 ## 5.2 Software Integration
 
-QuestLearn integrates its subsystems using role-based routing and shared API models:
+Our strategy to integrate Subsystem 1 and Subsystem 2 was to rely on Next.js Server Components securely fetching from the shared Supabase PostgreSQL database using Row Level Security (RLS) policies. Role-based route protection acts as the integration gateway between the Subsystems.
 
-| Module File | Target Subsystem | Integration Logic |
-| --- | --- | --- |
-| `src/app/(auth)/login/` | Subsystem 2 | Authenticates user credentials via Supabase Auth. |
-| `src/app/(student)/student/courses/` | Subsystem 1 | Implements course outline rendering and locking checks. |
-| `src/app/(instructor)/instructor/courses/`| Subsystem 1 | Provides course builder forms and content editors. |
-| `src/app/(advisor)/advisor/students/` | Subsystem 2 | Processes student status reviews and logs advisor follow-ups. |
-| `src/app/(admin)/admin/users/` | Subsystem 2 | Handles user approvals, suspensions, and deletes. |
+![Integration Strategy Architecture](./images/integration_strategy.png)
+
+| File | Description |
+| ---- | ----------- |
+| `src/app/(auth)/login/page.tsx` | Authenticates user credentials via Supabase Auth and routes to respective Subsystems based on role. |
+| `src/app/(student)/student/courses/page.tsx` | Implements course outline rendering and locking checks, pulling data created by Subsystem 1. |
+| `src/app/(instructor)/instructor/courses/page.tsx` | Provides course builder forms and content editors, saving directly to the shared Supabase instance. |
+| `src/app/(advisor)/advisor/students/page.tsx` | Processes student status reviews and logs advisor follow-ups, reacting to Subsystem 1's assessment triggers. |
+| `src/app/(admin)/admin/users/page.tsx` | Handles user approvals, suspensions, and deletes affecting all Subsystem user pools. |
 
 ## 5.3 Database
 
@@ -515,12 +578,20 @@ We implemented the relational database in Supabase and seeded it with core demo 
 
 Acceptance criteria checks for the implemented prototype:
 
-| Criteria | Expected Outcome | Status |
-| --- | --- | --- |
-| User Register & Login | Student/Instructor accounts log in and redirect. | **Passed** |
-| Module Locking | Failing Quiz 1 locks subsequent lessons. | **Passed** |
-| Advisor Intervention | Logging follow-up sends notifications to student and instructor. | **Passed** |
-| Admin User Registry | Admins can suspend or delete user profiles. | **Passed** |
+| Criteria | Fulfilled | Remarks |
+| -------- | --------- | ------- |
+| User Register & Login - Accounts log in and redirect. | Yes | Tests passed without session drop. |
+| Module Locking - Failing Quiz 1 locks subsequent lessons. | Yes | RLS and server action correctly flag lesson status. |
+| Advisor Intervention - Logging follow-up sends notifications. | Yes | Successfully inserted into notification table. |
+| Admin User Registry - Suspend or delete user profiles. | Yes | Admin action revokes login ability correctly. |
+
+_Date tested : _**_30 June 2026_**_
+
+_% Complete : _**_100%_**_
+
+_Tested by : _**_Soo Kian Rong_**_
+
+_Verified by :_**_See Wing Kit_**_
 
 ---
 
@@ -528,19 +599,34 @@ Acceptance criteria checks for the implemented prototype:
 
 ## 7.1 Main Screen
 
+![Main Screen Prototype](./images/sample_main_screen.png)
+
 ### 7.1.1 Subsystem 1 Screens
 * **Student Dashboard Page:** Displays enrolled courses, completion percentage gauges, upcoming assignment counts, and recent activity logs.
+![Subsystem 1 Student Screen](./images/sample_student.png)
 * **Interactive Lesson Page:** Contains reading materials, YouTube video windows, and H5P iframe modules.
+![Subsystem 1 Lesson Screen](./images/sample_lesson.png)
 
 ### 7.1.2 Subsystem 2 Screens
 * **Advisor Student Intervention Panel:** Student row layout featuring a "Follow Up" button, instructor selection dropdown, and message text box.
+![Subsystem 2 Advisor Screen](./images/sample_advisor.png)
 * **Admin User Registry Console:** User table with active/suspended status indicators and controls to suspend, reactivate, or delete accounts.
+![Subsystem 2 Admin Screen](./images/sample_admin.png)
 
 ---
 
 # 8 Conclusion
 
-The QuestLearn prototype implements interactive education workflows for Students, Instructors, Advisors, and Admins. By utilizing Next.js Server Components, PostgreSQL, and Supabase client hooks, we created an adaptive interface. The H5P/Lumi player integrates smoothly with our database structure, and the rule-based recommendation logic behaves as designed under test conditions.
+The QuestLearn prototype successfully completes the implementation of interactive education workflows for Students, Instructors, Advisors, and Admins. 
+
+**Completion of Software & QA:**
+The software was completed utilizing Next.js Server Components, PostgreSQL, and Supabase client hooks. Software Quality Assurance was verified via unit tests and manual acceptance tests where the rule-based recommendation logic and module locking behaved as designed.
+
+**Group Collaboration:**
+The group collaborated using a subsystem-ownership model, merging components strictly through pull requests to ensure stability of the shared database schemas.
+
+**Problems Encountered:**
+During development, we encountered challenges with Supabase Row Level Security preventing users from accessing their own profiles initially, and issues with the `middleware.ts` file convention during the Next.js upgrade (as seen in our dev logs). These were resolved by migrating proxy logic and adjusting RLS permissions.
 
 ---
 
