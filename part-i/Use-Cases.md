@@ -39,20 +39,18 @@ This document provides the use case reference for QuestLearn. It is written to s
 7. Create lesson
 8. Upload video content
 9. Add reading content
-10. Create quiz
+10. Create quiz (via H5P/Lumi embed)
 11. Create assignment
-12. Build question bank
-13. Randomize assessment questions
-14. Configure automated feedback
-15. Publish lesson
-16. Publish module
-17. Update course content
-18. Grade submissions
-19. View student attempts
-20. View class performance analytics
-21. View course engagement analytics
-22. Send course announcements
-23. Receive notifications
+12. Configure automated feedback
+13. Publish lesson
+14. Publish module
+15. Update course content
+16. Grade submissions
+17. View student attempts
+18. View class performance analytics
+19. View course engagement analytics
+20. Send course announcements
+21. Receive notifications
 
 ### 1.3 Academic Advisor Use Cases
 
@@ -286,22 +284,21 @@ These are the main use cases to prioritize in the final UML use case diagram:
 ### UC-07 Create Assessment and Configure Feedback
 
 **Primary Actor:** Instructor  
-**Trigger:** The instructor opens an assessment management function.  
-**Precondition:** The instructor has an active course and lesson or assignment target.  
+**Trigger:** The instructor opens the Course Builder.  
+**Precondition:** The instructor has an active course and module.  
 **Main Flow:**
 
-1. The instructor creates a quiz or assignment.
-2. The instructor defines assessment rules such as question type, deadline, and marking configuration.
-3. The instructor selects or creates question bank items for quizzes.
-4. The instructor configures automated feedback for objective questions.
-5. The instructor publishes the assessment.
-6. The system stores the assessment and makes it available according to course rules.
+1. The instructor selects a module and creates a new lesson of type `h5p_lumi` with a title prefixing "Quiz".
+2. The instructor inputs the Lumi/H5P shareable iframe URL.
+3. The instructor configures automated feedback threshold rules (e.g. passing score).
+4. The instructor saves and publishes the quiz.
+5. The system embeds the Lumi player frame into the student lesson view.
 
 **Alternate Flow:**
 
-1. If assessment settings are incomplete, the system blocks publishing until the required fields are completed.
+1. If the Lumi URL is missing or incorrectly formatted, the system displays an error and rejects the save.
 
-**Postcondition:** The assessment is available for student completion and later analytics.
+**Postcondition:** The quiz assessment is embedded and available for student attempts.
 
 ### UC-08 View Advisor Dashboard and Follow Up
 
@@ -531,18 +528,19 @@ flowchart TD
 
 ### UC-07 Create Assessment and Configure Feedback
 
+### UC-07 Create Assessment and Configure Feedback
+
 ```mermaid
 flowchart TD
-    A((Start)) --> B[Open assessment management]
-    B --> C[Create quiz or assignment]
-    C --> D[Define assessment rules]
-    D --> E[Select or create question bank items]
-    E --> F[Configure automated feedback]
-    F --> G{Settings complete?}
-    G -- No --> D
-    G -- Yes --> H[Publish assessment]
-    H --> I[Store assessment and availability rules]
-    I --> J((End))
+    A((Start)) --> B[Open Course Builder]
+    B --> C[Create Lesson of Type h5p_lumi with Quiz prefix]
+    C --> D[Input Lumi/H5P shareable iframe URL]
+    D --> E{URL formatted correctly?}
+    E -- No --> D
+    E -- Yes --> F[Configure automated feedback rules]
+    F --> G[Save and publish Lesson]
+    G --> H[Embed Lumi iframe player in student view]
+    H --> I((End))
 ```
 
 ### UC-08 View Advisor Dashboard and Follow Up
