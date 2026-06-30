@@ -161,7 +161,6 @@ erDiagram
     ROLE ||--o{ USER : "has"
     USER ||--o| INSTRUCTOR_PROFILE : "extends"
     USER ||--o| STUDENT_PROFILE : "extends"
-    USER ||--o| ADVISOR_PROFILE : "extends"
     
     INSTRUCTOR_PROFILE ||--o{ COURSE : "teaches"
     COURSE ||--|{ MODULE : "contains"
@@ -171,38 +170,10 @@ erDiagram
     
     MODULE ||--o{ MODULE : "depends on (prerequisite_module_id)"
     
-    COURSE ||--o{ ENROLLMENT : "has"
-    STUDENT_PROFILE ||--o{ ENROLLMENT : "enrols"
-    
-    COURSE ||--o{ QUESTION_BANK : "owns"
-    QUESTION_BANK ||--|{ QUESTION : "contains"
-    
-    QUIZ ||--|{ QUIZ_QUESTION : "comprises"
-    QUESTION ||--|{ QUIZ_QUESTION : "belongs to"
-    
-    QUIZ ||--o{ QUIZ_ATTEMPT : "has"
-    STUDENT_PROFILE ||--o{ QUIZ_ATTEMPT : "submits"
-    QUIZ_ATTEMPT ||--o{ ATTEMPT_ANSWER : "comprises"
-    QUESTION ||--o{ ATTEMPT_ANSWER : "records"
-    
     COURSE ||--o{ ASSIGNMENT : "contains"
     LESSON ||--o{ ASSIGNMENT : "references"
     ASSIGNMENT ||--o{ ASSIGNMENT_SUBMISSION : "has"
     STUDENT_PROFILE ||--o{ ASSIGNMENT_SUBMISSION : "submits"
-    
-    STUDENT_PROFILE ||--o{ PROGRESS_RECORD : "tracks"
-    LESSON ||--o{ PROGRESS_RECORD : "records"
-    
-    ADVISOR_PROFILE ||--o{ ADVISOR_STUDENT_ASSIGNMENT : "manages"
-    STUDENT_PROFILE ||--o{ ADVISOR_STUDENT_ASSIGNMENT : "assigned"
-    
-    STUDENT_PROFILE ||--o{ ADVISOR_ALERT : "raises"
-    ADVISOR_PROFILE ||--o{ ADVISOR_ALERT : "reviews"
-    
-    ADVISOR_ALERT ||--o{ ADVISOR_FOLLOW_UP : "triggers"
-    ADVISOR_PROFILE ||--o{ ADVISOR_FOLLOW_UP : "logs"
-    STUDENT_PROFILE ||--o{ ADVISOR_FOLLOW_UP : "receives"
-    INSTRUCTOR_PROFILE ||--o{ ADVISOR_FOLLOW_UP : "notifies"
 
     ROLE {
         int role_id PK
