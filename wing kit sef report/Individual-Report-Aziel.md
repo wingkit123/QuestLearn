@@ -105,49 +105,54 @@ The Instructor Subsystem serves as the content creation and assessment engine of
 
 The use case diagram below extracts the 17 use cases associated with the **Instructor** actor directly from the master QuestLearn Use Case Diagram:
 
-```mermaid
-usecaseDiagram
-    actor Instructor as "Instructor (Aziel Tan Zheng Chuan)"
+```plantuml
+@startuml QuestLearn Instructor Use Cases
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Instructor (Aziel Tan Zheng Chuan)" as Instructor
+
+rectangle "QuestLearn - Instructor Subsystem" {
+    usecase "Register Account" as UC_Reg
+    usecase "Log In(instructor)" as UC_Login
+    usecase "Manage Instructor Profile" as UC_MngInstProf
+    usecase "Manage Profile" as UC_MngProf
+    usecase "Receive Notifications" as UC_RecvNotif
     
-    rect "QuestLearn - Instructor Subsystem" {
-        usecase UC_Reg as "Register Account"
-        usecase UC_Login as "Log In(instructor)"
-        usecase UC_MngInstProf as "Manage Instructor Profile"
-        usecase UC_MngProf as "Manage Profile"
-        usecase UC_RecvNotif as "Receive Notifications"
-        
-        usecase UC_CreateCourse as "Create Course"
-        usecase UC_SendAnnounce as "Send Course Announcement"
-        usecase UC_CreateModule as "Create Module"
-        usecase UC_CreateLesson as "Create Lesson"
-        usecase UC_UploadContent as "Upload Learning Content"
-        usecase UC_PublishContent as "Publish Learning Content"
-        usecase UC_CreateQuiz as "Create Quiz"
-        usecase UC_ConfigFeedback as "Configure Automated Feedback"
-        usecase UC_CreateAssign as "Create Assignment"
-        usecase UC_GradeSub as "Grade Submissions"
-        
-        usecase UC_ViewStudentPerf as "View Student Performance Analytics"
-        usecase UC_ViewCourseEngage as "View Course Engagement Analytics"
-    }
+    usecase "Create Course" as UC_CreateCourse
+    usecase "Send Course Announcement" as UC_SendAnnounce
+    usecase "Create Module" as UC_CreateModule
+    usecase "Create Lesson" as UC_CreateLesson
+    usecase "Upload Learning Content" as UC_UploadContent
+    usecase "Publish Learning Content" as UC_PublishContent
+    usecase "Create Quiz" as UC_CreateQuiz
+    usecase "Configure Automated Feedback" as UC_ConfigFeedback
+    usecase "Create Assignment" as UC_CreateAssign
+    usecase "Grade Submissions" as UC_GradeSub
     
-    Instructor --> UC_Reg
-    Instructor --> UC_Login
-    Instructor --> UC_MngInstProf
-    Instructor --> UC_MngProf
-    Instructor --> UC_RecvNotif
-    Instructor --> UC_CreateCourse
-    Instructor --> UC_SendAnnounce
-    Instructor --> UC_CreateModule
-    Instructor --> UC_CreateLesson
-    Instructor --> UC_UploadContent
-    Instructor --> UC_PublishContent
-    Instructor --> UC_CreateQuiz
-    Instructor --> UC_ConfigFeedback
-    Instructor --> UC_CreateAssign
-    Instructor --> UC_GradeSub
-    Instructor --> UC_ViewStudentPerf
-    Instructor --> UC_ViewCourseEngage
+    usecase "View Student Performance Analytics" as UC_ViewStudentPerf
+    usecase "View Course Engagement Analytics" as UC_ViewCourseEngage
+}
+
+Instructor --> UC_Reg
+Instructor --> UC_Login
+Instructor --> UC_MngInstProf
+Instructor --> UC_MngProf
+Instructor --> UC_RecvNotif
+Instructor --> UC_CreateCourse
+Instructor --> UC_SendAnnounce
+Instructor --> UC_CreateModule
+Instructor --> UC_CreateLesson
+Instructor --> UC_UploadContent
+Instructor --> UC_PublishContent
+Instructor --> UC_CreateQuiz
+Instructor --> UC_ConfigFeedback
+Instructor --> UC_CreateAssign
+Instructor --> UC_GradeSub
+Instructor --> UC_ViewStudentPerf
+Instructor --> UC_ViewCourseEngage
+@enduml
 ```
 
 *(Note: PlantUML diagram source code is available in the appendix of the subsystem project folder under `QuestLearn Use Cases` block).*
