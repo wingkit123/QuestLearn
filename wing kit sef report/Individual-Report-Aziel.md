@@ -161,153 +161,20 @@ Instructor --> UC_ViewCourseEngage
 
 The complete system schema mapping the Instructor Subsystem entities and their relations to the Student/Advisor/Admin subsystems is shown below:
 
-```plantuml
-@startuml QuestLearn ERD
-!theme plain
-hide circle
-skinparam linetype ortho
-
-entity "role" as role {
-  * role_id : SERIAL <<PK>>
-  --
-  role_name : VARCHAR(50)
+ROLE {
+    string role_id PK
+    string role_name
 }
 
-entity "user" as user {
-  * user_id : SERIAL <<PK>>
-  --
-  * role_id : INT <<FK>>
-  auth_user_id : UUID
-  full_name : VARCHAR(150)
-  email : VARCHAR(255)
-  account_status : VARCHAR(20)
-  created_at : TIMESTAMP
+USER {
+    string user_id PK
+    string auth_user_id
+    string role_id FK
+    string full_name
+    string email
+    string account_status
+    string created_at
 }
-
-entity "instructor_profile" as instructor_profile {
-  * instructor_profile_id : SERIAL <<PK>>
-  --
-  * user_id : INT <<FK>>
-  staff_no : VARCHAR(30)
-  specialization : VARCHAR(200)
-  subjects_taught : TEXT
-  office_hours : VARCHAR(200)
-}
-
-entity "student_profile" as student_profile {
-  * student_profile_id : SERIAL <<PK>>
-  --
-  * user_id : INT <<FK>>
-  student_no : VARCHAR(30)
-  academic_level : VARCHAR(50)
-  programme : VARCHAR(100)
-  department : VARCHAR(100)
-  learning_preference : VARCHAR(50)
-}
-
-entity "course" as course {
-  * course_id : SERIAL <<PK>>
-  --
-  * instructor_profile_id : INT <<FK>>
-  course_code : VARCHAR(20)
-  course_title : VARCHAR(200)
-  description : TEXT
-  department : VARCHAR(100)
-  status : VARCHAR(20)
-  created_at : TIMESTAMP
-}
-
-entity "module" as module {
-  * module_id : SERIAL <<PK>>
-  --
-  * course_id : INT <<FK>>
-  * prerequisite_module_id : INT <<FK>>
-  module_title : VARCHAR(200)
-  sequence_no : INT
-  description : TEXT
-  publish_status : VARCHAR(20)
-}
-
-entity "lesson" as lesson {
-  * lesson_id : SERIAL <<PK>>
-  --
-  * module_id : INT <<FK>>
-  lesson_title : VARCHAR(200)
-  lesson_type : VARCHAR(20)
-  content_text : TEXT
-  video_url : VARCHAR(500)
-  sequence_no : INT
-  publish_status : VARCHAR(20)
-}
-
-entity "content_item" as content_item {
-  * content_item_id : SERIAL <<PK>>
-  --
-  * lesson_id : INT <<FK>>
-  content_type : VARCHAR(20)
-  title : VARCHAR(200)
-  body_text : TEXT
-  resource_url : VARCHAR(500)
-  storage_path : VARCHAR(500)
-  embed_url : VARCHAR(500)
-  sequence_no : INT
-  publish_status : VARCHAR(20)
-  created_at : TIMESTAMP
-}
-
-entity "assignment" as assignment {
-  * assignment_id : SERIAL <<PK>>
-  --
-  * course_id : INT <<FK>>
-  * lesson_id : INT <<FK>>
-  assignment_title : VARCHAR(200)
-  description : TEXT
-  deadline : TIMESTAMP
-  total_marks : INT
-  publish_status : VARCHAR(20)
-  created_at : TIMESTAMP
-}
-
-entity "assignment_submission" as assignment_submission {
-  * submission_id : SERIAL <<PK>>
-  --
-  * assignment_id : INT <<FK>>
-  * student_profile_id : INT <<FK>>
-  submitted_at : TIMESTAMP
-  submission_url : VARCHAR(500)
-  status : VARCHAR(20)
-  score : NUMERIC
-  feedback : TEXT
-}
-
-entity "quiz" as quiz {
-  * quiz_id : SERIAL <<PK>>
-  --
-  * lesson_id : INT <<FK>>
-  quiz_title : VARCHAR(200)
-  total_marks : INT
-  time_limit : INT
-  randomized : BOOLEAN
-  publish_status : VARCHAR(20)
-}
-
-role ||--o{ user : "has"
-user ||--o| instructor_profile : "extends"
-user ||--o| student_profile : "extends"
-instructor_profile ||--o{ course : "teaches"
-course ||--|{ module : "contains"
-module ||--|{ lesson : "contains"
-lesson ||--o{ content_item : "contains"
-lesson ||--o{ quiz : "contains"
-module ||--o{ module : "prerequisite"
-course ||--o{ assignment : "contains"
-lesson ||--o{ assignment : "references"
-assignment ||--o{ assignment_submission : "has"
-student_profile ||--o{ assignment_submission : "submits"
-@enduml
-```
-
----
 
 # 3 Design
 
@@ -317,26 +184,141 @@ student_profile ||--o{ assignment_submission : "submits"
 The instructor creates a module, creates a lesson within it, and embeds lesson content.
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Instructor as Instructor (Browser)
-    participant Client as CourseBuilderClient (UI)
-    participant Server as Server Actions
-    participant DB as Supabase PostgreSQL
-    
-    Instructor->>Client: Click 'Add Module' / Enter Details
-    Client->>Server: insertModule(courseId, title, prerequisiteId)
-    Server->>DB: INSERT INTO module VALUES (course_id, module_title, prerequisite_module_id)
-    DB-->>Server: Return module_id, title, sequence_no
-    Server-->>Client: Update Client UI State (React Tree)
-    Instructor->>Client: Add Lesson & Insert H5P Embed URL
-    Client->>Server: insertLessonAndContent(moduleId, title, embedUrl)
-    Server->>DB: INSERT INTO lesson (module_id, lesson_title, lesson_type)
-    DB-->>Server: Return lesson_id
-    Server->>DB: INSERT INTO content_item (lesson_id, embed_url, content_type)
-    DB-->>Server: Confirm Insertion
-    Server-->>Client: Return Success Status
-    Client-->>Instructor: Show Success Toast / Refresh Course Tree
+erDiagram
+
+ROLE {
+    PK role_id
+    role_name
+}
+
+USER {
+    PK user_id
+    FK role_id
+    auth_user_id
+    full_name
+    email
+    account_status
+    created_at
+}
+
+INSTRUCTOR_PROFILE {
+    PK instructor_profile_id
+    FK user_id
+    staff_no
+    specialization
+    subjects_taught
+    office_hours
+}
+
+STUDENT_PROFILE {
+    PK student_profile_id
+    FK user_id
+    student_no
+    academic_level
+    programme
+    department
+    learning_preference
+}
+
+COURSE {
+    PK course_id
+    FK instructor_profile_id
+    course_code
+    course_title
+    description
+    department
+    status
+    created_at
+}
+
+MODULE {
+    PK module_id
+    FK course_id
+    FK prerequisite_module_id
+    module_title
+    sequence_no
+    description
+    publish_status
+}
+
+LESSON {
+    PK lesson_id
+    FK module_id
+    lesson_title
+    lesson_type
+    content_text
+    video_url
+    sequence_no
+    publish_status
+}
+
+CONTENT_ITEM {
+    PK content_item_id
+    FK lesson_id
+    content_type
+    title
+    body_text
+    resource_url
+    storage_path
+    embed_url
+    sequence_no
+    publish_status
+    created_at
+}
+
+ASSIGNMENT {
+    PK assignment_id
+    FK course_id
+    FK lesson_id
+    assignment_title
+    description
+    deadline
+    total_marks
+    publish_status
+    created_at
+}
+
+ASSIGNMENT_SUBMISSION {
+    PK submission_id
+    FK assignment_id
+    FK student_profile_id
+    submitted_at
+    submission_url
+    status
+    score
+    feedback
+}
+
+QUIZ {
+    PK quiz_id
+    FK lesson_id
+    quiz_title
+    total_marks
+    time_limit
+    randomized
+    publish_status
+}
+
+ROLE ||--o{ USER : has
+
+USER ||--|| INSTRUCTOR_PROFILE : owns
+USER ||--|| STUDENT_PROFILE : owns
+
+INSTRUCTOR_PROFILE ||--o{ COURSE : teaches
+
+COURSE ||--o{ MODULE : contains
+MODULE ||--o| MODULE : prerequisite
+MODULE ||--o{ LESSON : contains
+
+LESSON ||--o{ CONTENT_ITEM : includes
+
+COURSE ||--o{ ASSIGNMENT : has
+LESSON ||--o{ ASSIGNMENT : contains
+
+ASSIGNMENT ||--o{ ASSIGNMENT_SUBMISSION : receives
+STUDENT_PROFILE ||--o{ ASSIGNMENT_SUBMISSION : submits
+
+LESSON ||--o{ QUIZ : contains
 ```
 
 ### 3.1.2 Use Case 2: Grade Assignment Submissions
