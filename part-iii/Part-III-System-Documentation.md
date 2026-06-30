@@ -90,6 +90,7 @@ Existing platforms also separate content delivery, formative assessment, engagem
 
 The project is organised into three major phases that align with the course deliverables. 
 
+<!-- [Insert Gantt Chart from project timeline] -->
 ![Project Gantt Chart](./images/gantt_chart.png)
 
 | Phase | Planned Output | Actual / Part III Status | Evidence to Attach |
@@ -133,6 +134,7 @@ QuestLearn is an adaptive learning portal. The major functions and processes the
 4. **Admins** to oversee platform users, modify roles, suspend or kick users, and publish site announcements.
 
 **Top-Level Data Flow / Object Class Diagram**
+<!-- [Insert DFD or Object Class Diagram mapping Student/Instructor/Advisor/Admin subsystem database operations] -->
 ![Top Level Diagram](./images/top_level_diagram.png)
 
 ## 2.2 Actors
@@ -369,6 +371,7 @@ Records admin moderation decisions for accounts and content.
 
 QuestLearn uses a four-layer cloud-backed architecture based on Next.js and Supabase.
 
+<!-- [Insert overall architecture diagram of Next.js 15 Client, Supabase Backend, and external Lumi iframe integrations] -->
 ![Software Architecture Diagram](./images/architecture_diagram.png)
 
 | Subsystem | Team members |
@@ -378,6 +381,7 @@ QuestLearn uses a four-layer cloud-backed architecture based on Next.js and Supa
 
 ### 4.2.1 Subsystem 1 (Core Application Modules)
 
+<!-- [Insert Subsystem 1 architecture component diagram detailing Course/Student outline builder interactions] -->
 ![Subsystem 1 Architecture](./images/subsystem1_arch.png)
 
 This subsystem handles presentation logic and user interaction:
@@ -386,6 +390,7 @@ This subsystem handles presentation logic and user interaction:
 
 ### 4.2.2 Subsystem 2 (Data Persistence & Security Engines)
 
+<!-- [Insert Subsystem 2 architecture component diagram detailing Advisor alerts triggers and Admin registry operations] -->
 ![Subsystem 2 Architecture](./images/subsystem2_arch.png)
 
 This subsystem coordinates background processing and database transactions:
@@ -396,24 +401,31 @@ This subsystem coordinates background processing and database transactions:
 ## 4.3 Main Screens
 
 1. **Dashboard Portal:** Standard layout with routing based on the logged-in user's role.
+<!-- [Insert main landing dashboard mockup from UI design phase] -->
 ![Main Dashboard Screen](./images/main_dashboard.png)
 2. **Profile Settings Screen:** Allows updating contact information and learning preferences.
+<!-- [Insert profile modification mockup from UI design phase] -->
 ![Profile Settings Screen](./images/profile_settings.png)
 
 ## 4.4 Subsystem 1 Screens
 
 1. **Student Dashboard (`/student`):** Displays active courses and overall progress.
+<!-- [Insert student portal dashboard mockup from design UI] -->
 ![Student Dashboard](./images/student_dashboard.png)
 2. **Course details (`/student/courses/[id]`):** Shows modules, completed checkmarks, and locked items.
+<!-- [Insert course outline and locking status design mockup] -->
 ![Course Details](./images/course_details.png)
 3. **Instructor Curriculum Builder (`/instructor/courses/[id]`):** Contains lesson forms, video input tools, and H5P iframe embed inputs.
+<!-- [Insert instructor course builder layout mockup] -->
 ![Instructor Curriculum Builder](./images/instructor_builder.png)
 
 ## 4.5 Subsystem 2 Screens
 
 1. **Advisor Student Monitoring Portal (`/advisor/students`):** Department list showing advisor follow-up controls and linked instructor selectors.
+<!-- [Insert advisor monitoring dashboard mockup] -->
 ![Advisor Portal](./images/advisor_portal.png)
 2. **Admin User Registry Control (`/admin/users`):** Displays tables with approval, suspend, and delete actions.
+<!-- [Insert admin control panel design mockup] -->
 ![Admin Registry](./images/admin_registry.png)
 
 ## 4.6 Main Components
@@ -426,6 +438,7 @@ This subsystem coordinates background processing and database transactions:
 ### 4.6.1 Component 1: Quiz Auto-Grading & Alert Trigger
 
 **Processing Flowchart**
+<!-- [Insert flowchart diagram showing Quiz attempt evaluation and Advisor alert triggers logic] -->
 ![Quiz Auto-Grading Flowchart](./images/comp1_flowchart.png)
 
 **Pseudocode Algorithm**
@@ -444,6 +457,7 @@ END FUNCTION
 ### 4.6.2 Component 2: Rule-Based Module Locking Logic
 
 **Processing Flowchart**
+<!-- [Insert flowchart diagram showing sequential lesson lock evaluation checks logic] -->
 ![Module Locking Flowchart](./images/comp2_flowchart.png)
 
 **Pseudocode Algorithm**
@@ -528,6 +542,7 @@ graph TD
 
 The system was developed using VS Code on Windows, leveraging the Next.js 15 App Router architecture with Turbopack for local compilation. 
 
+<!-- [Insert screenshot of VS Code showing project file list and Turbopack dev terminal running next dev] -->
 ![VS Code Environment](./images/ide_environment.png)
 
 * **Framework:** Next.js 15 (App Router, React 19)
@@ -539,6 +554,7 @@ The system was developed using VS Code on Windows, leveraging the Next.js 15 App
 
 Our strategy to integrate Subsystem 1 and Subsystem 2 was to rely on Next.js Server Components securely fetching from the shared Supabase PostgreSQL database using Row Level Security (RLS) policies. Role-based route protection acts as the integration gateway between the Subsystems.
 
+<!-- [Insert architecture snapshot showing data transactions between Next.js client pages and Supabase database] -->
 ![Integration Strategy Architecture](./images/integration_strategy.png)
 
 | File | Description |
@@ -599,18 +615,23 @@ _Verified by :_**_See Wing Kit_**_
 
 ## 7.1 Main Screen
 
+<!-- [Insert actual screenshot of the running Main Screen / Login landing webpage] -->
 ![Main Screen Prototype](./images/sample_main_screen.png)
 
 ### 7.1.1 Subsystem 1 Screens
 * **Student Dashboard Page:** Displays enrolled courses, completion percentage gauges, upcoming assignment counts, and recent activity logs.
+<!-- [Insert actual screenshot of the running Student Dashboard webpage] -->
 ![Subsystem 1 Student Screen](./images/sample_student.png)
 * **Interactive Lesson Page:** Contains reading materials, YouTube video windows, and H5P iframe modules.
+<!-- [Insert actual screenshot of the running Interactive Lesson webpage displaying the Lumi/H5P iframe] -->
 ![Subsystem 1 Lesson Screen](./images/sample_lesson.png)
 
 ### 7.1.2 Subsystem 2 Screens
 * **Advisor Student Intervention Panel:** Student row layout featuring a "Follow Up" button, instructor selection dropdown, and message text box.
+<!-- [Insert actual screenshot of the running Advisor webpage displaying flagging alerts] -->
 ![Subsystem 2 Advisor Screen](./images/sample_advisor.png)
 * **Admin User Registry Console:** User table with active/suspended status indicators and controls to suspend, reactivate, or delete accounts.
+<!-- [Insert actual screenshot of the running Admin webpage showing approval controls] -->
 ![Subsystem 2 Admin Screen](./images/sample_admin.png)
 
 ---
