@@ -625,7 +625,12 @@ The student layout utilizes structural CSS wrappers to deliver a premium, respon
 # 5 Testing
 
 ## 5.1 Test Data
-_<TO DO: Provide a detailed description of the test data used to verify the subsystem here.>_
+The following records are seeded to verify the student dashboard, progress tracking, and locking rules:
+* **Student User**: See Wing Kit (`student@example.com`, `STU-001`, academic level: `Year 1`, program: `Degree in Computer Science`).
+* **Active Enrollment**: Enrolled in course `QL-SEF101` (Software Engineering Fundamentals).
+* **Progress Scenarios**:
+  * **Scenario A (Pass)**: Logs 80% on Module 1 Quiz. Lesson 2 remains unlocked.
+  * **Scenario B (Fail)**: Logs 40% score on Quiz 1: Testing Strategies. Weak topic alert fires, recommendations appear, and subsequent lessons in Module 3 are locked.
 
 ## 5.2 Acceptance Testing
 Acceptance checklist executed on student workflow prototypes:
@@ -660,10 +665,23 @@ Moving forward, additional developments could include:
 2. **AI-driven study plan Generation**: Integrating larger recommendation profiles based on historical advisor interventions.
 
 ### Software Quality Assurance
-_<TO DO: Include details of software quality assurance practices here>_
+Throughout the development of the Student Subsystem, strict Software Quality Assurance (SQA) practices were enforced to maintain robustness and security:
+* **Static Typing**: TypeScript was used extensively across all files, preventing runtime errors by ensuring data fetched from Supabase strictly adhered to predefined database interfaces (e.g., `EnrolledCourse`).
+* **Security & Authentication**: Next.js Middleware was implemented to enforce Role-Based Access Control (RBAC). Any request to `/student/*` verifies the JWT token, ensuring users cannot access the dashboard unless they possess the 'student' role.
+* **Server-Side Validation**: Critical logic, such as quiz grading and progress updating, was deliberately moved to Next.js Server Actions. This prevents malicious actors from tampering with network requests or inspecting correct answers in the browser.
+* **Database Integrity**: Strict foreign key constraints and Supabase Row Level Security (RLS) policies were applied to prevent orphan records, ensuring a student's progress is always securely tied to their specific `student_profile_id`.
 
 ### Group Collaboration
-_<TO DO: Include details of group collaboration and teamwork here>_
+Developing this platform required tight integration between all four subsystems, managed through structured collaboration:
+* **Version Control**: Git and GitHub were utilized for version control. We maintained a `master` branch and communicated to resolve merge conflicts when working on shared layout files.
+* **Schema Alignment**: Since the Student Subsystem heavily relies on data created by the Instructor (Courses, Quizzes) and feeds data into the Advisor Subsystem (Alerts), our team held planning sessions to finalize the exact table structures in the shared Data Dictionary before coding began.
+* **Integration Points**: I worked closely with Aziel (Instructor) to ensure the Lumi embed URLs were correctly saved to the `content_item` table so they could be rendered in the student player, and collaborated with Vincent (Advisor) to standardize the `advisor_alert` triggers when a student fails a quiz.
 
 ### Problems Encountered
-_<TO DO: Include details of problems encountered during the project and how they were resolved here>_
+**1. Secure Quiz Grading**
+* *Problem*: Initially, quiz validation was structured to occur on the client side, meaning the correct answers would need to be sent to the browser. This posed a major academic integrity risk as students could view the answers via the browser's developer tools.
+* *Solution*: The entire grading logic was refactored into an asynchronous Server Action. Only the student's submission is sent to the server, where it is queried against the secure `question` table, graded, and saved without ever exposing the solution key.
+
+**2. H5P (Lumi) Responsive Iframe Rendering**
+* *Problem*: Embedding the H5P content using standard raw HTML iframes resulted in rigid elements that broke the UI layout on mobile screens or when the browser window was resized.
+* *Solution*: I implemented Tailwind CSS structural wrappers around the iframe. By utilizing an `aspect-video` container and forcing the child iframe to take `w-full` and `h-full`, the interactive lesson content now scales dynamically and beautifully across all device form factors.
