@@ -185,12 +185,48 @@ sequenceDiagram
 
 ## 3.2 Data Dictionary
 
-| Table Name | Attribute | Data Type | Key | Null | Default | Description |
-| ---------- | --------- | --------- | --- | ---- | ------- | ----------- |
-| `user` | `account_status` | `VARCHAR(20)` | `None` | `No` | `'pending'`| Status constraint: `'pending'`, `'active'`, `'suspended'`. |
-| `role` | `role_name` | `VARCHAR(50)` | `None` | `No` | `None` | Name of the role (Admin, Student, Instructor). |
-| `announcement` | `title` | `VARCHAR(255)`| `None` | `No` | `None` | Announcement heading. |
-| `announcement` | `content` | `TEXT` | `None` | `No` | `None` | The broadcast message. |
+| Table Name | Field Name | Data Type | Length | PK/FK | Required | Null/Not Null | Description |
+| ---------- | ---------- | --------- | ------ | ----- | -------- | ------------- | ----------- |
+| `role` | `role_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the role table. |
+| `role` | `role_name` | `VARCHAR` | `50` | `-` | `Yes` | `Not Null` | The role name value. |
+| `user` | `user_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the user table. |
+| `user` | `auth_user_id` | `UUID` | `36` | `-` | `No` | `Null` | The auth user id value. |
+| `user` | `role_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the role table. |
+| `user` | `full_name` | `VARCHAR` | `150` | `-` | `Yes` | `Not Null` | The full name value. |
+| `user` | `email` | `VARCHAR` | `255` | `-` | `Yes` | `Not Null` | The email value. |
+| `user` | `account_status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The account status value. |
+| `user` | `created_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The created at value. |
+| `course` | `course_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the course table. |
+| `course` | `instructor_profile_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the instructor_profile table. |
+| `course` | `course_code` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The course code value. |
+| `course` | `course_title` | `VARCHAR` | `200` | `-` | `Yes` | `Not Null` | The course title value. |
+| `course` | `description` | `TEXT` | `-` | `-` | `No` | `Null` | The description value. |
+| `course` | `department` | `VARCHAR` | `100` | `-` | `No` | `Null` | The department value. |
+| `course` | `status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The status value. |
+| `course` | `created_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The created at value. |
+| `announcement` | `announcement_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the announcement table. |
+| `announcement` | `user_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the table. |
+| `announcement` | `title` | `VARCHAR` | `200` | `-` | `Yes` | `Not Null` | The title value. |
+| `announcement` | `message` | `TEXT` | `-` | `-` | `Yes` | `Not Null` | The message value. |
+| `announcement` | `scope` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The scope value. |
+| `announcement` | `target_scope_id` | `INT` | `-` | `-` | `No` | `Null` | The target scope id value. |
+| `announcement` | `published_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The published at value. |
+| `announcement` | `status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The status value. |
+| `moderation_action` | `moderation_action_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the moderation_action table. |
+| `moderation_action` | `admin_user_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the table. |
+| `moderation_action` | `target_type` | `VARCHAR` | `30` | `-` | `Yes` | `Not Null` | The target type value. |
+| `moderation_action` | `target_id` | `INT` | `-` | `-` | `Yes` | `Not Null` | The target id value. |
+| `moderation_action` | `action_type` | `VARCHAR` | `30` | `-` | `Yes` | `Not Null` | The action type value. |
+| `moderation_action` | `reason` | `TEXT` | `-` | `-` | `No` | `Null` | The reason value. |
+| `moderation_action` | `action_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The action at value. |
+| `audit_log` | `audit_log_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the audit_log table. |
+| `audit_log` | `actor_user_id` | `INT` | `-` | `FK` | `No` | `Null` | Foreign key referencing the table. |
+| `audit_log` | `action_type` | `VARCHAR` | `80` | `-` | `Yes` | `Not Null` | The action type value. |
+| `audit_log` | `target_type` | `VARCHAR` | `50` | `-` | `No` | `Null` | The target type value. |
+| `audit_log` | `target_id` | `INT` | `-` | `-` | `No` | `Null` | The target id value. |
+| `audit_log` | `summary` | `TEXT` | `-` | `-` | `Yes` | `Not Null` | The summary value. |
+| `audit_log` | `metadata` | `JSONB` | `-` | `-` | `No` | `Null` | The metadata value. |
+| `audit_log` | `created_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The created at value. |
 
 ## 3.3 Subsystem Architecture
 The Admin subsystem relies on secure Next.js Server Components. The architecture enforces strict role validation before rendering any page in the `/admin` layout. All data mutations (Approve, Suspend, Kick) are handled exclusively via `"use server"` actions to prevent unauthorized API requests.

@@ -190,11 +190,95 @@ sequenceDiagram
 
 ## 3.2 Data Dictionary
 
-| Table Name | Attribute | Data Type | Key | Null | Default | Description |
-| ---------- | --------- | --------- | --- | ---- | ------- | ----------- |
-| `content_item` | `embed_url` | `VARCHAR` | `None` | `Yes`| `None` | Web link for H5P/Lumi iframes. |
-| `assignment_submission`| `score` | `NUMERIC` | `None` | `Yes`| `None` | Grade given by instructor. |
-| `assignment_submission`| `status`| `VARCHAR` | `None` | `No` | `'submitted'` | Status constraint: `'submitted'`, `'graded'`. |
+| Table Name | Field Name | Data Type | Length | PK/FK | Required | Null/Not Null | Description |
+| ---------- | ---------- | --------- | ------ | ----- | -------- | ------------- | ----------- |
+| `user` | `user_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the user table. |
+| `user` | `auth_user_id` | `UUID` | `36` | `-` | `No` | `Null` | The auth user id value. |
+| `user` | `role_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the role table. |
+| `user` | `full_name` | `VARCHAR` | `150` | `-` | `Yes` | `Not Null` | The full name value. |
+| `user` | `email` | `VARCHAR` | `255` | `-` | `Yes` | `Not Null` | The email value. |
+| `user` | `account_status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The account status value. |
+| `user` | `created_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The created at value. |
+| `instructor_profile` | `instructor_profile_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the instructor_profile table. |
+| `instructor_profile` | `user_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the table. |
+| `instructor_profile` | `staff_no` | `VARCHAR` | `30` | `-` | `Yes` | `Not Null` | The staff no value. |
+| `instructor_profile` | `specialization` | `VARCHAR` | `200` | `-` | `No` | `Null` | The specialization value. |
+| `instructor_profile` | `subjects_taught` | `TEXT` | `-` | `-` | `No` | `Null` | The subjects taught value. |
+| `instructor_profile` | `office_hours` | `VARCHAR` | `200` | `-` | `No` | `Null` | The office hours value. |
+| `course` | `course_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the course table. |
+| `course` | `instructor_profile_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the instructor_profile table. |
+| `course` | `course_code` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The course code value. |
+| `course` | `course_title` | `VARCHAR` | `200` | `-` | `Yes` | `Not Null` | The course title value. |
+| `course` | `description` | `TEXT` | `-` | `-` | `No` | `Null` | The description value. |
+| `course` | `department` | `VARCHAR` | `100` | `-` | `No` | `Null` | The department value. |
+| `course` | `status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The status value. |
+| `course` | `created_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The created at value. |
+| `module` | `module_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the module table. |
+| `module` | `course_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the course table. |
+| `module` | `module_title` | `VARCHAR` | `200` | `-` | `Yes` | `Not Null` | The module title value. |
+| `module` | `sequence_no` | `INT` | `-` | `-` | `Yes` | `Not Null` | The sequence no value. |
+| `module` | `description` | `TEXT` | `-` | `-` | `No` | `Null` | The description value. |
+| `module` | `publish_status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The publish status value. |
+| `lesson` | `lesson_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the lesson table. |
+| `lesson` | `module_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the module table. |
+| `lesson` | `lesson_title` | `VARCHAR` | `200` | `-` | `Yes` | `Not Null` | The lesson title value. |
+| `lesson` | `lesson_type` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The lesson type value. |
+| `lesson` | `content_text` | `TEXT` | `-` | `-` | `No` | `Null` | The content text value. |
+| `lesson` | `video_url` | `VARCHAR` | `500` | `-` | `No` | `Null` | The video url value. |
+| `lesson` | `sequence_no` | `INT` | `-` | `-` | `Yes` | `Not Null` | The sequence no value. |
+| `lesson` | `publish_status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The publish status value. |
+| `content_item` | `content_item_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the content_item table. |
+| `content_item` | `lesson_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the lesson table. |
+| `content_item` | `content_type` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The content type value. |
+| `content_item` | `title` | `VARCHAR` | `200` | `-` | `Yes` | `Not Null` | The title value. |
+| `content_item` | `body_text` | `TEXT` | `-` | `-` | `No` | `Null` | The body text value. |
+| `content_item` | `resource_url` | `VARCHAR` | `500` | `-` | `No` | `Null` | The resource url value. |
+| `content_item` | `storage_path` | `VARCHAR` | `500` | `-` | `No` | `Null` | The storage path value. |
+| `content_item` | `embed_url` | `VARCHAR` | `500` | `-` | `No` | `Null` | The embed url value. |
+| `content_item` | `sequence_no` | `INT` | `-` | `-` | `Yes` | `Not Null` | The sequence no value. |
+| `content_item` | `publish_status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The publish status value. |
+| `content_item` | `created_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The created at value. |
+| `quiz` | `quiz_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the quiz table. |
+| `quiz` | `lesson_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the lesson table. |
+| `quiz` | `quiz_title` | `VARCHAR` | `200` | `-` | `Yes` | `Not Null` | The quiz title value. |
+| `quiz` | `total_marks` | `INT` | `-` | `-` | `Yes` | `Not Null` | The total marks value. |
+| `quiz` | `time_limit` | `INT` | `-` | `-` | `No` | `Null` | in minutes, NULL = no limit |
+| `quiz` | `randomized` | `BOOLEAN` | `-` | `-` | `Yes` | `Not Null` | The randomized value. |
+| `quiz` | `publish_status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The publish status value. |
+| `question_bank` | `question_bank_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the question_bank table. |
+| `question_bank` | `course_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the course table. |
+| `question_bank` | `bank_name` | `VARCHAR` | `200` | `-` | `Yes` | `Not Null` | The bank name value. |
+| `question_bank` | `description` | `TEXT` | `-` | `-` | `No` | `Null` | The description value. |
+| `question_bank` | `is_active` | `BOOLEAN` | `-` | `-` | `Yes` | `Not Null` | The is active value. |
+| `question` | `question_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the question table. |
+| `question` | `question_bank_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the question_bank table. |
+| `question` | `question_type` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The question type value. |
+| `question` | `prompt` | `TEXT` | `-` | `-` | `Yes` | `Not Null` | The prompt value. |
+| `question` | `correct_answer` | `TEXT` | `-` | `-` | `Yes` | `Not Null` | The correct answer value. |
+| `question` | `explanation` | `TEXT` | `-` | `-` | `No` | `Null` | The explanation value. |
+| `question` | `difficulty` | `VARCHAR` | `10` | `-` | `No` | `Null` | The difficulty value. |
+| `question` | `points` | `INT` | `-` | `-` | `Yes` | `Not Null` | The points value. |
+| `quiz_question` | `quiz_question_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the quiz_question table. |
+| `quiz_question` | `quiz_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the quiz table. |
+| `quiz_question` | `question_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the question table. |
+| `quiz_question` | `sequence_no` | `INT` | `-` | `-` | `No` | `Null` | The sequence no value. |
+| `assignment` | `assignment_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the assignment table. |
+| `assignment` | `course_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the course table. |
+| `assignment` | `lesson_id` | `INT` | `-` | `FK` | `No` | `Null` | Foreign key referencing the lesson table. |
+| `assignment` | `assignment_title` | `VARCHAR` | `200` | `-` | `Yes` | `Not Null` | The assignment title value. |
+| `assignment` | `description` | `TEXT` | `-` | `-` | `No` | `Null` | The description value. |
+| `assignment` | `deadline` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The deadline value. |
+| `assignment` | `total_marks` | `INT` | `-` | `-` | `Yes` | `Not Null` | The total marks value. |
+| `assignment` | `publish_status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The publish status value. |
+| `assignment` | `created_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The created at value. |
+| `assignment_submission` | `submission_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the assignment_submission table. |
+| `assignment_submission` | `assignment_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the assignment table. |
+| `assignment_submission` | `student_profile_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the student_profile table. |
+| `assignment_submission` | `submitted_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The submitted at value. |
+| `assignment_submission` | `submission_url` | `VARCHAR` | `500` | `-` | `No` | `Null` | The submission url value. |
+| `assignment_submission` | `status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The status value. |
+| `assignment_submission` | `score` | `NUMERIC` | `5,2` | `-` | `No` | `Null` | The score value. |
+| `assignment_submission` | `feedback` | `TEXT` | `-` | `-` | `No` | `Null` | The feedback value. |
 
 ## 3.3 Subsystem Architecture
 The subsystem uses interactive React Client Components for state-heavy features like the Course Builder (handling deeply nested object rendering and modal state). Next.js Server Actions process the form submissions to ensure database writes are securely authenticated.

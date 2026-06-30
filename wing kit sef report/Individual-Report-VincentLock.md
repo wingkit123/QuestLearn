@@ -185,11 +185,58 @@ sequenceDiagram
 
 ## 3.2 Data Dictionary
 
-| Table Name | Attribute | Data Type | Key | Null | Default | Description |
-| ---------- | --------- | --------- | --- | ---- | ------- | ----------- |
-| `advisor_alert` | `alert_type` | `VARCHAR(50)` | `None` | `No` | `None` | Type: `'low_quiz_score'`, etc. |
-| `advisor_alert` | `status` | `VARCHAR(20)` | `None` | `No` | `'open'` | Status of intervention. |
-| `advisor_follow_up` | `message` | `TEXT` | `None` | `No` | `None` | The text of the intervention message. |
+| Table Name | Field Name | Data Type | Length | PK/FK | Required | Null/Not Null | Description |
+| ---------- | ---------- | --------- | ------ | ----- | -------- | ------------- | ----------- |
+| `user` | `user_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the user table. |
+| `user` | `auth_user_id` | `UUID` | `36` | `-` | `No` | `Null` | The auth user id value. |
+| `user` | `role_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the role table. |
+| `user` | `full_name` | `VARCHAR` | `150` | `-` | `Yes` | `Not Null` | The full name value. |
+| `user` | `email` | `VARCHAR` | `255` | `-` | `Yes` | `Not Null` | The email value. |
+| `user` | `account_status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The account status value. |
+| `user` | `created_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The created at value. |
+| `advisor_profile` | `advisor_profile_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the advisor_profile table. |
+| `advisor_profile` | `user_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the table. |
+| `advisor_profile` | `staff_no` | `VARCHAR` | `30` | `-` | `Yes` | `Not Null` | The staff no value. |
+| `advisor_profile` | `department` | `VARCHAR` | `100` | `-` | `No` | `Null` | The department value. |
+| `advisor_profile` | `office_hours` | `VARCHAR` | `200` | `-` | `No` | `Null` | The office hours value. |
+| `student_profile` | `student_profile_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the student_profile table. |
+| `student_profile` | `user_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the table. |
+| `student_profile` | `student_no` | `VARCHAR` | `30` | `-` | `Yes` | `Not Null` | The student no value. |
+| `student_profile` | `academic_level` | `VARCHAR` | `50` | `-` | `No` | `Null` | The academic level value. |
+| `student_profile` | `programme` | `VARCHAR` | `100` | `-` | `No` | `Null` | The programme value. |
+| `student_profile` | `department` | `VARCHAR` | `100` | `-` | `No` | `Null` | The department value. |
+| `student_profile` | `learning_preference` | `VARCHAR` | `50` | `-` | `No` | `Null` | The learning preference value. |
+| `advisor_student_assignment` | `advisor_student_assignment_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the advisor_student_assignment table. |
+| `advisor_student_assignment` | `advisor_profile_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the advisor_profile table. |
+| `advisor_student_assignment` | `student_profile_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the student_profile table. |
+| `advisor_student_assignment` | `assigned_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The assigned at value. |
+| `advisor_student_assignment` | `status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The status value. |
+| `advisor_alert` | `advisor_alert_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the advisor_alert table. |
+| `advisor_alert` | `student_profile_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the student_profile table. |
+| `advisor_alert` | `advisor_profile_id` | `INT` | `-` | `FK` | `No` | `Null` | Foreign key referencing the advisor_profile table. |
+| `advisor_alert` | `alert_type` | `VARCHAR` | `30` | `-` | `Yes` | `Not Null` | The alert type value. |
+| `advisor_alert` | `severity` | `VARCHAR` | `10` | `-` | `Yes` | `Not Null` | The severity value. |
+| `advisor_alert` | `source_type` | `VARCHAR` | `50` | `-` | `No` | `Null` | The source type value. |
+| `advisor_alert` | `source_id` | `INT` | `-` | `-` | `No` | `Null` | The source id value. |
+| `advisor_alert` | `message` | `TEXT` | `-` | `-` | `Yes` | `Not Null` | The message value. |
+| `advisor_alert` | `status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The status value. |
+| `advisor_alert` | `created_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The created at value. |
+| `advisor_alert` | `resolved_at` | `TIMESTAMP` | `-` | `-` | `No` | `Null` | The resolved at value. |
+| `advisor_follow_up` | `advisor_follow_up_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the advisor_follow_up table. |
+| `advisor_follow_up` | `advisor_alert_id` | `INT` | `-` | `FK` | `No` | `Null` | Foreign key referencing the advisor_alert table. |
+| `advisor_follow_up` | `advisor_profile_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the advisor_profile table. |
+| `advisor_follow_up` | `student_profile_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the student_profile table. |
+| `advisor_follow_up` | `instructor_profile_id` | `INT` | `-` | `FK` | `No` | `Null` | Foreign key referencing the instructor_profile table. |
+| `advisor_follow_up` | `follow_up_type` | `VARCHAR` | `30` | `-` | `Yes` | `Not Null` | The follow up type value. |
+| `advisor_follow_up` | `message` | `TEXT` | `-` | `-` | `Yes` | `Not Null` | The message value. |
+| `advisor_follow_up` | `next_action` | `TEXT` | `-` | `-` | `No` | `Null` | The next action value. |
+| `advisor_follow_up` | `follow_up_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The follow up at value. |
+| `notification` | `notification_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the notification table. |
+| `notification` | `user_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the table. |
+| `notification` | `announcement_id` | `INT` | `-` | `FK` | `No` | `Null` | Foreign key referencing the announcement table. |
+| `notification` | `message` | `TEXT` | `-` | `-` | `Yes` | `Not Null` | The message value. |
+| `notification` | `is_read` | `BOOLEAN` | `-` | `-` | `Yes` | `Not Null` | The is read value. |
+| `notification` | `sent_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The sent at value. |
 
 ## 3.3 Subsystem Architecture
 The subsystem uses Next.js Client Components (e.g., `AdvisorStudentsClient.tsx`) to handle interactive elements like the Follow-up Modal, while Server Components fetch the heavily nested relational data (joining Profiles to Assignments to Alerts) securely via Supabase.

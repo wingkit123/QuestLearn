@@ -263,19 +263,86 @@ sequenceDiagram
 
 ## 3.2 Data Dictionary
 
-| Table Name | Attribute | Data Type | Key | Null | Default | Description |
-| ---------- | --------- | --------- | --- | ---- | ------- | ----------- |
-| `user` | `user_id` | `INT` | `PK` | `No` | `SERIAL` | Unique internal user ID. |
-| `user` | `auth_user_id` | `UUID` | `None` | `Yes`| `None` | Links to `auth.users.id`. |
-| `user` | `role_id` | `INT` | `FK` | `No` | `None` | References `role(role_id)`. |
-| `student_profile` | `student_profile_id`| `INT` | `PK` | `No` | `SERIAL` | Unique student profile ID. |
-| `student_profile` | `student_no` | `VARCHAR(30)` | `None` | `No` | `None` | Unique Student ID number. |
-| `enrollment` | `enrollment_id` | `INT` | `PK` | `No` | `SERIAL` | Unique enrollment ID. |
-| `enrollment` | `status` | `VARCHAR(20)` | `None` | `No` | `'active'`| Check: `'active'`, `'completed'`. |
-| `progress_record` | `progress_record_id`| `INT` | `PK` | `No` | `SERIAL` | Unique progress record ID. |
-| `progress_record` | `percentage` | `INT` | `None` | `No` | `0` | Score percentage (0 to 100). |
-| `quiz_attempt` | `attempt_id` | `INT` | `PK` | `No` | `SERIAL` | Unique attempt ID. |
-| `quiz_attempt` | `score` | `NUMERIC(5,2)`| `None` | `Yes`| `None` | Earned quiz points. |
+| Table Name | Field Name | Data Type | Length | PK/FK | Required | Null/Not Null | Description |
+| ---------- | ---------- | --------- | ------ | ----- | -------- | ------------- | ----------- |
+| `user` | `user_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the user table. |
+| `user` | `auth_user_id` | `UUID` | `36` | `-` | `No` | `Null` | The auth user id value. |
+| `user` | `role_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the role table. |
+| `user` | `full_name` | `VARCHAR` | `150` | `-` | `Yes` | `Not Null` | The full name value. |
+| `user` | `email` | `VARCHAR` | `255` | `-` | `Yes` | `Not Null` | The email value. |
+| `user` | `account_status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The account status value. |
+| `user` | `created_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The created at value. |
+| `student_profile` | `student_profile_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the student_profile table. |
+| `student_profile` | `user_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the table. |
+| `student_profile` | `student_no` | `VARCHAR` | `30` | `-` | `Yes` | `Not Null` | The student no value. |
+| `student_profile` | `academic_level` | `VARCHAR` | `50` | `-` | `No` | `Null` | The academic level value. |
+| `student_profile` | `programme` | `VARCHAR` | `100` | `-` | `No` | `Null` | The programme value. |
+| `student_profile` | `department` | `VARCHAR` | `100` | `-` | `No` | `Null` | The department value. |
+| `student_profile` | `learning_preference` | `VARCHAR` | `50` | `-` | `No` | `Null` | The learning preference value. |
+| `enrollment` | `enrollment_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the enrollment table. |
+| `enrollment` | `student_profile_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the student_profile table. |
+| `enrollment` | `course_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the course table. |
+| `enrollment` | `enrolled_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The enrolled at value. |
+| `enrollment` | `status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The status value. |
+| `course` | `course_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the course table. |
+| `course` | `instructor_profile_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the instructor_profile table. |
+| `course` | `course_code` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The course code value. |
+| `course` | `course_title` | `VARCHAR` | `200` | `-` | `Yes` | `Not Null` | The course title value. |
+| `course` | `description` | `TEXT` | `-` | `-` | `No` | `Null` | The description value. |
+| `course` | `department` | `VARCHAR` | `100` | `-` | `No` | `Null` | The department value. |
+| `course` | `status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The status value. |
+| `course` | `created_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The created at value. |
+| `module` | `module_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the module table. |
+| `module` | `course_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the course table. |
+| `module` | `module_title` | `VARCHAR` | `200` | `-` | `Yes` | `Not Null` | The module title value. |
+| `module` | `sequence_no` | `INT` | `-` | `-` | `Yes` | `Not Null` | The sequence no value. |
+| `module` | `description` | `TEXT` | `-` | `-` | `No` | `Null` | The description value. |
+| `module` | `publish_status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The publish status value. |
+| `lesson` | `lesson_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the lesson table. |
+| `lesson` | `module_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the module table. |
+| `lesson` | `lesson_title` | `VARCHAR` | `200` | `-` | `Yes` | `Not Null` | The lesson title value. |
+| `lesson` | `lesson_type` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The lesson type value. |
+| `lesson` | `content_text` | `TEXT` | `-` | `-` | `No` | `Null` | The content text value. |
+| `lesson` | `video_url` | `VARCHAR` | `500` | `-` | `No` | `Null` | The video url value. |
+| `lesson` | `sequence_no` | `INT` | `-` | `-` | `Yes` | `Not Null` | The sequence no value. |
+| `lesson` | `publish_status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The publish status value. |
+| `content_item` | `content_item_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the content_item table. |
+| `content_item` | `lesson_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the lesson table. |
+| `content_item` | `content_type` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The content type value. |
+| `content_item` | `title` | `VARCHAR` | `200` | `-` | `Yes` | `Not Null` | The title value. |
+| `content_item` | `body_text` | `TEXT` | `-` | `-` | `No` | `Null` | The body text value. |
+| `content_item` | `resource_url` | `VARCHAR` | `500` | `-` | `No` | `Null` | The resource url value. |
+| `content_item` | `storage_path` | `VARCHAR` | `500` | `-` | `No` | `Null` | The storage path value. |
+| `content_item` | `embed_url` | `VARCHAR` | `500` | `-` | `No` | `Null` | The embed url value. |
+| `content_item` | `sequence_no` | `INT` | `-` | `-` | `Yes` | `Not Null` | The sequence no value. |
+| `content_item` | `publish_status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The publish status value. |
+| `content_item` | `created_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The created at value. |
+| `progress_record` | `progress_record_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the progress_record table. |
+| `progress_record` | `student_profile_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the student_profile table. |
+| `progress_record` | `lesson_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the lesson table. |
+| `progress_record` | `completion_status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The completion status value. |
+| `progress_record` | `percentage` | `INT` | `-` | `-` | `Yes` | `Not Null` | The percentage value. |
+| `progress_record` | `updated_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The updated at value. |
+| `quiz` | `quiz_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the quiz table. |
+| `quiz` | `lesson_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the lesson table. |
+| `quiz` | `quiz_title` | `VARCHAR` | `200` | `-` | `Yes` | `Not Null` | The quiz title value. |
+| `quiz` | `total_marks` | `INT` | `-` | `-` | `Yes` | `Not Null` | The total marks value. |
+| `quiz` | `time_limit` | `INT` | `-` | `-` | `No` | `Null` | in minutes, NULL = no limit |
+| `quiz` | `randomized` | `BOOLEAN` | `-` | `-` | `Yes` | `Not Null` | The randomized value. |
+| `quiz` | `publish_status` | `VARCHAR` | `20` | `-` | `Yes` | `Not Null` | The publish status value. |
+| `quiz_attempt` | `attempt_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the quiz_attempt table. |
+| `quiz_attempt` | `quiz_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the quiz table. |
+| `quiz_attempt` | `student_profile_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the student_profile table. |
+| `quiz_attempt` | `score` | `NUMERIC` | `5,2` | `-` | `No` | `Null` | The score value. |
+| `quiz_attempt` | `max_score` | `INT` | `-` | `-` | `No` | `Null` | The max score value. |
+| `quiz_attempt` | `submitted_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The submitted at value. |
+| `quiz_attempt` | `feedback_summary` | `TEXT` | `-` | `-` | `No` | `Null` | The feedback summary value. |
+| `notification` | `notification_id` | `SERIAL` | `-` | `PK` | `Yes` | `Not Null` | Primary key of the notification table. |
+| `notification` | `user_id` | `INT` | `-` | `FK` | `Yes` | `Not Null` | Foreign key referencing the table. |
+| `notification` | `announcement_id` | `INT` | `-` | `FK` | `No` | `Null` | Foreign key referencing the announcement table. |
+| `notification` | `message` | `TEXT` | `-` | `-` | `Yes` | `Not Null` | The message value. |
+| `notification` | `is_read` | `BOOLEAN` | `-` | `-` | `Yes` | `Not Null` | The is read value. |
+| `notification` | `sent_at` | `TIMESTAMP` | `-` | `-` | `Yes` | `Not Null` | The sent at value. |
 
 ## 3.3 Subsystem Architecture
 The student subsystem utilizes a classic **Model-View-Controller (MVC)** architectural pattern within the Next.js App Router context:
