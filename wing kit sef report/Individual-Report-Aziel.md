@@ -70,12 +70,23 @@ The Instructor Subsystem serves as the content creation and assessment engine of
 
 | Actor | Use Cases | Description |
 | ----- | --------- | ----------- |
-| **Instructor** | UC-INS-01: Log In as Instructor | Verifies instructor credentials and redirects them to the instructor portal. |
-| | UC-INS-02: Manage Course Curriculum | Allows creating courses, editing information, and structured module/lesson creation. |
-| | UC-INS-03: Embed Lesson Content (Video, H5P, Reading) | Integrates reading materials, YouTube embeds, or interactive H5P/Lumi activity URLs. |
-| | UC-INS-04: Create Module Dependencies | Sets prerequisite conditions between modules to enforce sequential learning paths. |
-| | UC-INS-05: Grade Assignment Submissions | Provides score grading and feedback updates for student-submitted URLs. |
-| | UC-INS-06: View Student Progress Analytics | Shows class statistics, enrollment counts, and average completion rates. |
+| **Instructor** | UC-INS-01: Register Account | Allows the instructor to register a new account on the portal. |
+| | UC-INS-02: Log In(instructor) | Authenticates the instructor and redirects them to the instructor portal. |
+| | UC-INS-03: Manage Instructor Profile | Allows the instructor to manage their professional profile information. |
+| | UC-INS-04: Manage Profile | Allows editing general user profile settings. |
+| | UC-INS-05: Receive Notifications | Subscribes the instructor to in-app alerts regarding course events. |
+| | UC-INS-06: Create Course | Allows creating and configuring new course containers. |
+| | UC-INS-07: Send Course Announcement | Broadcasts announcements to all students enrolled in the instructor's courses. |
+| | UC-INS-08: Create Module | Constructs modular blocks inside courses to organize learning. |
+| | UC-INS-09: Create Lesson | Creates lesson pages within specific course modules. |
+| | UC-INS-10: Upload Learning Content | Uploads reading or document resources into lesson nodes. |
+| | UC-INS-11: Publish Learning Content | Publishes modules, lessons, or content items to make them active. |
+| | UC-INS-12: Create Quiz | Designs and adds quizzes to lessons. |
+| | UC-INS-13: Configure Automated Feedback | Sets scoring thresholds and custom feedback text for quizzes. |
+| | UC-INS-14: Create Assignment | Sets project guidelines, due dates, and max marks for assignments. |
+| | UC-INS-15: Grade Submissions | Scores and reviews student-submitted project URLs. |
+| | UC-INS-16: View Student Performance Analytics | Displays grade distributions and quiz analytics. |
+| | UC-INS-17: View Course Engagement Analytics | Reviews lesson completion rates and student activity levels. |
 
 ## 1.3 Assumptions and Dependencies
 **Dependencies:**
@@ -92,27 +103,51 @@ The Instructor Subsystem serves as the content creation and assessment engine of
 
 ## 2.1 Use Case Diagram
 
-The use case diagram contains all 6 instructor functions, aligned with the main system requirements:
+The use case diagram below extracts the 17 use cases associated with the **Instructor** actor directly from the master QuestLearn Use Case Diagram:
 
 ```mermaid
 usecaseDiagram
     actor Instructor as "Instructor (Aziel Tan Zheng Chuan)"
     
     rect "QuestLearn - Instructor Subsystem" {
-        usecase UC1 as "UC-INS-01: Log In as Instructor"
-        usecase UC2 as "UC-INS-02: Manage Course Curriculum"
-        usecase UC3 as "UC-INS-03: Embed Lesson Content"
-        usecase UC4 as "UC-INS-04: Create Module Dependencies"
-        usecase UC5 as "UC-INS-05: Grade Assignment Submissions"
-        usecase UC6 as "UC-INS-06: View Student Progress Analytics"
+        usecase UC_Reg as "Register Account"
+        usecase UC_Login as "Log In(instructor)"
+        usecase UC_MngInstProf as "Manage Instructor Profile"
+        usecase UC_MngProf as "Manage Profile"
+        usecase UC_RecvNotif as "Receive Notifications"
+        
+        usecase UC_CreateCourse as "Create Course"
+        usecase UC_SendAnnounce as "Send Course Announcement"
+        usecase UC_CreateModule as "Create Module"
+        usecase UC_CreateLesson as "Create Lesson"
+        usecase UC_UploadContent as "Upload Learning Content"
+        usecase UC_PublishContent as "Publish Learning Content"
+        usecase UC_CreateQuiz as "Create Quiz"
+        usecase UC_ConfigFeedback as "Configure Automated Feedback"
+        usecase UC_CreateAssign as "Create Assignment"
+        usecase UC_GradeSub as "Grade Submissions"
+        
+        usecase UC_ViewStudentPerf as "View Student Performance Analytics"
+        usecase UC_ViewCourseEngage as "View Course Engagement Analytics"
     }
     
-    Instructor --> UC1
-    Instructor --> UC2
-    Instructor --> UC3
-    Instructor --> UC4
-    Instructor --> UC5
-    Instructor --> UC6
+    Instructor --> UC_Reg
+    Instructor --> UC_Login
+    Instructor --> UC_MngInstProf
+    Instructor --> UC_MngProf
+    Instructor --> UC_RecvNotif
+    Instructor --> UC_CreateCourse
+    Instructor --> UC_SendAnnounce
+    Instructor --> UC_CreateModule
+    Instructor --> UC_CreateLesson
+    Instructor --> UC_UploadContent
+    Instructor --> UC_PublishContent
+    Instructor --> UC_CreateQuiz
+    Instructor --> UC_ConfigFeedback
+    Instructor --> UC_CreateAssign
+    Instructor --> UC_GradeSub
+    Instructor --> UC_ViewStudentPerf
+    Instructor --> UC_ViewCourseEngage
 ```
 
 *(Note: PlantUML diagram source code is available in the appendix of the subsystem project folder under `QuestLearn Use Cases` block).*
