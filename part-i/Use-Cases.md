@@ -231,14 +231,14 @@ These are the main use cases to prioritize in the final UML use case diagram:
 
 1. The student opens the assignment details page.
 2. The system displays assignment instructions, deadline, and submission rules.
-3. The student uploads or submits the required work.
-4. The system validates the submission.
+3. The student enters the submission URL (e.g., GitHub repository link or document URL).
+4. The system validates that the URL is formatted correctly.
 5. The system records the submission time and status.
 6. The system confirms successful assignment submission.
 
 **Alternate Flow:**
 
-1. If the file format or submission data is invalid, the system rejects the submission and requests correction.
+1. If the submission URL is empty or invalid, the system rejects the submission and requests correction.
 2. If the deadline has passed, the system either blocks submission or marks it as late according to configured rules.
 
 **Postcondition:** The assignment submission is stored for instructor review and student history.
@@ -483,9 +483,9 @@ flowchart TD
 flowchart TD
     A((Start)) --> B[Open assignment details]
     B --> C[Read instructions and deadline]
-    C --> D[Upload or enter submission]
-    D --> E{Submission valid?}
-    E -- No --> F[Reject submission and request correction]
+    C --> D[Enter submission URL]
+    D --> E{URL valid?}
+    E -- No --> F[Reject submission and request URL correction]
     F --> D
     E -- Yes --> G{Deadline passed?}
     G -- Yes --> H{Late submission allowed?}
