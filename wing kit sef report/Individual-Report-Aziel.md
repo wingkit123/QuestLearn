@@ -529,6 +529,425 @@ stateDiagram-v2
 | **Grading Evaluation Form** | `src/app/(instructor)/instructor/grading/[submissionId]/GradingForm.tsx` | Client UI form component capturing grading parameters. |
 | **Grade Processor Actions** | `src/app/(instructor)/instructor/grading/[submissionId]/actions.ts` | Server Action processing the database update and sending notification updates. |
 
+### 4.2.1 Course Registry Portal (`src/app/(instructor)/instructor/courses/page.tsx`)
+This page retrieves all courses created by the logged-in instructor's profile, including joined student enrollment counts:
+```typescript
+import { getCurrentUser } from "@/lib/auth/helpers";
+import { createClient } from "@/lib/supabase/server";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+import { Plus, BookOpen, Users } from "lucide-react";
+import Link from "next/link";
+
+export default async function InstructorCoursesPage() {
+  const user = await getCurrentUser();
+  if (!user) return null;
+
+  const supabase = await createClient();
+
+  const { data: profile } = await supabase
+    .from("instructor_profile")
+    .select("instructor_profile_id")
+    .eq("user_id", user.userId)
+    .single();
+
+  if (!profile) return null;
+
+  // Fetch all owned courses
+  const { data: courses } = await supabase
+    .from("course")
+    .select("*, enrollment(count)")
+    .eq("instructor_profile_id", profile.instructor_profile_id)
+    .order("created_at", { ascending: false });
+
+  const courseList = courses || [];
+
+  return (
+    <div className="animate-in fade-in duration-500">
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-text mb-2">Course Management</h1>
+          <p className="text-text-muted">
+            Create and manage your courses, modules, and lessons.
+          </p>
+        </div>
+        <Link
+          href="/instructor/courses/new"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-white font-medium text-sm hover:bg-primary-light transition-colors"
+        >
+          <Plus className="w-4 h-4" /> Create Course
+        </Link>
+      </header>
+
+      {courseList.length === 0 ? (
+        <EmptyState
+          title="No courses found"
+          description="You haven't created any courses yet. Click 'Create Course' to get started."
+          icon={<BookOpen className="w-8 h-8 text-primary" />}
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {courseList.map((course: any) => (
+            <div
+              key={course.course_id}
+              className="bg-surface rounded-xl border border-border overflow-hidden shadow-sm group hover:border-primary/50 transition-colors flex flex-col"
+            >
+              <div className="p-5 border-b border-border flex-1">
+                <div className="flex items-start justify-between mb-3">
+                  <span className="text-xs font-bold text-accent bg-bg-dark px-2 py-1 rounded-md tracking-wide">
+                    {course.course_code}
+                  </span>
+                  <StatusBadge status={course.status} />
+                </div>
+                <h3 className="font-bold text-lg text-text mb-2 line-clamp-1">
+                  {course.course_title}
+                </h3>
+                <p className="text-sm text-text-muted line-clamp-2 min-h-[2.5rem]">
+                  {course.description || "No description provided."}
+                </p>
+              </div>
+              <div className="p-4 bg-bg-page/50 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-sm text-text-muted font-medium">
+                  <Users className="w-4 h-4" />
+                  {/* @ts-ignore */}
+                  {course.enrollment[0]?.count || 0} Students
+                </div>
+                <Link
+                  href={`/instructor/courses/${course.course_id}`}
+                  className="text-sm text-primary font-medium hover:underline px-2 py-1"
+                >
+                  Edit Course &rarr;
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+### 4.2.2 Course Curriculum Builder CRUD Actions (`src/app/(instructor)/instructor/courses/[courseId]/CourseBuilderClient.tsx`)
+These key handlers inside the Client Component execute async queries on Supabase tables to update modules, lessons, and content items in real time:
+```typescript
+// Handler to update Course Title and Description
+const handleSaveDetails = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  try {
+    const { error } = await supabase
+      .from("course")
+      .update({
+        course_title: title,
+        description: description,
+      })
+      .eq("course_id", courseId);
+
+    if (error) throw error;
+    setCourse({ ...course, course_title: title, description });
+    setIsEditingDetails(false);
+    showToast("Course details updated successfully!");
+  } catch (err: any) {
+    showToast(err.message || "Failed to update course", "error");
+  } finally {
+    setLoading(false);
+  }
+};
+
+// Handler to add a Module to the Course
+const handleAddModuleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!moduleTitle.trim()) return;
+  setModuleLoading(true);
+  try {
+    const nextSeq = (course.module || []).length + 1;
+    const { data: newMod, error } = await supabase
+      .from("module")
+      .insert({
+        course_id: parseInt(courseId),
+        module_title: moduleTitle.trim(),
+        description: moduleDesc.trim() || null,
+        sequence_no: nextSeq,
+        publish_status: "published",
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    setCourse({ ...course, module: [...(course.module || []), { ...newMod, lesson: [] }] });
+    setIsModuleModalOpen(false);
+  } catch (err: any) {
+    showToast(err.message || "Failed to create module", "error");
+  } finally {
+    setModuleLoading(false);
+  }
+};
+
+// Handler to add a Lesson and embed H5P/Lumi URL or Video
+const handleAddLessonSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!lessonTitle.trim() || targetModuleId === null) return;
+  setLessonLoading(true);
+  try {
+    const targetMod = (course.module || []).find((m: any) => m.module_id === targetModuleId);
+    const nextSeq = ((targetMod?.lesson || []).length) + 1;
+    const dbLessonType = lessonType === "h5p_lumi" ? "mixed" : lessonType;
+
+    const { data: newLesson, error: lessonError } = await supabase
+      .from("lesson")
+      .insert({
+        module_id: targetModuleId,
+        lesson_title: lessonTitle.trim(),
+        lesson_type: dbLessonType,
+        sequence_no: nextSeq,
+      })
+      .select()
+      .single();
+
+    if (lessonError) throw lessonError;
+
+    if (lessonType === "h5p_lumi" && lumiInput.trim()) {
+      const isIframeTag = lumiInput.trim().toLowerCase().startsWith("<iframe");
+      await supabase.from("content_item").insert({
+        lesson_id: newLesson.lesson_id,
+        content_type: "h5p_lumi",
+        title: lessonTitle.trim(),
+        sequence_no: 1,
+        body_text: isIframeTag ? lumiInput.trim() : null,
+        embed_url: isIframeTag ? null : lumiInput.trim(),
+      });
+    } else if (lessonType === "video" && videoInput.trim()) {
+      await supabase.from("content_item").insert({
+        lesson_id: newLesson.lesson_id,
+        content_type: "video",
+        title: lessonTitle.trim(),
+        sequence_no: 1,
+        embed_url: videoInput.trim(),
+      });
+    }
+
+    // Refresh state tree
+    const updatedModules = (course.module || []).map((m: any) => {
+      if (m.module_id === targetModuleId) {
+        return { ...m, lesson: [...(m.lesson || []), newLesson] };
+      }
+      return m;
+    });
+    setCourse({ ...course, module: updatedModules });
+    setIsLessonModalOpen(false);
+  } catch (err: any) {
+    showToast(err.message || "Failed to add lesson", "error");
+  } finally {
+    setLessonLoading(false);
+  }
+};
+```
+
+### 4.2.3 Grading Dashboard (`src/app/(instructor)/instructor/page.tsx`)
+The controller page retrieves the list of ungraded assignment submissions submitted by students:
+```typescript
+import { getCurrentUser } from "@/lib/auth/helpers";
+import { createClient } from "@/lib/supabase/server";
+import { MetricCard } from "@/components/ui/MetricCard";
+import { BookOpen, Users, FileSignature, CheckCircle } from "lucide-react";
+import Link from "next/link";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+
+export default async function InstructorDashboard() {
+  const user = await getCurrentUser();
+  if (!user) return null;
+
+  const supabase = await createClient();
+
+  const { data: profile } = await supabase
+    .from("instructor_profile")
+    .select("instructor_profile_id")
+    .eq("user_id", user.userId)
+    .single();
+
+  if (!profile) return null;
+
+  // Fetch owned courses
+  const { data: courses } = await supabase
+    .from("course")
+    .select("*, enrollment(count)")
+    .eq("instructor_profile_id", profile.instructor_profile_id)
+    .eq("status", "active");
+
+  const activeCourses = courses || [];
+  const courseIds = activeCourses.map((c) => c.course_id);
+
+  let pendingSubmissions = [];
+  if (courseIds.length > 0) {
+    const { data: assignments } = await supabase
+      .from("assignment")
+      .select("assignment_id")
+      .in("course_id", courseIds);
+
+    const assignmentIds = (assignments || []).map((a) => a.assignment_id);
+
+    if (assignmentIds.length > 0) {
+      const { data: subs } = await supabase
+        .from("assignment_submission")
+        .select(`
+          *,
+          assignment:assignment_id(
+            assignment_title, 
+            course:course_id(course_code, course_title)
+          ),
+          student_profile:student_profile_id(
+            user:user_id(full_name)
+          )
+        `)
+        .eq("status", "submitted")
+        .in("assignment_id", assignmentIds)
+        .order("submitted_at", { ascending: true })
+        .limit(5);
+        
+      pendingSubmissions = subs || [];
+    }
+  }
+
+  return (
+    <div className="space-y-8 animate-in fade-in duration-500">
+      <header>
+        <h1 className="text-2xl font-bold text-text mb-2">Instructor Dashboard</h1>
+        <p className="text-text-muted">Welcome back, {user.fullName}.</p>
+      </header>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <section>
+          <h2 className="text-lg font-bold text-text mb-4">Needs Grading</h2>
+          <div className="bg-surface border border-border rounded-xl overflow-hidden">
+            {pendingSubmissions.length === 0 ? (
+              <EmptyState title="All caught up!" description="No pending submissions." icon={<CheckCircle />} />
+            ) : (
+              <div className="divide-y divide-border">
+                {pendingSubmissions.map((sub: any) => (
+                  <Link key={sub.submission_id} href={`/instructor/grading/${sub.submission_id}`} className="block p-4 hover:bg-bg-page/50">
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-text">{sub.student_profile?.user?.full_name}</span>
+                      <StatusBadge status="under_review" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}
+```
+
+### 4.2.4 Grading Evaluation Form (`src/app/(instructor)/instructor/grading/[submissionId]/GradingForm.tsx`)
+A Client component displaying student work URLs and capturing grades and comments with range validation:
+```typescript
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { submitGrade } from "./actions";
+import { Loader2, CheckCircle2 } from "lucide-react";
+
+interface GradingFormProps {
+  submissionId: number;
+  initialScore: number | null;
+  initialFeedback: string | null;
+  maxScore: number;
+  status: string;
+}
+
+export function GradingForm({ submissionId, initialScore, initialFeedback, maxScore, status }: GradingFormProps) {
+  const router = useRouter();
+  const [score, setScore] = useState<string>(initialScore !== null ? String(initialScore) : "");
+  const [feedback, setFeedback] = useState<string>(initialFeedback || "");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const isGraded = status === "graded" || status === "returned";
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    const parsedScore = parseInt(score);
+    if (isNaN(parsedScore) || parsedScore < 0 || parsedScore > maxScore) {
+      setError(`Score must be a number between 0 and ${maxScore}.`);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      await submitGrade(submissionId, parsedScore, feedback);
+      router.push("/instructor");
+      router.refresh();
+    } catch (err: any) {
+      setError(err.message || "Failed to submit grade.");
+      setLoading(false);
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {error && <div className="p-3 rounded-lg bg-danger-bg text-danger text-sm">{error}</div>}
+      <div>
+        <label className="block text-sm font-medium text-text mb-1.5">Score (out of {maxScore})</label>
+        <input type="number" required min={0} max={maxScore} value={score} onChange={(e) => setScore(e.target.value)} className="w-32 px-3 py-2 rounded-lg border border-border" />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-text mb-1.5">Feedback</label>
+        <textarea rows={4} value={feedback} onChange={(e) => setFeedback(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border" />
+      </div>
+      <button type="submit" disabled={loading} className="px-6 py-2.5 rounded-lg bg-primary text-white">
+        {loading && <Loader2 className="animate-spin w-4 h-4" />} Submit Grade
+      </button>
+    </form>
+  );
+}
+```
+
+### 4.2.5 Grade Processor Server Action (`src/app/(instructor)/instructor/grading/[submissionId]/actions.ts`)
+A secure Server Action that updates submission records inside a Postgres transaction:
+```typescript
+"use server";
+
+import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/helpers";
+import { revalidatePath } from "next/cache";
+
+export async function submitGrade(submissionId: number, score: number, feedback: string) {
+  const user = await getCurrentUser();
+  if (!user || user.role !== "instructor") throw new Error("Unauthorized");
+
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("assignment_submission")
+    .update({
+      score,
+      feedback,
+      status: "graded",
+    })
+    .eq("submission_id", submissionId);
+
+  if (error) {
+    console.error("Error submitting grade:", error);
+    throw new Error("Failed to submit grade.");
+  }
+
+  revalidatePath("/instructor");
+  revalidatePath("/instructor/grading");
+  revalidatePath(`/instructor/grading/${submissionId}`);
+  
+  return { success: true };
+}
+```
+
 ## 4.3 Sample Screens
 *(Insert screenshot of Course Builder hierarchy outlining modules and lesson nodes)*
 *(Insert screenshot of Grading Input Form showing the submission link, feedback text box, and score input)*
